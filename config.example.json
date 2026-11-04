@@ -1,0 +1,4 @@
+{
+  "supabaseUrl": "https://SEU-PROJETO.supabase.co",
+  "supabaseAnonKey": "cole aqui a chave anon (ou publishable) do projeto"
+}

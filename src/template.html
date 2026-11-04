@@ -1,0 +1,1071 @@
+<title>Tecnoshow Avalia</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: um app, três modos — tablet de coleta (uma pergunta por tela), painel ao vivo 16:9 com mapa de arcos, relatório técnico em papel */
+:root{
+  --night:#040b1f; --deep:#071637; --panel:#0b1f4a; --line:#1d3b7a; --glow:#5fd0ff; --glow2:#9ef0ff;
+  --ink:#e7f1ff; --muted:#8fa6d1; --gold:#ffc861; --good:#4ee0a0; --warn:#ffb347; --bad:#ff6b7d;
+  --paper:#f7f8fb; --paper-ink:#13213f; --paper-muted:#5a6785; --paper-line:#d9dfec; --paper-accent:#1557c0;
+  --f-display:'Saira','Arial Narrow',Arial,sans-serif; --f-body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif; --f-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--night);color:var(--ink);font-family:var(--f-body);font-size:16px;margin:0;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--glow);outline-offset:2px}
+.view{min-height:100%}
+.tabnum{font-variant-numeric:tabular-nums}
+
+/* ---------- INÍCIO ---------- */
+#v-inicio{display:grid;place-items:center;padding-block:40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:radial-gradient(ellipse at 60% 30%,#0e2a6b 0%,var(--night) 60%)}
+.home{max-width:980px;width:100%;display:grid;gap:28px}
+.home h1{font-family:var(--f-display);font-weight:800;font-size:clamp(2.2rem,6vw,4rem);letter-spacing:.01em;margin:0;line-height:1;text-wrap:balance}
+.home h1 span{color:var(--glow)}
+.home p.lead{color:var(--muted);margin:0;max-width:62ch;line-height:1.55}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.mode{background:linear-gradient(160deg,var(--panel),var(--deep));border:1px solid var(--line);border-radius:14px;padding:22px;text-align:left;display:grid;gap:8px;transition:border-color .2s,transform .2s}
+.mode:hover{border-color:var(--glow);transform:translateY(-2px)}
+.mode b{font-family:var(--f-display);font-size:1.35rem;font-weight:700}
+.mode small{color:var(--muted);line-height:1.45}
+.mode .k{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--glow)}
+.cfg{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:end;border-top:1px solid var(--line);padding-top:20px}
+.cfg label{display:grid;gap:6px;font-size:.8rem;color:var(--muted);letter-spacing:.04em}
+.cfg select,.cfg input{background:var(--deep);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:10px 12px;font:inherit;min-width:0}
+.demo-links{display:flex;gap:10px;flex-wrap:wrap}
+.ghost{background:transparent;border:1px solid var(--line);border-radius:999px;padding:8px 16px;color:var(--muted);font-size:.85rem}
+.ghost:hover{color:var(--ink);border-color:var(--glow)}
+
+/* ---------- COLETA (tablet) ---------- */
+#v-coleta{height:100%;display:flex;flex-direction:column;background:radial-gradient(ellipse at 50% -10%,#123681 0%,var(--night) 58%)}
+.kbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-block:12px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));font-family:var(--f-mono);font-size:.78rem;color:var(--muted)}
+.kbar .brand{font-family:var(--f-display);font-weight:700;letter-spacing:.06em;color:var(--ink);font-size:.95rem}
+.kbar .brand i{font-style:normal;color:var(--glow)}
+.net{display:flex;align-items:center;gap:8px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--good);box-shadow:0 0 10px var(--good)}
+.dot.off{background:var(--warn);box-shadow:0 0 10px var(--warn)}
+.progress{height:4px;background:var(--line);margin-inline:max(20px,env(safe-area-inset-left,0px))}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--glow),var(--glow2));width:0;transition:width .35s}
+.kstage{flex:1;display:grid;align-content:safe center;justify-items:center;padding-block:24px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));overflow:auto}
+.kcard{width:100%;max-width:860px;display:grid;gap:18px}
+.qnum{font-family:var(--f-mono);color:var(--glow);font-size:.85rem;letter-spacing:.14em;text-transform:uppercase}
+.qtitle{font-family:var(--f-display);font-weight:700;font-size:clamp(1.7rem,4.2vw,2.7rem);line-height:1.12;margin:0;text-wrap:balance}
+.qhelp{color:var(--muted);margin:0;font-size:1.05rem}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.opt{background:rgba(11,31,74,.85);border:2px solid var(--line);border-radius:14px;padding:20px 22px;text-align:left;font-size:1.2rem;font-weight:500;min-height:74px;display:flex;align-items:center;gap:12px;transition:border-color .15s,background .15s,transform .1s}
+.opt:active{transform:scale(.98)}
+.opt.sel{border-color:var(--glow);background:rgba(95,208,255,.16);box-shadow:0 0 0 1px var(--glow) inset,0 0 24px rgba(95,208,255,.25)}
+.opt .chk{width:22px;height:22px;border-radius:6px;border:2px solid var(--muted);flex:none}
+.opt.sel .chk{background:var(--glow);border-color:var(--glow)}
+.knav{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.btn{background:linear-gradient(180deg,#59c9ff,#2a8fe0);color:#04122e;border:0;border-radius:999px;padding:18px 34px;font-family:var(--f-display);font-weight:700;font-size:1.25rem;letter-spacing:.03em;box-shadow:0 8px 30px rgba(42,143,224,.35)}
+.btn:disabled{opacity:.35;box-shadow:none;cursor:default}
+.btn.sec{background:transparent;color:var(--muted);border:2px solid var(--line);box-shadow:none}
+.langs{display:flex;gap:12px;flex-wrap:wrap}
+.lang{border:2px solid var(--line);background:transparent;border-radius:999px;padding:12px 22px;font-size:1.05rem}
+.lang.sel{border-color:var(--glow);color:var(--glow2)}
+.hero-k{font-family:var(--f-display);font-weight:800;font-size:clamp(2.6rem,7vw,4.6rem);line-height:.98;margin:0;text-wrap:balance}
+.hero-k span{color:var(--glow)}
+.consent{color:var(--muted);font-size:.95rem;line-height:1.5;max-width:70ch;margin:0}
+.search{width:100%;font-size:1.4rem;padding:18px 20px;border-radius:14px;border:2px solid var(--line);background:rgba(4,11,31,.7);color:var(--ink)}
+.search:focus{border-color:var(--glow)}
+.results{display:grid;gap:8px}
+.res{background:rgba(11,31,74,.85);border:1px solid var(--line);border-radius:12px;padding:14px 18px;text-align:left;font-size:1.15rem;display:flex;justify-content:space-between;gap:12px}
+.res em{font-style:normal;color:var(--muted);font-family:var(--f-mono);font-size:.95rem}
+.res.sel{border-color:var(--glow);background:rgba(95,208,255,.16)}
+.seg{display:flex;gap:10px;flex-wrap:wrap}
+.rating{display:grid;gap:8px}
+.rrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;background:rgba(11,31,74,.6);border:1px solid var(--line);border-radius:12px;padding:7px 14px}
+.rrow span{font-size:1.1rem}
+.stars{display:flex;gap:6px}
+.star{width:52px;height:52px;border-radius:12px;border:2px solid var(--line);background:transparent;font-family:var(--f-display);font-weight:700;font-size:1.3rem;color:var(--muted)}
+.star.sel{background:var(--glow);border-color:var(--glow);color:#04122e}
+.scale-lbl{display:flex;justify-content:space-between;color:var(--muted);font-size:.85rem}
+.nps{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:6px}
+.nps button{aspect-ratio:1;max-width:100%;border-radius:12px;border:2px solid var(--line);background:rgba(11,31,74,.85);font-family:var(--f-display);font-weight:700;font-size:1.4rem}
+.nps button.sel{border-color:var(--glow);background:var(--glow);color:#04122e}
+textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
+.thanks{text-align:center;justify-items:center}
+.thanks .km{font-family:var(--f-display);font-weight:800;font-size:clamp(3rem,10vw,6rem);color:var(--glow2);line-height:1;text-shadow:0 0 30px rgba(95,208,255,.5)}
+@media (max-width:640px){.star{width:44px;height:44px}.rrow{grid-template-columns:1fr}.nps button{font-size:1rem;border-radius:8px}}
+
+/* ---------- PAINEL ---------- */
+#v-painel{height:100%;display:grid;grid-template-columns:minmax(0,1.75fr) minmax(320px,1fr);grid-template-rows:auto minmax(0,1fr) auto;gap:14px;padding-block:14px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:var(--night);overflow:hidden}
+.ptop{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
+.ptitle{font-family:var(--f-display);font-weight:800;font-size:clamp(1.4rem,2.4vw,2.3rem);letter-spacing:.02em;margin:0}
+.ptitle span{color:var(--glow)}
+.pmeta{display:flex;gap:10px;align-items:center;font-family:var(--f-mono);font-size:.8rem;color:var(--muted);flex-wrap:wrap}
+.live{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;color:var(--ink)}
+.live .dot{animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.35}}
+.badge-demo{background:var(--gold);color:#2a1a00;border-radius:999px;padding:6px 12px;font-weight:600;letter-spacing:.06em}
+.mapwrap{position:relative;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:radial-gradient(ellipse at 50% 55%,#0c2d73 0%,#06143a 55%,var(--night) 100%);min-height:360px}
+#map{position:absolute;inset:0;width:100%;height:100%;display:block}
+.mapui{position:absolute;left:16px;top:14px;display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:rgba(4,11,31,.7);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:.8rem;color:var(--muted);letter-spacing:.05em}
+.chip.on{color:#04122e;background:var(--glow);border-color:var(--glow)}
+.maplegend{position:absolute;left:16px;bottom:14px;right:16px;display:flex;justify-content:space-between;gap:16px;align-items:end;pointer-events:none;flex-wrap:wrap}
+.bigstat{font-family:var(--f-display);font-weight:800;font-size:clamp(2.2rem,4.6vw,4.4rem);line-height:.9;text-shadow:0 0 26px rgba(95,208,255,.45)}
+.bigstat small{display:block;font-family:var(--f-mono);font-weight:400;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-shadow:none;margin-top:6px}
+.ring-note{font-family:var(--f-mono);font-size:.78rem;color:var(--glow2);text-align:right;line-height:1.5}
+.side{display:grid;grid-template-rows:auto auto auto minmax(0,1fr);gap:12px;min-height:0}
+.box{background:linear-gradient(170deg,rgba(11,31,74,.92),rgba(7,22,55,.92));border:1px solid var(--line);border-radius:14px;padding:14px 16px;min-width:0;min-height:0}
+.box h3{margin:0 0 10px;font-family:var(--f-mono);font-weight:500;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.kpi b{display:block;font-family:var(--f-display);font-weight:700;font-size:clamp(1.4rem,2.3vw,2.2rem);line-height:1}
+.kpi span{font-size:.74rem;color:var(--muted)}
+.duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.scroll{overflow:auto}
+.bars{display:grid;gap:9px}
+.bar{display:grid;grid-template-columns:minmax(0,11ch) minmax(0,1fr) 3.4ch;gap:8px;align-items:center;font-size:.8rem}
+.bar .tr{height:10px;background:rgba(29,59,122,.6);border-radius:6px;overflow:hidden}
+.bar .tr i{display:block;height:100%;background:linear-gradient(90deg,#2a8fe0,var(--glow2));border-radius:6px;transition:width .8s}
+.bar .v{font-family:var(--f-mono);text-align:right;color:var(--ink)}
+.bar .l{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list{display:grid;gap:6px;font-size:.85rem}
+.list div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed rgba(29,59,122,.8);padding-bottom:4px}
+.list b{font-family:var(--f-mono);font-weight:500;color:var(--glow2)}
+.ticker{grid-column:1/-1;min-height:30px;display:flex;gap:28px;overflow:hidden;white-space:nowrap;font-family:var(--f-mono);font-size:.85rem;color:var(--muted);border-top:1px solid var(--line);padding-top:10px;mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.ticker span b{color:var(--glow2);font-weight:500}
+.ticker span.new{color:var(--ink)}
+.empty-state{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px}
+.empty-state div{max-width:46ch;display:grid;gap:12px;justify-items:center}
+.empty-state p{color:var(--muted);margin:0;line-height:1.5}
+@media (max-width:640px){.duo{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:980px){#v-painel{grid-template-columns:1fr;grid-template-rows:auto minmax(420px,60vh) auto auto;height:auto;overflow:visible}.side{grid-template-rows:auto}}
+
+/* ---------- RELATÓRIO ---------- */
+#v-relatorio{background:var(--paper);color:var(--paper-ink);color-scheme:light;min-height:100%;padding-block:28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.rtools{max-width:900px;margin:0 auto 18px;display:flex;flex-wrap:wrap;gap:10px;align-items:end;justify-content:space-between}
+.rtools label{display:grid;gap:4px;font-size:.78rem;color:var(--paper-muted)}
+.rtools input{border:1px solid var(--paper-line);border-radius:8px;padding:8px 10px;font:inherit;color:var(--paper-ink);background:#fff;width:12ch}
+.rbtn{background:var(--paper-accent);color:#fff;border:0;border-radius:8px;padding:10px 16px;font-weight:600}
+.rbtn.alt{background:#fff;color:var(--paper-accent);border:1px solid var(--paper-accent)}
+.doc{max-width:900px;margin:0 auto;background:#fff;border:1px solid var(--paper-line);border-radius:6px;padding:48px clamp(18px,5vw,64px);box-shadow:0 10px 40px rgba(19,33,63,.08)}
+.doc h1{font-family:var(--f-display);font-weight:800;font-size:2rem;margin:0 0 4px;color:var(--paper-ink);text-wrap:balance}
+.doc .sub{color:var(--paper-muted);margin:0 0 26px}
+.doc h2{font-family:var(--f-display);font-weight:700;font-size:1.3rem;margin:34px 0 10px;color:var(--paper-ink);border-bottom:2px solid var(--paper-ink);padding-bottom:6px}
+.doc p,.doc li{line-height:1.6;max-width:72ch}
+.doc table{border-collapse:collapse;width:100%;font-size:.92rem;margin:10px 0}
+.doc th,.doc td{border-bottom:1px solid var(--paper-line);padding:7px 8px;text-align:left}
+.doc td.n,.doc th.n{text-align:right;font-variant-numeric:tabular-nums}
+.doc .kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:14px 0}
+.doc .kgrid div{border:1px solid var(--paper-line);border-radius:6px;padding:12px}
+.doc .kgrid b{display:block;font-family:var(--f-display);font-size:1.6rem;color:var(--paper-accent)}
+.doc .kgrid span{font-size:.8rem;color:var(--paper-muted)}
+.doc img.map{width:100%;border-radius:6px;display:block;margin:10px 0}
+.doc .note{font-size:.85rem;color:var(--paper-muted)}
+.tw{overflow-x:auto}
+
+/* ---------- LOGIN DA EQUIPE ---------- */
+.login{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:rgba(4,11,31,.88);padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.login-box{width:100%;max-width:420px;display:grid;gap:14px;background:linear-gradient(160deg,var(--panel),var(--deep));border:1px solid var(--line);border-radius:14px;padding:24px}
+.login-box b{font-family:var(--f-display);font-size:1.4rem}
+.login-box p{margin:0;color:var(--muted);font-size:.9rem;line-height:1.5}
+.login-box label{display:grid;gap:6px;font-size:.8rem;color:var(--muted)}
+.login-box input{background:var(--deep);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:10px 12px;font:inherit}
+.login-msg{color:var(--bad)!important;min-height:1.2em}
+.cfg-aviso{flex-basis:100%;margin:0;font-size:.82rem;color:var(--warn)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div id="v-inicio" class="view" hidden>
+  <div class="home">
+    <div class="k" style="font-family:var(--f-mono);letter-spacing:.16em;color:var(--glow);font-size:.8rem">IF GOIANO · PPG EM ADMINISTRAÇÃO · TECNOSHOW COMIGO</div>
+    <h1>Tecnoshow <span>Avalia</span></h1>
+    <p class="lead">Avaliação do evento em três modos: os tablets da sala coletam as respostas, o painel mostra tudo ao vivo e o relatório técnico sai pronto ao fim da feira.</p>
+    <div class="modes">
+      <button class="mode" id="go-coleta"><span class="k">Tablets da sala</span><b>Coleta</b><small>Questionário em português, inglês e espanhol. Guarda as respostas no tablet quando a internet cai e envia quando volta.</small></button>
+      <button class="mode" id="go-painel"><span class="k">Telão</span><b>Painel ao vivo</b><small>Mapa com as rotas de origem dos visitantes, satisfação, NPS e bacia de atração, atualizados a cada resposta.</small></button>
+      <button class="mode" id="go-relatorio"><span class="k">Fim do evento</span><b>Relatório técnico</b><small>Relatório com perfil, satisfação, origem, deslocamentos e gasto estimado, pronto para baixar.</small></button>
+    </div>
+    <div class="cfg">
+      <label for="cfg-tablet">Este aparelho é o
+        <select id="cfg-tablet"></select></label>
+      <label for="cfg-edicao">Edição
+        <input id="cfg-edicao" value="Tecnoshow Comigo 2027" maxlength="60"></label>
+      <label for="cfg-chave" id="cfg-chave-wrap" hidden>Chave da coleta (só nos tablets)
+        <input id="cfg-chave" type="password" autocomplete="off" spellcheck="false" maxlength="200"></label>
+      <div class="demo-links"><button class="ghost" id="go-painel-demo">Ver painel com dados de demonstração</button><button class="ghost" id="go-relatorio-demo">Ver relatório de demonstração</button><button class="ghost" id="cfg-sair" hidden>Sair da conta da equipe</button></div>
+      <p class="cfg-aviso" id="cfg-aviso" hidden></p>
+    </div>
+  </div>
+</div>
+
+<div id="v-coleta" class="view" hidden>
+  <div class="kbar"><span class="brand">TECNOSHOW <i>AVALIA</i></span><span class="net"><span id="k-tab">Tablet 1</span> · <span class="dot" id="k-dot"></span><span id="k-net">online</span> · <span id="k-pend">0 na fila</span></span></div>
+  <div class="progress"><i id="k-prog"></i></div>
+  <div class="kstage" id="k-stage"></div>
+</div>
+
+<div id="v-painel" class="view" hidden>
+  <div class="ptop">
+    <h1 class="ptitle" id="p-title">TECNOSHOW <span>AO VIVO</span></h1>
+    <div class="pmeta"><span class="live"><span class="dot" id="p-dot"></span><span id="p-status">conectando</span></span><span id="p-clock" class="tabnum"></span><span class="badge-demo" id="p-demo" hidden>DEMONSTRAÇÃO</span></div>
+  </div>
+  <div class="mapwrap" id="mapwrap">
+    <canvas id="map"></canvas>
+    <div class="mapui"><button class="chip" data-vw="br">Brasil</button><button class="chip" data-vw="reg">Região</button><button class="chip" data-vw="world">Mundo</button><button class="chip" data-vw="auto">Automático</button></div>
+    <div class="maplegend"><div class="bigstat tabnum" id="p-km">0 km<small>percorridos pelos visitantes até a feira</small></div><div class="ring-note" id="p-rings"></div></div>
+    <div class="empty-state" id="p-empty" hidden><div><b style="font-family:var(--f-display);font-size:1.6rem">Aguardando as primeiras respostas</b><p>Cada resposta dos tablets acende uma rota no mapa, da cidade do visitante até Rio Verde.</p><button class="ghost" id="p-trydemo">Ver com dados de demonstração</button></div></div>
+  </div>
+  <div class="side">
+    <div class="box"><h3>Respostas</h3><div class="kpis">
+      <div class="kpi"><b class="tabnum" id="k-resp">0</b><span>respostas</span></div>
+      <div class="kpi"><b class="tabnum" id="k-mun">0</b><span>municípios</span></div>
+      <div class="kpi"><b class="tabnum" id="k-uf">0</b><span>estados</span></div>
+      <div class="kpi"><b class="tabnum" id="k-pais">0</b><span>países</span></div>
+      <div class="kpi"><b class="tabnum" id="k-med">0</b><span>km, mediana</span></div>
+      <div class="kpi"><b class="tabnum" id="k-fora">0%</b><span>de fora de Rio Verde</span></div>
+    </div></div>
+    <div class="duo">
+      <div class="box"><h3>NPS</h3><svg id="g-nps" viewBox="0 0 200 122" width="100%" role="img" aria-label="Net Promoter Score"></svg></div>
+      <div class="box"><h3>Perfil</h3><svg id="g-perfil" viewBox="0 0 220 120" width="100%" role="img" aria-label="Perfil dos visitantes"></svg></div>
+    </div>
+    <div class="duo">
+      <div class="box"><h3>Satisfação (1 a 5)</h3><div class="bars" id="g-sat"></div></div>
+      <div class="box"><h3>Distância percorrida</h3><div class="bars" id="g-dist"></div></div>
+    </div>
+    <div class="duo" style="min-height:0">
+      <div class="box scroll"><h3>Principais origens</h3><div class="list" id="g-top"></div></div>
+      <div class="box"><h3>Respostas por hora</h3><svg id="g-hora" viewBox="0 0 200 90" width="100%" role="img" aria-label="Respostas por hora"></svg></div>
+    </div>
+  </div>
+  <div class="ticker" id="p-ticker"></div>
+</div>
+
+<div id="v-relatorio" class="view" hidden>
+  <div class="rtools">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:end">
+      <label for="r-publico">Público total (organização)<input id="r-publico" type="number" min="0" max="10000000" value="120000"></label>
+      <label for="r-ini">De<input id="r-ini" type="date"></label>
+      <label for="r-fim">Até<input id="r-fim" type="date"></label>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="rbtn" id="r-doc">Baixar relatório (.doc)</button><button class="rbtn alt" id="r-csv">Baixar dados (.csv)</button><button class="rbtn alt" id="r-voltar">Voltar</button></div>
+  </div>
+  <div class="rtools" id="r-msg" style="color:var(--paper-muted);font-size:.85rem" hidden></div>
+  <article class="doc" id="r-doc-body"></article>
+</div>
+
+
+<div id="login" class="login" hidden>
+  <form id="login-form" class="login-box" autocomplete="on">
+    <b>Acesso da equipe</b>
+    <p>O painel e o relatório mostram as respostas dos visitantes e exigem login. Os tablets de coleta não precisam de login.</p>
+    <label for="login-email">E-mail<input id="login-email" type="email" autocomplete="username" required></label>
+    <label for="login-senha">Senha<input id="login-senha" type="password" autocomplete="current-password" required></label>
+    <p class="login-msg" id="login-msg" role="alert"></p>
+    <div class="knav"><button type="button" class="ghost" id="login-cancel">Voltar</button><button class="rbtn" type="submit" id="login-ok">Entrar</button></div>
+  </form>
+</div>
+
+__LIBS__
+<script>
+const GEO = __GEO__;
+const CONFIG = __CONFIG__;
+</script>
+<script>
+"use strict";
+/* ================== DADOS DE REFERÊNCIA ================== */
+/* d3 exige anéis no sentido horário; corrige polígonos vindos no sentido inverso */
+(function fixWinding(){
+  const fixPoly = rings => { if (d3.geoArea({type:'Polygon',coordinates:rings}) > 2*Math.PI) rings.forEach(r=>r.reverse()); };
+  const fixGeom = g => { if (!g) return; if (g.type==='Polygon') fixPoly(g.coordinates); else if (g.type==='MultiPolygon') g.coordinates.forEach(fixPoly); };
+  GEO.world.features.forEach(f=>fixGeom(f.geometry)); GEO.brUF.features.forEach(f=>fixGeom(f.geometry)); fixGeom(GEO.brOut.geometry);
+})();
+const FAIR = {lat:-17.7923, lon:-50.9192, nome:'Rio Verde (GO)', code:5218805};
+const MUN = new Map(GEO.mun.map(m => [m[4], m]));            // código IBGE -> [nome, UF, lat, lon, código]
+const PAIS = new Map(GEO.wc.filter(c => c[0] !== 'BR').map(c => [c[0], c])); // ISO -> [iso, num, pt, es, en, lat, lon]
+const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const MUN_IDX = GEO.mun.map(m => ({m, k:norm(m[0]), go:m[1]==='GO'}));
+const PAIS_IDX = [...PAIS.values()].map(c => ({c, k:norm(c[2]+' '+c[3]+' '+c[4])}));
+function hav(a,b,c,d){const R=6371,r=Math.PI/180;const x=Math.sin((c-a)*r/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin((d-b)*r/2)**2;return 2*R*Math.asin(Math.sqrt(x));}
+const LS = {get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}};
+
+/* ================== QUESTIONÁRIO (3 idiomas) ================== */
+const T = {
+ pt:{lang:'Português', start:'Começar', next:'Avançar', back:'Voltar', send:'Enviar avaliação', skip:'Pular',
+  welcome:['Avalie a', 'Tecnoshow'], welcomeSub:'Leva cerca de 3 minutos. Sua resposta aparece agora no painel da sala.',
+  consent:'Pesquisa do Programa de Pós-Graduação em Administração do IF Goiano. É anônima: não pedimos nome, CPF, telefone nem e-mail. Os dados são analisados de forma agregada. Ao tocar em Começar, você concorda em participar.',
+  q:{origem:'De onde você veio?', perfil:'Qual é o seu perfil?', idade:'Qual a sua faixa etária?', gen:'Qual o seu gênero?', prim:'É a sua primeira vez na Tecnoshow?', dias:'Quantos dias você vem à feira nesta edição?', pern:'Vai dormir fora de casa por causa da feira?', obj:'Por que você veio? Marque todas as opções que se aplicam.', av:'Como você avalia…', tecn:'Conheceu alguma tecnologia ou prática que pretende adotar?', neg:'Fez ou pretende fazer negócios na feira? Valor aproximado:', gasto:'Quanto você gastou ou vai gastar nesta visita, incluindo hospedagem, alimentação e transporte na cidade?', nps:'De 0 a 10, quanto você recomendaria a Tecnoshow a um amigo ou colega?', com:'Quer deixar um comentário ou sugestão?'},
+  help:{origem:'Digite o nome da sua cidade.', av:'Toque de 1 (muito ruim) a 5 (excelente) em cada item.', nps:'0 = de jeito nenhum · 10 = com certeza', com:'Opcional.'},
+  br:'Brasil', abroad:'Outro país', typeCity:'Cidade', typeCountry:'País',
+  o:{pp:'Produtor rural, pequeno (até 4 módulos fiscais)', pm:'Produtor rural, médio', pg:'Produtor rural, grande', tec:'Técnico, agrônomo ou consultor', exp:'Expositor ou representante comercial', est:'Estudante ou pesquisador', inv:'Investidor ou empresário', vis:'Visitante',
+     a1:'Até 17 anos', a2:'18 a 24', a3:'25 a 34', a4:'35 a 44', a5:'45 a 59', a6:'60 ou mais',
+     f:'Feminino', m:'Masculino', o:'Outro', n:'Prefiro não informar', s:'Sim', nn:'Não',
+     d1:'1 dia', d2:'2 dias', d3:'3 dias', d4:'4 dias', d5:'Todos os 5 dias',
+     pnao:'Não', prv:'Sim, em Rio Verde', pout:'Sim, em outra cidade',
+     otec:'Conhecer novas tecnologias', ocomp:'Comprar máquinas ou insumos', oneg:'Fazer negócios ou parcerias', opal:'Assistir palestras', onet:'Encontrar pessoas (networking)', olaz:'Passeio ou lazer',
+     ts:'Sim', tav:'Ainda estou avaliando', tn:'Não',
+     n0:'Não fiz negócios', n1:'Até R$ 50 mil', n2:'R$ 50 mil a R$ 500 mil', n3:'R$ 500 mil a R$ 2 milhões', n4:'Mais de R$ 2 milhões',
+     g0:'Nada', g1:'Até R$ 100', g2:'R$ 101 a R$ 300', g3:'R$ 301 a R$ 600', g4:'R$ 601 a R$ 1.000', g5:'R$ 1.001 a R$ 2.000', g6:'Mais de R$ 2.000'},
+  av:{est:'Estrutura e limpeza', prog:'Cumprimento da programação', aten:'Atendimento das equipes', seg:'Segurança', sin:'Sinalização e acessibilidade', cont:'Palestras e demonstrações'},
+  thanks:'Obrigado!', thanksSub:'Sua rota acabou de acender no painel.', thanksKm:'km até a Tecnoshow', thanksLocal:'Obrigado por receber a Tecnoshow em Rio Verde.', noRes:'Nenhuma cidade encontrada.'},
+ en:{lang:'English', start:'Start', next:'Next', back:'Back', send:'Submit', skip:'Skip',
+  welcome:['Rate', 'Tecnoshow'], welcomeSub:'It takes about 3 minutes. Your answer shows up on the screen in this room.',
+  consent:'Research by the Graduate Program in Management at IF Goiano. It is anonymous: we do not ask for your name, ID, phone or e-mail. Data are analysed only in aggregate. By tapping Start you agree to take part.',
+  q:{origem:'Where did you come from?', perfil:'Which best describes you?', idade:'Your age group?', gen:'Your gender?', prim:'Is this your first time at Tecnoshow?', dias:'How many days are you attending this edition?', pern:'Are you staying overnight because of the fair?', obj:'Why did you come? Select all that apply.', av:'How do you rate…', tecn:'Did you see a technology or practice you plan to adopt?', neg:'Did you do or plan to do business at the fair? Approximate value:', gasto:'How much did you or will you spend on this visit, including lodging, food and local transport?', nps:'From 0 to 10, how likely are you to recommend Tecnoshow to a friend or colleague?', com:'Any comment or suggestion?'},
+  help:{origem:'Type the name of your city or country.', av:'Tap from 1 (very poor) to 5 (excellent) for each item.', nps:'0 = not at all · 10 = extremely likely', com:'Optional.'},
+  br:'Brazil', abroad:'Another country', typeCity:'City', typeCountry:'Country',
+  o:{pp:'Farmer, small scale', pm:'Farmer, medium scale', pg:'Farmer, large scale', tec:'Technician, agronomist or consultant', exp:'Exhibitor or sales representative', est:'Student or researcher', inv:'Investor or business owner', vis:'Visitor',
+     a1:'Under 18', a2:'18–24', a3:'25–34', a4:'35–44', a5:'45–59', a6:'60 or older',
+     f:'Female', m:'Male', o:'Other', n:'Prefer not to say', s:'Yes', nn:'No',
+     d1:'1 day', d2:'2 days', d3:'3 days', d4:'4 days', d5:'All 5 days',
+     pnao:'No', prv:'Yes, in Rio Verde', pout:'Yes, in another city',
+     otec:'See new technologies', ocomp:'Buy machinery or inputs', oneg:'Do business or partnerships', opal:'Attend talks', onet:'Meet people (networking)', olaz:'Leisure',
+     ts:'Yes', tav:'Still evaluating', tn:'No',
+     n0:'No business', n1:'Up to R$ 50k', n2:'R$ 50k – 500k', n3:'R$ 500k – 2M', n4:'Over R$ 2M',
+     g0:'Nothing', g1:'Up to R$ 100', g2:'R$ 101 – 300', g3:'R$ 301 – 600', g4:'R$ 601 – 1,000', g5:'R$ 1,001 – 2,000', g6:'Over R$ 2,000'},
+  av:{est:'Facilities and cleanliness', prog:'Schedule kept as announced', aten:'Staff service', seg:'Safety', sin:'Signage and accessibility', cont:'Talks and field demos'},
+  thanks:'Thank you!', thanksSub:'Your route just lit up on the screen.', thanksKm:'km to Tecnoshow', thanksLocal:'Thank you for hosting Tecnoshow in Rio Verde.', noRes:'No match found.'},
+ es:{lang:'Español', start:'Comenzar', next:'Siguiente', back:'Volver', send:'Enviar', skip:'Omitir',
+  welcome:['Evalúe la', 'Tecnoshow'], welcomeSub:'Toma unos 3 minutos. Su respuesta aparece ahora en la pantalla de la sala.',
+  consent:'Investigación del Programa de Posgrado en Administración del IF Goiano. Es anónima: no pedimos nombre, documento, teléfono ni correo. Los datos se analizan de forma agregada. Al tocar Comenzar, usted acepta participar.',
+  q:{origem:'¿De dónde viene usted?', perfil:'¿Cuál es su perfil?', idade:'¿Su rango de edad?', gen:'¿Su género?', prim:'¿Es su primera vez en la Tecnoshow?', dias:'¿Cuántos días viene a la feria en esta edición?', pern:'¿Va a pasar la noche fuera de casa por la feria?', obj:'¿Por qué vino? Marque todas las que correspondan.', av:'¿Cómo evalúa…', tecn:'¿Conoció alguna tecnología o práctica que piensa adoptar?', neg:'¿Hizo o piensa hacer negocios en la feria? Valor aproximado:', gasto:'¿Cuánto gastó o va a gastar en esta visita, incluyendo alojamiento, comida y transporte en la ciudad?', nps:'De 0 a 10, ¿cuánto recomendaría la Tecnoshow a un amigo o colega?', com:'¿Quiere dejar un comentario o sugerencia?'},
+  help:{origem:'Escriba el nombre de su ciudad o país.', av:'Toque de 1 (muy malo) a 5 (excelente) en cada ítem.', nps:'0 = de ninguna manera · 10 = con seguridad', com:'Opcional.'},
+  br:'Brasil', abroad:'Otro país', typeCity:'Ciudad', typeCountry:'País',
+  o:{pp:'Productor rural, pequeño', pm:'Productor rural, mediano', pg:'Productor rural, grande', tec:'Técnico, agrónomo o consultor', exp:'Expositor o representante comercial', est:'Estudiante o investigador', inv:'Inversor o empresario', vis:'Visitante',
+     a1:'Menos de 18', a2:'18 a 24', a3:'25 a 34', a4:'35 a 44', a5:'45 a 59', a6:'60 o más',
+     f:'Femenino', m:'Masculino', o:'Otro', n:'Prefiero no decir', s:'Sí', nn:'No',
+     d1:'1 día', d2:'2 días', d3:'3 días', d4:'4 días', d5:'Los 5 días',
+     pnao:'No', prv:'Sí, en Rio Verde', pout:'Sí, en otra ciudad',
+     otec:'Conocer nuevas tecnologías', ocomp:'Comprar máquinas o insumos', oneg:'Hacer negocios o alianzas', opal:'Asistir a charlas', onet:'Conocer personas (networking)', olaz:'Paseo u ocio',
+     ts:'Sí', tav:'Todavía lo estoy evaluando', tn:'No',
+     n0:'No hice negocios', n1:'Hasta R$ 50 mil', n2:'R$ 50 mil a 500 mil', n3:'R$ 500 mil a 2 millones', n4:'Más de R$ 2 millones',
+     g0:'Nada', g1:'Hasta R$ 100', g2:'R$ 101 a 300', g3:'R$ 301 a 600', g4:'R$ 601 a 1.000', g5:'R$ 1.001 a 2.000', g6:'Más de R$ 2.000'},
+  av:{est:'Estructura y limpieza', prog:'Cumplimiento del programa', aten:'Atención del personal', seg:'Seguridad', sin:'Señalización y accesibilidad', cont:'Charlas y demostraciones'},
+  thanks:'¡Gracias!', thanksSub:'Su ruta acaba de encenderse en la pantalla.', thanksKm:'km hasta la Tecnoshow', thanksLocal:'Gracias por recibir la Tecnoshow en Rio Verde.', noRes:'No se encontró ninguna coincidencia.'}
+};
+const QS = [
+ {id:'origem', type:'origem'},
+ {id:'perfil', type:'single', opts:['pp','pm','pg','tec','exp','est','inv','vis']},
+ {id:'idade',  type:'single', opts:['a1','a2','a3','a4','a5','a6']},
+ {id:'gen',    type:'single', opts:['f','m','o','n']},
+ {id:'prim',   type:'single', opts:['s','nn']},
+ {id:'dias',   type:'single', opts:['d1','d2','d3','d4','d5']},
+ {id:'pern',   type:'single', opts:['pnao','prv','pout']},
+ {id:'obj',    type:'multi',  opts:['otec','ocomp','oneg','opal','onet','olaz']},
+ {id:'av',     type:'rating', items:['est','prog','aten','seg','sin','cont']},
+ {id:'tecn',   type:'single', opts:['ts','tav','tn']},
+ {id:'neg',    type:'single', opts:['n0','n1','n2','n3','n4']},
+ {id:'gasto',  type:'single', opts:['g0','g1','g2','g3','g4','g5','g6']},
+ {id:'nps',    type:'nps'},
+ {id:'com',    type:'text'}
+];
+const GASTO_MID = {g0:0,g1:50,g2:200,g3:450,g4:800,g5:1500,g6:2500};
+const NEG_MID = {n0:0,n1:25000,n2:275000,n3:1250000,n4:3000000};
+const PERFIL_PT = T.pt.o;
+const AV_CURTO = {est:'Estrutura', prog:'Programação', aten:'Atendimento', seg:'Segurança', sin:'Sinalização', cont:'Palestras'};
+
+/* ================== UTILITÁRIOS ================== */
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function aleatorio(n){                                     // identificador aleatório (base36), sem Math.random quando possível
+  try{ const b=new Uint8Array(n); crypto.getRandomValues(b); return [...b].map(x=>(x%36).toString(36)).join(''); }
+  catch(e){ return Array.from({length:n},()=>Math.floor(Math.random()*36).toString(36)).join(''); }
+}
+const diaLocal = t => { const d=new Date(t); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
+function manterTelaLigada(){                               // tablets e telão não devem apagar a tela
+  let lock=null; const pedir=()=>{ if(document.visibilityState==='visible' && navigator.wakeLock) navigator.wakeLock.request('screen').then(l=>{lock=l;}).catch(()=>{}); };
+  document.addEventListener('visibilitychange', pedir); pedir();
+}
+
+/* ================== CONFIGURAÇÃO DO APARELHO ================== */
+const cfg = LS.get('tsa_cfg', {tablet:'T01', edicao:'Tecnoshow Comigo 2027'});
+if (!/^(T\d{2}|PAINEL)$/.test(cfg.tablet)) cfg.tablet='T01';
+cfg.edicao = String(cfg.edicao||'Tecnoshow Comigo 2027').slice(0,60);
+const edSlug = () => norm(cfg.edicao).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60) || 'tecnoshow';
+/* Identificador deste aparelho: evita que dois tablets com o mesmo número gravem no mesmo documento */
+const DEV = (() => { let d=LS.get('tsa_dev',null); if(!/^[a-z0-9]{6}$/.test(d||'')){ d=aleatorio(6); LS.set('tsa_dev',d); } return d; })();
+
+/* ================== BASE DE RESPOSTAS ==================
+   Dois modos, escolhidos sozinhos:
+   - "supabase": quando CONFIG traz supabaseUrl e supabaseAnonKey (site próprio). Tablets gravam pela função
+     enviar_respostas (só inserção, com chave da coleta); painel e relatório exigem login de alguém da equipe.
+   - "claude": dentro do claude.ai, usa a base compartilhada do Artifact (claude.use('db')).
+   Sem nenhum dos dois, só os modos de demonstração funcionam. */
+const Base = (() => {
+  const sbOk = !!(CONFIG && CONFIG.supabaseUrl && CONFIG.supabaseAnonKey && window.supabase && window.supabase.createClient);
+  const kind = sbOk ? 'supabase' : (window.claude && window.claude.use ? 'claude' : null);
+  const sb = sbOk ? window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnonKey, {auth:{persistSession:true, autoRefreshToken:true, storageKey:'tsa_auth'}}) : null;
+  let dbP = null;
+  const claudeDb = () => { if(!dbP) dbP = kind==='claude' ? window.claude.use('db').catch(()=>null) : Promise.resolve(null); return dbP; };
+  const erro = (code, msg) => Object.assign(new Error(msg||code), {code});
+  const LOTE = 50;
+
+  /* Envia o que falta de um documento da fila. Atualiza doc.enviados a cada parte confirmada pela base. */
+  async function enviar(doc){
+    if (kind==='supabase'){
+      const chave = LS.get('tsa_chave','');
+      if (!chave) throw erro('sem_chave');
+      while ((doc.enviados||0) < doc.itens.length){
+        const ini = doc.enviados||0, parte = doc.itens.slice(ini, ini+LOTE);
+        const {error} = await sb.rpc('enviar_respostas', {p_ed: doc.ed, p_chave: chave, p_itens: parte});
+        if (error){
+          const m = (error.message||'')+' '+(error.details||'');
+          throw erro(/chave_invalida/.test(m)?'chave_invalida':/edicao_fechada/.test(m)?'edicao_fechada':'rede', m);
+        }
+        doc.enviados = ini + parte.length;                // itens inválidos são descartados pela base e não voltam para a fila
+      }
+      return;
+    }
+    const db = await claudeDb(); if (!db) throw erro('sem_base');
+    const n = doc.itens.length;                           // fotografa o tamanho antes do await: itens novos chegam durante o envio
+    await db.doc('respostas/'+doc.docId).set({tablet:doc.tab, ed:doc.ed, hora:doc.hora, itens:doc.itens.slice(0,n)});
+    doc.enviados = n;
+  }
+
+  async function lerSupabase(ed, depois){
+    const out=[]; let ult=depois||0;
+    for(;;){
+      const {data, error} = await sb.from('respostas').select('seq,dados').eq('ed',ed).gt('seq',ult).order('seq').limit(1000);
+      if (error) throw erro(error.code==='42501'?'sem_permissao':'rede', error.message);
+      data.forEach(r=>{ out.push(r.dados); ult=r.seq; });
+      if (data.length<1000) break;
+    }
+    return {itens:out, ult};
+  }
+  /* Lê todas as respostas de uma edição, uma vez. */
+  async function ler(ed){
+    if (kind==='supabase') return (await lerSupabase(ed,0)).itens;
+    const db = await claudeDb(); if (!db) throw erro('sem_base');
+    const snap = await db.collection('respostas').where('ed','==',ed).limit(1000).get();
+    const out=[]; snap.docs.forEach(d=>(d.data().itens||[]).forEach(x=>out.push(x))); return out;
+  }
+  /* Acompanha as respostas ao vivo. onDados(todas, primeiraVez); onStatus(ok, texto). Devolve a função que encerra. */
+  function acompanhar(ed, onDados, onStatus){
+    let vivo=true;
+    if (kind==='supabase'){
+      let ult=0, todos=[], timer=null, primeiro=true;
+      const passo = async () => {
+        try{
+          const r = await lerSupabase(ed, ult); if(!vivo) return;
+          ult = r.ult; if (r.itens.length) todos = todos.concat(r.itens);
+          if (primeiro || r.itens.length) onDados(todos, primeiro); primeiro=false; onStatus(true,'ao vivo');
+        }catch(e){ if(vivo) onStatus(false, e.code==='sem_permissao'?'sem permissão de leitura':'sem conexão · tentando de novo'); }
+        if (vivo) timer = setTimeout(passo, document.hidden ? 30000 : 8000);
+      };
+      passo(); return () => { vivo=false; clearTimeout(timer); };
+    }
+    let unsub=null;
+    claudeDb().then(db=>{
+      if(!vivo) return; if(!db){ onStatus(false,'sem acesso à base'); return; }
+      let primeiro=true; const espera=setTimeout(()=>onStatus(false,'a base ainda não respondeu'), 10000);
+      unsub = db.collection('respostas').where('ed','==',ed).limit(1000).onSnapshot(snap=>{
+        if (!snap.metadata || !snap.metadata.fromCache) clearTimeout(espera);
+        const all=[]; snap.docs.forEach(d=>(d.data().itens||[]).forEach(x=>all.push(x)));
+        onDados(all, primeiro); primeiro=false; onStatus(true, snap.metadata && snap.metadata.fromCache ? 'sincronizando' : 'ao vivo');
+      }, err=>{ clearTimeout(espera); onStatus(false,'base indisponível ('+esc(err.code)+')'); });
+    });
+    return () => { vivo=false; if(unsub) unsub(); };
+  }
+
+  /* ---- login da equipe (só no modo Supabase) ---- */
+  const precisaLogin = kind==='supabase';
+  async function souEquipe(){ const {data,error} = await sb.rpc('sou_equipe'); return !error && data===true; }
+  async function logado(){ if(!sb) return false; const {data} = await sb.auth.getSession(); return !!(data && data.session) && await souEquipe(); }
+  async function sair(){ if(sb) await sb.auth.signOut(); }
+  function garantirAcesso(){
+    if (!precisaLogin) return Promise.resolve(true);
+    return logado().catch(()=>false).then(ok => ok || new Promise(resolve=>{
+      const box=document.getElementById('login'), f=document.getElementById('login-form'), m=document.getElementById('login-msg'), bt=document.getElementById('login-ok');
+      box.hidden=false; m.textContent=''; setTimeout(()=>document.getElementById('login-email').focus(),30);
+      const fim = v => { box.hidden=true; f.onsubmit=null; document.getElementById('login-cancel').onclick=null; document.getElementById('login-senha').value=''; resolve(v); };
+      document.getElementById('login-cancel').onclick = () => fim(false);
+      f.onsubmit = async ev => {
+        ev.preventDefault(); bt.disabled=true; m.textContent='';
+        try{
+          const {error} = await sb.auth.signInWithPassword({email:document.getElementById('login-email').value.trim(), password:document.getElementById('login-senha').value});
+          if (error){ m.textContent = /invalid/i.test(error.message) ? 'E-mail ou senha incorretos.' : 'Não foi possível entrar agora. Confira a internet e tente de novo.'; return; }
+          if (!(await souEquipe())){ await sair(); m.textContent='Esta conta não está cadastrada na equipe. Peça a inclusão ao coordenador da pesquisa.'; return; }
+          fim(true);
+        } finally { bt.disabled=false; }
+      };
+    }));
+  }
+  return {kind, enviar, ler, acompanhar, precisaLogin, garantirAcesso, sair};
+})();
+
+(function initCfg(){
+  const sel = document.getElementById('cfg-tablet');
+  for (let i=1;i<=10;i++){ const v='T'+String(i).padStart(2,'0'); const o=document.createElement('option'); o.value=v; o.textContent='Tablet '+i; sel.appendChild(o); }
+  const op=document.createElement('option'); op.value='PAINEL'; op.textContent='Telão / computador'; sel.appendChild(op);
+  sel.value = cfg.tablet; const ed=document.getElementById('cfg-edicao'); ed.value = cfg.edicao;
+  sel.onchange = () => { cfg.tablet = sel.value; LS.set('tsa_cfg', cfg); };
+  ed.onchange = () => { cfg.edicao = ed.value.trim().slice(0,60) || 'Tecnoshow Comigo 2027'; ed.value=cfg.edicao; LS.set('tsa_cfg', cfg); };
+  const aviso = document.getElementById('cfg-aviso');
+  if (Base.kind==='supabase'){
+    const w=document.getElementById('cfg-chave-wrap'), ch=document.getElementById('cfg-chave'); w.hidden=false;
+    ch.value = LS.get('tsa_chave',''); ch.onchange = () => LS.set('tsa_chave', ch.value.trim());
+    const sair=document.getElementById('cfg-sair'); sair.hidden=false; sair.onclick = async () => { await Base.sair(); aviso.hidden=false; aviso.textContent='Conta da equipe desconectada deste aparelho.'; };
+  } else if (!Base.kind){
+    aviso.hidden=false; aviso.textContent='Nenhuma base de respostas configurada: só os modos de demonstração funcionam. Veja o LEIAME para ligar o Supabase.';
+  }
+})();
+
+/* ================== ROTEAMENTO ================== */
+const VIEWS = ['inicio','coleta','painel','relatorio'];
+let current = null;
+function route(){
+  const h = (location.hash||'').replace('#','');
+  const demo = h.endsWith('-demo');
+  const base = demo ? h.replace('-demo','') : h;
+  const v = VIEWS.includes(base) ? base : 'inicio';
+  VIEWS.forEach(x => document.getElementById('v-'+x).hidden = x!==v);
+  if (current === h) return; current = h;
+  if (v==='coleta') Coleta.start();
+  if (v==='painel') Painel.start(demo);
+  if (v==='relatorio') Relatorio.start(demo);
+}
+window.addEventListener('hashchange', route);
+const go = h => { location.hash = h; };
+document.getElementById('go-coleta').onclick = () => go('coleta');
+document.getElementById('go-painel').onclick = () => go('painel');
+document.getElementById('go-relatorio').onclick = () => go('relatorio');
+document.getElementById('go-painel-demo').onclick = () => go('painel-demo');
+document.getElementById('go-relatorio-demo').onclick = () => go('relatorio-demo');
+document.getElementById('p-trydemo').onclick = () => go('painel-demo');
+document.getElementById('r-voltar').onclick = () => go('inicio');
+
+/* ================== COLETA (tablet, offline-first) ================== */
+const Coleta = (() => {
+  const st = document.getElementById('k-stage'), prog = document.getElementById('k-prog');
+  let lang='pt', step=-1, ans={}, idle=null, started=false, syncing=false, again=false, pendingTimer=null, tok=0, semEspaco=false;
+  /* Fila local única do aparelho (não depende do número do tablet):
+     {docId: {docId, ed, tab, hora, itens:[...], enviados:n}} — um documento por aparelho por hora. */
+  const FKEY = 'tsa_fila', MAX_DOC = 300;
+  const Q = carregarFila();
+  function carregarFila(){
+    const q = LS.get(FKEY, null) || {};
+    const velhas = [];
+    try{ for (let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if (k && k.startsWith('tsa_q_')) velhas.push(k); } }catch(e){}
+    velhas.forEach(k=>{                                    // migra a fila da versão anterior (uma por número de tablet)
+      const old = LS.get(k,{}) || {};
+      Object.entries(old).forEach(([id,d])=>{ if(!q[id] && d && Array.isArray(d.itens)) q[id] = {docId:id, ed:(d.itens[0]&&d.itens[0].ed)||edSlug(), tab:k.slice(6), hora:d.hora, itens:d.itens, enviados:d.enviados||0}; });
+    });
+    if (velhas.length && LS.set(FKEY,q)) velhas.forEach(k=>{ try{ localStorage.removeItem(k); }catch(e){} });
+    return q;
+  }
+  function persist(){ semEspaco = !LS.set(FKEY, Q); return !semEspaco; }
+  function podar(){                                        // tira da fila documentos já enviados de horas passadas
+    const h = new Date(Date.now()-3600e3).toISOString().slice(0,13).replace(/[-T:]/g,'');
+    Object.keys(Q).forEach(id=>{ const d=Q[id]; if ((d.enviados||0)>=d.itens.length && d.hora < h) delete Q[id]; });
+  }
+  function pendCount(){ return Object.values(Q).reduce((s,d)=>s+(d.itens.length-(d.enviados||0)),0); }
+  function setNet(ok, msg){
+    document.getElementById('k-dot').classList.toggle('off', !ok || semEspaco);
+    document.getElementById('k-net').textContent = msg + (semEspaco ? ' · memória do tablet cheia' : '');
+    document.getElementById('k-pend').textContent = pendCount()+' na fila';
+  }
+  const MSG = {sem_base:'sem base · guardando aqui', sem_chave:'falta a chave da coleta · guardando aqui', chave_invalida:'chave da coleta recusada · guardando aqui', edicao_fechada:'edição não cadastrada na base · guardando aqui'};
+  async function sync(){
+    if (syncing){ again=true; return; }
+    syncing = true;
+    try{
+      do{
+        again=false; let falha=null;
+        for (const d of Object.values(Q)){
+          if ((d.enviados||0) >= d.itens.length) continue;
+          try{ await Base.enviar(d); }
+          catch(e){ falha=e; }
+          finally{ persist(); }
+          if (falha && falha.code!=='rede') break;          // erro de configuração: não adianta tentar os outros documentos
+        }
+        podar(); persist();
+        setNet(!falha, falha ? (MSG[falha.code] || 'sem internet · guardando aqui') : 'online');
+      } while (again);
+    } finally { syncing = false; }
+  }
+  function scheduleSync(){ clearInterval(pendingTimer); pendingTimer = setInterval(()=>{ if (pendCount()>0) sync(); }, 20000); }
+  window.addEventListener('online', ()=>{ if (pendCount()>0) sync(); });
+  window.addEventListener('offline', ()=>setNet(false,'sem internet · guardando aqui'));
+  function store(r){
+    const hora = new Date(r.t).toISOString().slice(0,13).replace(/[-T:]/g,'');
+    const base = r.ed+'_'+r.tab+'_'+DEV+'_'+hora; let id = base, k = 2;
+    while (Q[id] && Q[id].itens.length >= MAX_DOC) id = base+'_'+(k++);   // documentos da base têm limite de tamanho
+    Q[id] = Q[id] || {docId:id, ed:r.ed, tab:r.tab, hora, itens:[], enviados:0};
+    Q[id].itens.push(r);
+    persist();                                            // se o localStorage estiver cheio, a resposta segue na memória e é enviada mesmo assim
+    sync();
+  }
+  function resetIdle(){ clearTimeout(idle); idle = setTimeout(()=>{ if(step>=0) welcome(); }, 75000); }
+  const L = () => T[lang];
+  function el(html){ const d=document.createElement('div'); d.className='kcard'; d.innerHTML=html; st.replaceChildren(d); st.scrollTop=0; return d; }
+  function welcome(){
+    tok++; step=-1; ans={}; prog.style.width='0%';
+    const t=L();
+    const c = el(`<div class="langs">${['pt','en','es'].map(k=>`<button class="lang ${k===lang?'sel':''}" data-l="${k}">${T[k].lang}</button>`).join('')}</div>
+      <h2 class="hero-k">${t.welcome[0]} <span>${t.welcome[1]}</span></h2>
+      <p class="qhelp">${t.welcomeSub}</p><p class="consent">${t.consent}</p>
+      <div class="knav"><span></span><button class="btn" id="k-start">${t.start}</button></div>`);
+    c.querySelectorAll('.lang').forEach(b=>b.onclick=()=>{ lang=b.dataset.l; welcome(); });
+    c.querySelector('#k-start').onclick=()=>{ ans={lang, t0:Date.now()}; show(0); };
+  }
+  function nav(canNext, onNext, label){
+    return `<div class="knav"><button class="btn sec" id="k-back">${L().back}</button><button class="btn" id="k-next" ${canNext?'':'disabled'}>${label||L().next}</button></div>`;
+  }
+  function wireNav(c, onNext){ c.querySelector('#k-back').onclick=()=> step===0 ? welcome() : show(step-1); const n=c.querySelector('#k-next'); if(n) n.onclick=onNext; }
+  function show(i){
+    resetIdle(); step=i; const meu = ++tok; prog.style.width = (100*i/QS.length)+'%';
+    const q=QS[i], t=L(); const head=`<div class="qnum">${i+1} / ${QS.length}</div><h2 class="qtitle">${t.q[q.id]}</h2>${t.help[q.id]?`<p class="qhelp">${t.help[q.id]}</p>`:''}`;
+    const adv = () => setTimeout(()=>{ if (meu===tok) show(i+1); }, 220);   // não avança se a pessoa já voltou, ou se a tela reiniciou
+    if (q.type==='single'){
+      const c=el(head+`<div class="opts">${q.opts.map(o=>`<button class="opt ${ans[q.id]===o?'sel':''}" data-o="${o}">${t.o[o]}</button>`).join('')}</div>`+nav(!!ans[q.id]));
+      c.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ ans[q.id]=b.dataset.o; c.querySelectorAll('.opt').forEach(x=>x.classList.toggle('sel',x===b)); c.querySelector('#k-next').disabled=false; adv(); });
+      wireNav(c, ()=>show(i+1));
+    } else if (q.type==='multi'){
+      ans[q.id] = ans[q.id] || [];
+      const c=el(head+`<div class="opts">${q.opts.map(o=>`<button class="opt ${ans[q.id].includes(o)?'sel':''}" data-o="${o}"><span class="chk"></span>${t.o[o]}</button>`).join('')}</div>`+nav(ans[q.id].length>0));
+      c.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ resetIdle(); const a=ans[q.id], o=b.dataset.o; const k=a.indexOf(o); k>=0?a.splice(k,1):a.push(o); b.classList.toggle('sel'); c.querySelector('#k-next').disabled=!a.length; });
+      wireNav(c, ()=>show(i+1));
+    } else if (q.type==='rating'){
+      ans.av = ans.av || {};
+      const c=el(head+`<div class="rating">${q.items.map(it=>`<div class="rrow"><span>${t.av[it]}</span><div class="stars">${[1,2,3,4,5].map(v=>`<button class="star ${ans.av[it]===v?'sel':''}" data-i="${it}" data-v="${v}" aria-label="${t.av[it]} ${v}">${v}</button>`).join('')}</div></div>`).join('')}</div>`+nav(q.items.every(it=>ans.av[it])));
+      c.querySelectorAll('.star').forEach(b=>b.onclick=()=>{ resetIdle(); ans.av[b.dataset.i]=+b.dataset.v; c.querySelectorAll(`.star[data-i="${b.dataset.i}"]`).forEach(x=>x.classList.toggle('sel', +x.dataset.v<=+b.dataset.v)); c.querySelector('#k-next').disabled=!q.items.every(it=>ans.av[it]); });
+      c.querySelectorAll('.rrow').forEach(r=>{ const sel=r.querySelector('.star.sel'); if(sel){ const v=+sel.dataset.v; r.querySelectorAll('.star').forEach(x=>x.classList.toggle('sel',+x.dataset.v<=v)); }});
+      wireNav(c, ()=>show(i+1));
+    } else if (q.type==='nps'){
+      const c=el(head+`<div class="nps">${[...Array(11).keys()].map(v=>`<button class="${ans.nps===v?'sel':''}" data-v="${v}">${v}</button>`).join('')}</div>`+nav(ans.nps!=null));
+      c.querySelectorAll('.nps button').forEach(b=>b.onclick=()=>{ ans.nps=+b.dataset.v; c.querySelectorAll('.nps button').forEach(x=>x.classList.toggle('sel',x===b)); c.querySelector('#k-next').disabled=false; adv(); });
+      wireNav(c, ()=>show(i+1));
+    } else if (q.type==='text'){
+      const c=el(head+`<textarea class="search" id="k-com" maxlength="400" aria-label="${t.q.com}"></textarea>`+nav(true, null, t.send));
+      const ta=c.querySelector('#k-com'); ta.value=ans.com||'';    // value, não innerHTML: o texto digitado nunca vira HTML
+      ta.oninput=()=>{ resetIdle(); ans.com=ta.value.slice(0,400); };
+      wireNav(c, finish);
+    } else if (q.type==='origem'){
+      origem(head);
+    }
+  }
+  function origem(head){
+    const t=L(); ans.br = ans.br==null ? 1 : ans.br;
+    const c=el(head+`<div class="seg"><button class="lang ${ans.br?'sel':''}" data-b="1">${t.br}</button><button class="lang ${!ans.br?'sel':''}" data-b="0">${t.abroad}</button></div>
+      <input class="search" id="k-q" autocomplete="off" placeholder="${ans.br?t.typeCity:t.typeCountry}" aria-label="${ans.br?t.typeCity:t.typeCountry}">
+      <div class="results" id="k-res"></div>`+nav(!!(ans.br?ans.mun:ans.pais)));
+    const inp=c.querySelector('#k-q'), res=c.querySelector('#k-res');
+    c.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>{ ans.br=+b.dataset.b; ans.mun=null; ans.pais=null; origem(head); });
+    const render=()=>{
+      resetIdle(); const s=norm(inp.value.trim()); let items=[];
+      if (ans.br){
+        if (s.length>=2){ items = MUN_IDX.filter(x=>x.k.includes(s)).sort((a,b)=>(b.k.startsWith(s)-a.k.startsWith(s))||(b.go-a.go)||a.k.localeCompare(b.k)).slice(0,7).map(x=>({id:x.m[4], lbl:x.m[0], sub:x.m[1]})); }
+        else if (ans.mun){ const m=MUN.get(ans.mun); items=[{id:m[4],lbl:m[0],sub:m[1]}]; }
+      } else {
+        const li = lang==='es'?3:lang==='en'?4:2;
+        if (s.length>=1){ items = PAIS_IDX.filter(x=>x.k.includes(s)).slice(0,7).map(x=>({id:x.c[0], lbl:x.c[li], sub:x.c[0]})); }
+        else if (ans.pais){ const p=PAIS.get(ans.pais); items=[{id:p[0],lbl:p[li],sub:p[0]}]; }
+      }
+      res.innerHTML = items.length ? items.map(x=>`<button class="res ${(ans.br?ans.mun:ans.pais)==x.id?'sel':''}" data-id="${esc(x.id)}">${esc(x.lbl)}<em>${esc(x.sub)}</em></button>`).join('') : (s.length>=2?`<p class="qhelp">${t.noRes}</p>`:'');
+      res.querySelectorAll('.res').forEach(b=>b.onclick=()=>{ if(ans.br) ans.mun=+b.dataset.id; else ans.pais=b.dataset.id; show(1); });
+    };
+    inp.oninput=render; render(); setTimeout(()=>inp.focus(),50);
+    wireNav(c, ()=>show(1));
+  }
+  function finish(){
+    if (step<0) return;                                   // evita envio duplo
+    const r = {id: cfg.tablet+'-'+Date.now().toString(36)+'-'+aleatorio(8), t: Date.now(), tab: cfg.tablet, ed: edSlug(),
+      lang: ans.lang, br: ans.br?1:0, mun: ans.br?ans.mun:null, pais: ans.br?'BR':ans.pais, perfil: ans.perfil, idade: ans.idade, gen: ans.gen, prim: ans.prim,
+      dias: ans.dias, pern: ans.pern, obj: ans.obj||[], av: ans.av||{}, tecn: ans.tecn, neg: ans.neg, gasto: ans.gasto, nps: ans.nps, com: (ans.com||'').trim().slice(0,400), dur: Math.round((Date.now()-ans.t0)/1000)};
+    step=-1; tok++;
+    store(r);
+    const o = origemDe(r); const t=L(); prog.style.width='100%';
+    const km = o ? Math.round(o.km) : 0;
+    el(`<div class="thanks kcard"><h2 class="hero-k">${t.thanks}</h2>${km>15?`<div class="km tabnum">${km.toLocaleString(lang==='en'?'en-US':'pt-BR')}</div><p class="qhelp">${t.thanksKm}</p>`:`<p class="qhelp">${t.thanksLocal}</p>`}<p class="qhelp">${t.thanksSub}</p></div>`);
+    clearTimeout(idle); idle=setTimeout(welcome, 7000);
+  }
+  return { start(){
+    document.getElementById('k-tab').textContent = cfg.tablet==='PAINEL'?'Sem número de tablet':('Tablet '+(+cfg.tablet.slice(1)));
+    if(!started){ started=true; scheduleSync(); manterTelaLigada(); try{ navigator.storage && navigator.storage.persist && navigator.storage.persist(); }catch(e){} }
+    setNet(navigator.onLine, navigator.onLine?'online':'sem internet · guardando aqui'); welcome(); sync();
+  } };
+})();
+
+/* ================== ANÁLISE ================== */
+function origemDe(r){
+  if (r.br && r.mun && MUN.has(r.mun)){ const m=MUN.get(r.mun); return {key:'m'+m[4], lat:m[2], lon:m[3], nome:m[0]+' ('+m[1]+')', uf:m[1], pais:'BR', km:hav(FAIR.lat,FAIR.lon,m[2],m[3]), local: m[4]===FAIR.code}; }
+  if (!r.br && r.pais && PAIS.has(r.pais)){ const p=PAIS.get(r.pais); return {key:'p'+p[0], lat:p[5], lon:p[6], nome:p[2], uf:null, pais:p[0], km:hav(FAIR.lat,FAIR.lon,p[5],p[6]), local:false}; }
+  return null;
+}
+const quantil = (arr,q) => { if(!arr.length) return 0; const a=[...arr].sort((x,y)=>x-y); const p=(a.length-1)*q, lo=Math.floor(p), hi=Math.ceil(p); return a[lo]+(a[hi]-a[lo])*(p-lo); };
+const BANDAS = [[0,1,'Rio Verde'],[1,100,'até 100 km'],[100,300,'100–300 km'],[300,600,'300–600 km'],[600,1000,'600–1.000 km'],[1000,3000,'1–3 mil km'],[3000,1e9,'+3 mil km']];
+function analisar(rs){
+  const n = rs.length, os = rs.map(origemDe), ok = os.filter(Boolean);
+  const kms = ok.map(o=>o.local?0:o.km);
+  const mun = new Set(ok.filter(o=>o.pais==='BR').map(o=>o.key)), ufs = new Set(ok.filter(o=>o.uf).map(o=>o.uf)), paises = new Set(ok.filter(o=>o.pais!=='BR').map(o=>o.pais));
+  const fora = ok.filter(o=>!o.local).length;
+  const npsv = rs.map(r=>r.nps).filter(v=>v!=null);
+  const prom = npsv.filter(v=>v>=9).length, det = npsv.filter(v=>v<=6).length, neu = npsv.length-prom-det;
+  const nps = npsv.length ? Math.round(100*(prom-det)/npsv.length) : null;
+  const dims = QS.find(q=>q.id==='av').items;
+  const sat = dims.map(d=>{ const v=rs.map(r=>r.av&&r.av[d]).filter(Boolean); return {d, media: v.length? v.reduce((a,b)=>a+b,0)/v.length : 0, top2: v.length? v.filter(x=>x>=4).length/v.length:0, n:v.length}; });
+  const cont = (campo, opts) => opts.map(o=>({o, n: rs.filter(r=>Array.isArray(r[campo])?r[campo].includes(o):r[campo]===o).length}));
+  const bandas = BANDAS.map(([a,b,l])=>({l, n: ok.filter(o=> (o.local?0:o.km)>=a && (o.local?0:o.km)<b && (l!=='Rio Verde' || o.local) && !(l!=='Rio Verde' && o.local)).length}));
+  const porOrig = new Map(); ok.forEach(o=>{ const x=porOrig.get(o.key)||{...o, n:0}; x.n++; porOrig.set(o.key,x); });
+  const origens = [...porOrig.values()].sort((a,b)=>b.n-a.n);
+  const porUF = d3.rollups(ok.filter(o=>o.uf), v=>v.length, o=>o.uf).sort((a,b)=>b[1]-a[1]);
+  const kmsFora = ok.filter(o=>!o.local).map(o=>o.km);
+  const perfDist = QS[1].opts.map(p=>{ const v=rs.map((r,i)=>[r,os[i]]).filter(([r,o])=>r.perfil===p && o).map(([r,o])=>o.local?0:o.km); return {p, n:v.length, med: quantil(v,.5)}; });
+  const gastoFora = rs.map((r,i)=>[r,os[i]]).filter(([r,o])=>o && !o.local && r.gasto).map(([r])=>GASTO_MID[r.gasto]);
+  const gastoLocal = rs.map((r,i)=>[r,os[i]]).filter(([r,o])=>o && o.local && r.gasto).map(([r])=>GASTO_MID[r.gasto]);
+  const pern = cont('pern',['pnao','prv','pout']);
+  const negs = rs.filter(r=>r.neg && r.neg!=='n0').length;
+  const negVal = rs.reduce((s,r)=>s+(NEG_MID[r.neg]||0),0);
+  return {n, nOk: ok.length, kms, totalKm: d3.sum(kmsFora), med: quantil(kms,.5), r50: quantil(kmsFora,.5), r80: quantil(kmsFora,.8), r95: quantil(kmsFora,.95),
+    nMun: mun.size, nUF: ufs.size, nPais: paises.size, fora, pFora: ok.length? fora/ok.length:0,
+    nps, prom, neu, det, nNps: npsv.length, sat, origens, porUF, bandas, perfDist,
+    perfil: cont('perfil', QS[1].opts), idade: cont('idade', QS[2].opts), gen: cont('gen', QS[3].opts), prim: cont('prim',['s','nn']), dias: cont('dias', QS[5].opts),
+    pern, obj: cont('obj', QS[7].opts), tecn: cont('tecn',['ts','tav','tn']), neg: cont('neg', QS[10].opts), gasto: cont('gasto', QS[11].opts),
+    gastoMedFora: gastoFora.length? d3.mean(gastoFora):0, gastoMedLocal: gastoLocal.length? d3.mean(gastoLocal):0, nGastoFora: gastoFora.length,
+    negs, negVal, langs: cont('lang',['pt','en','es']), coments: rs.filter(r=>r.com).map(r=>r.com),
+    porHora: d3.rollups(rs, v=>v.length, r=>{ const d=new Date(r.t); d.setMinutes(0,0,0); return +d; }).sort((a,b)=>a[0]-b[0]),
+    porDia: d3.rollups(rs, v=>v.length, r=>diaLocal(r.t)).sort((a,b)=>a[0].localeCompare(b[0])) };
+}
+
+/* Dados vindos da base são tratados como não confiáveis: só passam valores do questionário. */
+const OPC = Object.fromEntries(QS.filter(q=>q.opts).map(q=>[q.id, q.opts]));
+const AV_ITENS = QS.find(q=>q.id==='av').items;
+function limpar(x){
+  if (!x || typeof x!=='object') return null;
+  const t = +x.t; const id = typeof x.id==='string' && /^[A-Za-z0-9-]{4,80}$/.test(x.id) ? x.id : null;
+  if (!id || !isFinite(t) || t<=0) return null;
+  const um = (campo) => OPC[campo].includes(x[campo]) ? x[campo] : null;
+  const br = x.br ? 1 : 0;
+  const av = {}; if (x.av && typeof x.av==='object') AV_ITENS.forEach(k=>{ const v=x.av[k]; if (Number.isInteger(v) && v>=1 && v<=5) av[k]=v; });
+  return {id, t, tab: typeof x.tab==='string' && /^(T\d{2}|PAINEL)$/.test(x.tab) ? x.tab : '', ed: typeof x.ed==='string' ? x.ed.slice(0,60) : '',
+    lang: ['pt','en','es'].includes(x.lang) ? x.lang : 'pt', br,
+    mun: br && Number.isInteger(x.mun) && MUN.has(x.mun) ? x.mun : null,
+    pais: br ? 'BR' : (typeof x.pais==='string' && PAIS.has(x.pais) ? x.pais : null),
+    perfil:um('perfil'), idade:um('idade'), gen:um('gen'), prim:um('prim'), dias:um('dias'), pern:um('pern'),
+    obj: Array.isArray(x.obj) ? [...new Set(x.obj.filter(o=>OPC.obj.includes(o)))] : [], av,
+    tecn:um('tecn'), neg:um('neg'), gasto:um('gasto'),
+    nps: Number.isInteger(x.nps) && x.nps>=0 && x.nps<=10 ? x.nps : null,
+    com: typeof x.com==='string' ? x.com.trim().slice(0,400) : '',
+    dur: Number.isFinite(x.dur) ? Math.max(0, Math.min(86400, Math.round(x.dur))) : null};
+}
+/* Limpa, tira repetidas (o mesmo id enviado duas vezes) e ordena por horário. */
+function prepararDados(lista){
+  const m = new Map(); (lista||[]).forEach(x=>{ const r=limpar(x); if (r && !m.has(r.id)) m.set(r.id, r); });
+  return [...m.values()].sort((a,b)=>a.t-b.t);
+}
+
+/* ================== DEMONSTRAÇÃO ================== */
+const Demo = (() => {
+  const pick = (arr, w) => { const s=w.reduce((a,b)=>a+b,0); let x=Math.random()*s; for(let i=0;i<arr.length;i++){ x-=w[i]; if(x<=0) return arr[i]; } return arr[arr.length-1]; };
+  const perto = GEO.mun.filter(m=>m[1]==='GO' && hav(FAIR.lat,FAIR.lon,m[2],m[3])<250).map(m=>m[4]);
+  const go = GEO.mun.filter(m=>m[1]==='GO').map(m=>m[4]);
+  const vizUF = GEO.mun.filter(m=>['MT','MS','MG','DF','TO'].includes(m[1])).map(m=>m[4]);
+  const resto = GEO.mun.filter(m=>!['GO','MT','MS','MG','DF','TO'].includes(m[1])).map(m=>m[4]);
+  const paises = ['PY','AR','BO','US','UY','CN','DE','NL','CO','PE'];
+  function uma(t){
+    const z = Math.random(); let br=1, mun=null, pais='BR';
+    if (z<.32) mun=FAIR.code; else if (z<.62) mun=perto[Math.floor(Math.random()*perto.length)]; else if (z<.74) mun=go[Math.floor(Math.random()*go.length)];
+    else if (z<.9) mun=vizUF[Math.floor(Math.random()*vizUF.length)]; else if (z<.975) mun=resto[Math.floor(Math.random()*resto.length)]; else { br=0; pais=paises[Math.floor(Math.random()*paises.length)]; }
+    const perfil = pick(QS[1].opts,[16,14,9,15,10,12,5,19]);
+    const nps = Math.max(0,Math.min(10, Math.round(8.6 + (Math.random()-.5)*4.2 + (Math.random()<.08?-4:0))));
+    const av = {}; QS[8].items.forEach((d,i)=>av[d]=Math.max(1,Math.min(5, Math.round(4.1 + [.3,-.4,.2,.4,-.6,.3][i] + (Math.random()-.5)*2))));
+    return {id:'demo-'+t+'-'+Math.random().toString(36).slice(2,7), t, tab:'T0'+(1+Math.floor(Math.random()*9)), ed:'demo', lang: br? 'pt' : pick(['en','es','pt'],[5,4,1]), br, mun, pais,
+      perfil, idade: pick(QS[2].opts,[2,12,24,26,26,10]), gen: pick(['f','m','o','n'],[30,64,1,5]), prim: pick(['s','nn'],[28,72]), dias: pick(QS[5].opts,[52,26,12,4,6]),
+      pern: mun===FAIR.code? 'pnao' : pick(['pnao','prv','pout'],[55,30,15]), obj: QS[7].opts.filter((o,i)=>Math.random()<[.7,.25,.2,.3,.35,.3][i]), av,
+      tecn: pick(['ts','tav','tn'],[34,46,20]), neg: pick(QS[10].opts,[62,18,12,5,3]), gasto: mun===FAIR.code? pick(QS[11].opts,[20,40,25,10,3,1,1]) : pick(QS[11].opts,[3,14,28,26,15,9,5]),
+      nps, com: Math.random()<.12 ? pick(['Mais sombra e bebedouros nas áreas de demonstração','Ótima feira, voltarei','Faltou sinalização para o estacionamento','Palestras excelentes sobre bioinsumos','Preços das máquinas ainda altos para pequeno produtor','Mais espaço para agricultura familiar'],[1,1,1,1,1,1]) : '', dur: 140+Math.floor(Math.random()*120)};
+  }
+  function base(n){ const now=Date.now(), arr=[]; for(let i=0;i<n;i++) arr.push(uma(now - (n-i)*45000 - Math.random()*20000)); return arr; }
+  return {uma, base};
+})();
+
+
+/* ================== PAINEL ================== */
+const Painel = (() => {
+  const canvas = document.getElementById('map'), ctx = canvas.getContext('2d');
+  let W=0,H=0,dpr=1, view='br', auto=true, autoT=0, data=[], A=null, arcs=new Map(), anims=[], started=false, demoTimer=null, unsub=null, stars=[], run=0;
+  const land = GEO.world, borders = GEO.world, brMesh = GEO.brUF, brOutline = GEO.brOut;
+  const sphere = {type:'Sphere'};
+  const projs = {};
+  function resize(){
+    const r = canvas.getBoundingClientRect(); dpr = Math.min(2, window.devicePixelRatio||1);
+    W = Math.max(300, r.width); H = Math.max(260, r.height); canvas.width = W*dpr; canvas.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+    const pad = 28;
+    projs.world = d3.geoNaturalEarth1().fitExtent([[pad,pad+30],[W-pad,H-pad-40]], sphere);
+    projs.br = d3.geoMercator().fitExtent([[pad,pad+34],[W-pad,H-pad-56]], brOutline);
+    projs.reg = d3.geoMercator().fitExtent([[pad,pad+34],[W-pad,H-pad-56]], d3.geoCircle().center([FAIR.lon,FAIR.lat]).radius(7.2)());
+    stars = d3.range(160).map(()=>({x:Math.random()*W, y:Math.random()*H, r:Math.random()*1.3+.2, a:Math.random()*.7+.15, s:Math.random()*2+1}));
+  }
+  function setView(v){ if (v==='auto'){ auto=true; } else { auto=false; view=v; } document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on', c.dataset.vw===(auto?'auto':view))); }
+  document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>setView(c.dataset.vw));
+  function ctrl(p0,p1){ const mx=(p0[0]+p1[0])/2, my=(p0[1]+p1[1])/2, dx=p1[0]-p0[0], dy=p1[1]-p0[1], d=Math.hypot(dx,dy)||1; const k=Math.min(.42, 60/d + .18); let nx=-dy/d, ny=dx/d; if (ny>0){ nx=-nx; ny=-ny; } return [mx+nx*d*k, my+ny*d*k]; }
+  function bez(p0,c,p1,t){ const u=1-t; return [u*u*p0[0]+2*u*t*c[0]+t*t*p1[0], u*u*p0[1]+2*u*t*c[1]+t*t*p1[1]]; }
+  function draw(ts){
+    requestAnimationFrame(draw);
+    if (document.getElementById('v-painel').hidden) return;
+    if (auto && ts - autoT > 22000){ autoT = ts; view = view==='br' ? 'reg' : view==='reg' ? 'world' : 'br'; document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on', c.dataset.vw==='auto')); }
+    const P = projs[view]; if (!P) return; const path = d3.geoPath(P, ctx);
+    ctx.clearRect(0,0,W,H);
+    // céu e grade
+    ctx.save(); ctx.strokeStyle='rgba(60,110,210,.12)'; ctx.lineWidth=1;
+    for (let x=0;x<W;x+=48){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+    for (let y=0;y<H;y+=48){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+    stars.forEach(s=>{ ctx.globalAlpha = s.a*(.6+.4*Math.sin(ts/1000*s.s+s.x)); ctx.fillStyle='#bfe6ff'; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,7); ctx.fill(); });
+    ctx.restore();
+    // terra
+    ctx.save();
+    if (view==='world'){
+      ctx.beginPath(); path(land); ctx.fillStyle='rgba(23,74,170,.55)'; ctx.fill();
+      ctx.beginPath(); path(borders); ctx.strokeStyle='rgba(120,190,255,.35)'; ctx.lineWidth=.7; ctx.stroke();
+      ctx.beginPath(); path(brOutline); ctx.fillStyle='rgba(40,120,235,.65)'; ctx.fill();
+    } else {
+      ctx.beginPath(); path(land); ctx.fillStyle='rgba(16,50,120,.35)'; ctx.fill();
+      ctx.shadowColor='rgba(95,208,255,.55)'; ctx.shadowBlur=28;
+      ctx.beginPath(); path(brOutline); const g=ctx.createRadialGradient(...P([FAIR.lon,FAIR.lat]),10,...P([FAIR.lon,FAIR.lat]),Math.max(W,H)*.7); g.addColorStop(0,'rgba(60,160,255,.95)'); g.addColorStop(1,'rgba(18,70,170,.75)'); ctx.fillStyle=g; ctx.fill();
+      ctx.shadowBlur=0; ctx.beginPath(); path(brMesh); ctx.strokeStyle='rgba(10,30,80,.75)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.beginPath(); path(brOutline); ctx.strokeStyle='rgba(158,240,255,.6)'; ctx.lineWidth=1.2; ctx.stroke();
+    }
+    ctx.restore();
+    // anéis de atração (50% e 80% dos visitantes de fora)
+    if (A && A.fora>=5 && view!=='world'){
+      [[A.r50,'50%'],[A.r80,'80%']].forEach(([r,l],i)=>{ if(!(r>0)) return; ctx.save(); ctx.setLineDash([6,6]); ctx.lineWidth=1.4; ctx.strokeStyle= i? 'rgba(255,200,97,.55)':'rgba(158,240,255,.7)';
+        ctx.beginPath(); path(d3.geoCircle().center([FAIR.lon,FAIR.lat]).radius(r/111.2)()); ctx.stroke(); ctx.restore(); });
+    }
+    // arcos
+    const F = P([FAIR.lon,FAIR.lat]);
+    ctx.save(); ctx.globalCompositeOperation='lighter';
+    const maxN = Math.max(1,...[...arcs.values()].map(a=>a.n));
+    arcs.forEach(a=>{
+      if (a.local) return; const p0=P([a.lon,a.lat]); if(!p0) return;
+      const c=ctrl(p0,F); const w = .6 + 2.6*Math.sqrt(a.n/maxN);
+      const gr = ctx.createLinearGradient(p0[0],p0[1],F[0],F[1]); gr.addColorStop(0,'rgba(95,208,255,.08)'); gr.addColorStop(1,'rgba(158,240,255,.55)');
+      ctx.strokeStyle=gr; ctx.lineWidth=w; ctx.beginPath(); ctx.moveTo(p0[0],p0[1]); ctx.quadraticCurveTo(c[0],c[1],F[0],F[1]); ctx.stroke();
+      const t = ((ts/2600 + a.ph) % 1); const q=bez(p0,c,F,t); ctx.fillStyle='rgba(200,250,255,.85)'; ctx.beginPath(); ctx.arc(q[0],q[1],1.3+w*.35,0,7); ctx.fill();
+      const rg=ctx.createRadialGradient(p0[0],p0[1],0,p0[0],p0[1],5+w*2.2); rg.addColorStop(0,'rgba(200,245,255,.95)'); rg.addColorStop(1,'rgba(95,208,255,0)'); ctx.fillStyle=rg; ctx.beginPath(); ctx.arc(p0[0],p0[1],5+w*2.2,0,7); ctx.fill();
+    });
+    // chegadas novas: arco desenhando-se
+    anims = anims.filter(a=>ts - a.t0 < 3200);
+    anims.forEach(a=>{
+      const p0=P([a.lon,a.lat]); if(!p0) return; const c=ctrl(p0,F); const k=Math.min(1,(ts-a.t0)/1500), fade = 1-Math.max(0,(ts-a.t0-1500)/1700);
+      ctx.strokeStyle=`rgba(255,240,190,${.95*fade})`; ctx.lineWidth=2.6; ctx.beginPath(); ctx.moveTo(p0[0],p0[1]);
+      for (let s=1;s<=30;s++){ const q=bez(p0,c,F,k*s/30); ctx.lineTo(q[0],q[1]); } ctx.stroke();
+      const h=bez(p0,c,F,k); const hg=ctx.createRadialGradient(h[0],h[1],0,h[0],h[1],16); hg.addColorStop(0,`rgba(255,250,220,${fade})`); hg.addColorStop(1,'rgba(255,200,97,0)'); ctx.fillStyle=hg; ctx.beginPath(); ctx.arc(h[0],h[1],16,0,7); ctx.fill();
+      const rr = 6 + 40*((ts-a.t0)/3200); ctx.strokeStyle=`rgba(255,200,97,${.8*fade})`; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(p0[0],p0[1],rr,0,7); ctx.stroke();
+      ctx.globalCompositeOperation='source-over'; ctx.fillStyle=`rgba(255,240,200,${fade})`; ctx.font='600 13px "IBM Plex Mono",monospace'; ctx.fillText(a.nome, p0[0]+10, p0[1]-10); ctx.globalCompositeOperation='lighter';
+    });
+    // a feira
+    const pul = 10 + 6*Math.sin(ts/380); const fg=ctx.createRadialGradient(F[0],F[1],0,F[0],F[1],38+pul); fg.addColorStop(0,'rgba(255,255,255,1)'); fg.addColorStop(.18,'rgba(158,240,255,.95)'); fg.addColorStop(1,'rgba(95,208,255,0)');
+    ctx.fillStyle=fg; ctx.beginPath(); ctx.arc(F[0],F[1],38+pul,0,7); ctx.fill();
+    ctx.restore();
+    ctx.fillStyle='#e7f1ff'; ctx.font='700 15px Saira, "Arial Narrow", sans-serif'; ctx.fillText('TECNOSHOW · RIO VERDE', F[0]+26, F[1]+44);
+    if (A && A.fora>=5 && view!=='world'){ ctx.font='500 11px "IBM Plex Mono",monospace'; ctx.fillStyle='rgba(158,240,255,.9)'; const pr=P([FAIR.lon, FAIR.lat - A.r50/111.2]); if(pr) ctx.fillText('50% · '+fmt(A.r50)+' km', pr[0]+6, pr[1]+14); ctx.fillStyle='rgba(255,200,97,.9)'; const pr2=P([FAIR.lon, FAIR.lat - A.r80/111.2]); if(pr2) ctx.fillText('80% · '+fmt(A.r80)+' km', pr2[0]+6, pr2[1]+14); }
+  }
+  const fmt = v => Math.round(v).toLocaleString('pt-BR');
+  function arcsFrom(rs){ arcs = new Map(); rs.forEach(r=>{ const o=origemDe(r); if(!o) return; const a=arcs.get(o.key)||{...o, n:0, ph:Math.random()}; a.n++; arcs.set(o.key,a); }); }
+  function chegou(r, animar=true){ const o=origemDe(r); if (!o) return; const a=arcs.get(o.key)||{...o,n:0,ph:Math.random()}; a.n++; arcs.set(o.key,a); if(!animar) return; if(!o.local) anims.push({...o, t0:performance.now()}); tick(o, r); }
+  function tick(o, r){
+    const tk=document.getElementById('p-ticker'); const s=document.createElement('span'); s.className='new';
+    const hr=new Date(r.t).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    s.innerHTML = `${esc(hr)} · <b>${esc(o.nome)}</b> ${o.local?'· morador':'→ '+fmt(o.km)+' km'} · ${esc(PERFIL_PT[r.perfil]||'')}${Number.isInteger(r.nps)?' · nota '+r.nps:''}`;
+    tk.prepend(s); while (tk.children.length>14) tk.lastChild.remove();
+    setTimeout(()=>s.classList.remove('new'), 4000);
+  }
+  function render(){
+    A = analisar(data);
+    document.getElementById('p-empty').hidden = data.length>0;
+    const set=(id,v)=>document.getElementById(id).textContent=v;
+    set('k-resp', fmt(A.n)); set('k-mun', fmt(A.nMun)); set('k-uf', fmt(A.nUF)); set('k-pais', fmt(A.nPais)); set('k-med', fmt(A.med)); set('k-fora', Math.round(100*A.pFora)+'%');
+    document.getElementById('p-km').innerHTML = fmt(A.totalKm)+' km<small>percorridos pelos visitantes até a feira (ida)</small>';
+    document.getElementById('p-rings').innerHTML = A.fora>=5 ? `Bacia de atração<br>50% dos visitantes de fora vêm de até ${fmt(A.r50)} km<br>80% vêm de até ${fmt(A.r80)} km` : '';
+    gauge(A); donut(A); barsSat(A); barsDist(A); top(A); hora(A);
+  }
+  function gauge(A){
+    const s=document.getElementById('g-nps'); const v=A.nps==null?0:A.nps; const ang = Math.PI*(1-(v+100)/200);
+    const arc = d3.arc().innerRadius(58).outerRadius(74);
+    const seg = [[-100,0,'#ff6b7d'],[0,50,'#ffb347'],[50,75,'#5fd0ff'],[75,100,'#4ee0a0']];
+    const toA = x => -Math.PI/2 + Math.PI*(x+100)/200;
+    s.innerHTML = `<g transform="translate(100,80)">${seg.map(([a,b,c])=>`<path d="${arc({startAngle:toA(a),endAngle:toA(b)})}" fill="${c}" opacity=".9"/>`).join('')}
+      <line x1="0" y1="0" x2="${Math.cos(ang)*50}" y2="${-Math.sin(ang)*50}" stroke="#e7f1ff" stroke-width="3" stroke-linecap="round"/>
+      <circle r="5" fill="#e7f1ff"/>
+      <text x="-66" y="14" text-anchor="middle" fill="#8fa6d1" style="font:9px 'IBM Plex Mono',monospace">−100</text><text x="66" y="14" text-anchor="middle" fill="#8fa6d1" style="font:9px 'IBM Plex Mono',monospace">100</text></g>
+      <text x="100" y="106" text-anchor="middle" fill="#e7f1ff" style="font:800 24px Saira,sans-serif">${A.nps==null?'–':A.nps}</text>
+      <text x="100" y="119" text-anchor="middle" fill="#8fa6d1" style="font:9px 'IBM Plex Mono',monospace">${A.nNps? Math.round(100*A.prom/A.nNps)+'% promotores · '+Math.round(100*A.det/A.nNps)+'% detratores':'sem notas ainda'}</text>`;
+  }
+  function donut(A){
+    const s=document.getElementById('g-perfil'); const grp = [['Produtores',['pp','pm','pg'],'#5fd0ff'],['Técnicos',['tec'],'#4ee0a0'],['Expositores',['exp','inv'],'#ffc861'],['Estudantes',['est'],'#b48cff'],['Visitantes',['vis'],'#7f93bd']];
+    const vals = grp.map(([l,ks,c])=>({l,c,v:d3.sum(A.perfil.filter(x=>ks.includes(x.o)),x=>x.n)}));
+    const tot = d3.sum(vals,x=>x.v)||1; const pie=d3.pie().sort(null).value(d=>d.v)(vals); const arc=d3.arc().innerRadius(30).outerRadius(50);
+    s.innerHTML = `<g transform="translate(55,60)">${pie.map(p=>`<path d="${arc(p)}" fill="${p.data.c}"/>`).join('')}<text text-anchor="middle" y="5" fill="#e7f1ff" style="font:700 15px Saira,sans-serif">${Math.round(100*vals[0].v/tot)}%</text></g>`+
+      vals.map((d,i)=>`<g transform="translate(116,${16+i*20})"><rect width="9" height="9" rx="2" fill="${d.c}"/><text x="14" y="9" fill="#c9d8f2" style="font:10px 'IBM Plex Sans',sans-serif">${d.l} <tspan fill="#e7f1ff" font-weight="600">${Math.round(100*d.v/tot)}%</tspan></text></g>`).join('');
+  }
+  function barsSat(A){
+    document.getElementById('g-sat').innerHTML = A.sat.map(s=>`<div class="bar"><span class="l" title="${T.pt.av[s.d]}">${AV_CURTO[s.d]}</span><span class="tr"><i style="width:${(s.media/5*100).toFixed(1)}%"></i></span><span class="v">${s.n?s.media.toFixed(1).replace('.',','):'–'}</span></div>`).join('');
+  }
+  function barsDist(A){
+    const mx = Math.max(1,...A.bandas.map(b=>b.n)), tot=d3.sum(A.bandas,b=>b.n)||1;
+    document.getElementById('g-dist').innerHTML = A.bandas.map(b=>`<div class="bar"><span class="l" title="${b.l}">${b.l}</span><span class="tr"><i style="width:${(100*b.n/mx).toFixed(1)}%"></i></span><span class="v">${Math.round(100*b.n/tot)}%</span></div>`).join('');
+  }
+  function top(A){ document.getElementById('g-top').innerHTML = A.origens.slice(0,10).map(o=>`<div><span>${esc(o.nome)}</span><b>${o.n}</b></div>`).join('') || '<div><span style="color:var(--muted)">sem respostas ainda</span></div>'; }
+  function hora(A){
+    const s=document.getElementById('g-hora'); const h=A.porHora.slice(-12); if(!h.length){ s.innerHTML=''; return; }
+    const mx=Math.max(...h.map(x=>x[1])); const bw=200/12;
+    s.innerHTML = h.map((x,i)=>{ const bh=Math.max(2,(x[1]/mx)*62); return `<rect x="${i*bw+2}" y="${70-bh}" width="${bw-4}" height="${bh}" rx="2" fill="${i===h.length-1?'#9ef0ff':'#2a8fe0'}"/><text x="${i*bw+bw/2}" y="84" text-anchor="middle" fill="#8fa6d1" style="font:8px 'IBM Plex Mono',monospace">${new Date(x[0]).getHours()}h</text>`; }).join('') +
+      (()=>{ const u=h[h.length-1], ag=new Date(); ag.setMinutes(0,0,0); const lbl = u[0]===+ag ? u[1]+' na última hora' : u[1]+' às '+new Date(u[0]).getHours()+'h'; return `<text x="200" y="10" text-anchor="end" fill="#e7f1ff" style="font:600 11px 'IBM Plex Mono',monospace">${lbl}</text>`; })();
+  }
+  function clock(){ document.getElementById('p-clock').textContent = new Date().toLocaleString('pt-BR',{weekday:'short',hour:'2-digit',minute:'2-digit'}); }
+  function status(ok,msg){ document.getElementById('p-dot').classList.toggle('off',!ok); document.getElementById('p-status').textContent=msg; }
+  async function start(demo){
+    const meu = ++run;
+    if (!started){ started=true; resize(); window.addEventListener('resize', ()=>{ resize(); }); requestAnimationFrame(draw); setInterval(clock, 15000); manterTelaLigada(); }
+    clock(); setView('auto'); clearInterval(demoTimer); if (unsub){ unsub(); unsub=null; }
+    document.getElementById('p-demo').hidden = !demo;
+    document.getElementById('p-title').innerHTML = esc((cfg.edicao||'Tecnoshow').toUpperCase()).replace(/(\d{4})$/,'<span>$1</span>') + ' <span>AO VIVO</span>';
+    setTimeout(resize, 50);
+    if (demo){
+      data = Demo.base(420); arcsFrom(data); render(); status(true,'demonstração');
+      demoTimer = setInterval(()=>{ const r=Demo.uma(Date.now()); data.push(r); chegou(r); render(); }, 2600);
+      return;
+    }
+    data=[]; arcs=new Map(); render(); status(false,'conectando à base');
+    if (!Base.kind){ status(false,'sem base configurada'); return; }
+    const ok = await Base.garantirAcesso();
+    if (meu!==run) return;                                // a pessoa saiu da tela enquanto entrava
+    if (!ok){ status(false,'login necessário'); go('inicio'); return; }
+    const vistos = new Set();
+    unsub = Base.acompanhar(edSlug(), (bruto, primeiro)=>{
+      const all = prepararDados(bruto);
+      const novos = primeiro ? [] : all.filter(x=>!vistos.has(x.id));
+      all.forEach(x=>vistos.add(x.id));
+      data = all;
+      if (primeiro) arcsFrom(data);
+      else novos.forEach((r,i)=>chegou(r, i>=novos.length-12));   // todas entram no mapa; só as 12 últimas animam
+      render();
+    }, status);
+  }
+  return {start};
+})();
+
+
+/* ================== RELATÓRIO ================== */
+const Relatorio = (() => {
+  let rs=[], demo=false, started=false, A=null;
+  const pct = (n,t) => t ? (100*n/t).toFixed(1).replace('.',',')+'%' : '–';
+  const fmt = v => Math.round(v).toLocaleString('pt-BR');
+  const brl = v => 'R$ '+Math.round(v).toLocaleString('pt-BR');
+  function tabela(lista, rotulos, total, titulo){
+    return `<div class="tw"><table><thead><tr><th>${esc(titulo)}</th><th class="n">Respostas</th><th class="n">%</th></tr></thead><tbody>${lista.map(x=>`<tr><td>${esc(rotulos[x.o]||x.o)}</td><td class="n">${fmt(x.n)}</td><td class="n">${pct(x.n,total)}</td></tr>`).join('')}</tbody></table></div>`;
+  }
+  function svgBars(items, w=640){
+    const mx=Math.max(1,...items.map(i=>i.v)); const h=24*items.length+10;
+    return `<svg viewBox="0 0 ${w} ${h}" width="100%" role="img">${items.map((it,i)=>`<text x="0" y="${i*24+16}" font-size="12" fill="#13213f" font-family="IBM Plex Sans, Arial">${it.l}</text><rect x="210" y="${i*24+5}" width="${(w-290)*it.v/mx}" height="14" rx="3" fill="#1557c0"/><text x="${215+(w-290)*it.v/mx}" y="${i*24+16}" font-size="12" fill="#13213f" font-family="IBM Plex Mono, monospace">${it.t}</text>`).join('')}</svg>`;
+  }
+  function mapaPNG(rs){
+    try{
+      const c=document.createElement('canvas'); const Wm=1000, Hm=760; c.width=Wm; c.height=Hm; const x=c.getContext('2d');
+      const out=GEO.brOut, mesh=GEO.brUF;
+      const P=d3.geoMercator().fitExtent([[30,30],[Wm-30,Hm-30]], out); const path=d3.geoPath(P,x);
+      x.fillStyle='#06143a'; x.fillRect(0,0,Wm,Hm);
+      x.beginPath(); path(out); x.fillStyle='#1d5fc4'; x.fill(); x.beginPath(); path(mesh); x.strokeStyle='rgba(6,20,58,.8)'; x.lineWidth=1; x.stroke();
+      const F=P([FAIR.lon,FAIR.lat]); const m=new Map(); rs.forEach(r=>{ const o=origemDe(r); if(o && o.pais==='BR' && !o.local){ const a=m.get(o.key)||{...o,n:0}; a.n++; m.set(o.key,a);} });
+      const mx=Math.max(1,...[...m.values()].map(a=>a.n)); x.globalCompositeOperation='lighter';
+      m.forEach(a=>{ const p0=P([a.lon,a.lat]); const mxp=(p0[0]+F[0])/2, myp=(p0[1]+F[1])/2, dx=F[0]-p0[0], dy=F[1]-p0[1], d=Math.hypot(dx,dy)||1; let nx=-dy/d, ny=dx/d; if(ny>0){nx=-nx;ny=-ny;} const k=Math.min(.42,60/d+.18);
+        x.strokeStyle='rgba(158,240,255,.55)'; x.lineWidth=.6+2.4*Math.sqrt(a.n/mx); x.beginPath(); x.moveTo(p0[0],p0[1]); x.quadraticCurveTo(mxp+nx*d*k,myp+ny*d*k,F[0],F[1]); x.stroke();
+        x.fillStyle='rgba(200,245,255,.9)'; x.beginPath(); x.arc(p0[0],p0[1],1.5+2*Math.sqrt(a.n/mx),0,7); x.fill(); });
+      x.globalCompositeOperation='source-over'; x.fillStyle='#fff'; x.beginPath(); x.arc(F[0],F[1],7,0,7); x.fill();
+      x.font='700 18px Saira, Arial'; x.fillText('Rio Verde', F[0]+12, F[1]+6);
+      return c.toDataURL('image/png');
+    }catch(e){ return ''; }
+  }
+  function filtrar(){
+    const a=document.getElementById('r-ini').value, b=document.getElementById('r-fim').value;
+    return rs.filter(r=>{ const d=diaLocal(r.t); return (!a||d>=a)&&(!b||d<=b); });   // data local (Brasília), não UTC
+  }
+  function montar(){
+    const R = filtrar();
+    if (!R.length){ const h=`<h1>Relatório técnico · ${esc(cfg.edicao)}</h1><p class="sub">Nenhuma resposta no período escolhido. Ajuste as datas De e Até.</p>`; document.getElementById('r-doc-body').innerHTML=h; return ''; }
+    A = analisar(R); const pub = Math.max(0, Math.min(1e7, +document.getElementById('r-publico').value || 0));
+    const o=T.pt.o, av=T.pt.av; const n=A.n;
+    const pernoiteRV = A.pern.find(p=>p.o==='prv').n;
+    const visFora = pub*A.pFora, gastoNovo = visFora*A.gastoMedFora;
+    const periodo = R.length ? new Date(R[0].t).toLocaleDateString('pt-BR')+' a '+new Date(R[R.length-1].t).toLocaleDateString('pt-BR') : '–';
+    const satOrd = A.sat.filter(s=>s.n>0).sort((a,b)=>b.media-a.media);
+    if (!satOrd.length) satOrd.push({d:A.sat[0].d, media:0, n:0});
+    const html = `
+      <h1>Relatório técnico de avaliação · ${esc(cfg.edicao)}</h1>
+      <p class="sub">${demo?'<b>DADOS DE DEMONSTRAÇÃO</b> · ':''}${fmt(n)} questionários válidos · coleta de ${periodo} · Programa de Pós-Graduação Profissional em Administração, IF Goiano</p>
+      <h2>1. Resumo executivo</h2>
+      <div class="kgrid"><div><b>${fmt(n)}</b><span>respostas</span></div><div><b>${A.nps==null?'–':A.nps}</b><span>NPS (−100 a 100)</span></div><div><b>${fmt(A.nMun)}</b><span>municípios de origem</span></div><div><b>${fmt(A.nUF)} · ${fmt(A.nPais)}</b><span>estados · outros países</span></div><div><b>${pct(A.fora,A.nOk)}</b><span>visitantes de fora de Rio Verde</span></div><div><b>${fmt(A.r50)} km</b><span>raio de 50% dos visitantes de fora</span></div></div>
+      <p>A avaliação geral foi ${A.nps==null?'–':A.nps>=75?'excelente':A.nps>=50?'muito boa':A.nps>=0?'positiva, com pontos a melhorar':'negativa'} (NPS ${A.nps==null?'–':A.nps}). O item mais bem avaliado foi <b>${av[satOrd[0].d]}</b> (média ${satOrd[0].media.toFixed(2).replace('.',',')}) e o de pior avaliação, <b>${av[satOrd[satOrd.length-1].d]}</b> (média ${satOrd[satOrd.length-1].media.toFixed(2).replace('.',',')}). Metade dos visitantes de fora veio de até ${fmt(A.r50)} km e 80% de até ${fmt(A.r80)} km.</p>
+      <h2>2. Método</h2>
+      <p>Questionário estruturado aplicado em tablets na sala de avaliação, em português, inglês e espanhol, sem identificação do respondente (Resolução CNS nº 510/2016, art. 1º, parágrafo único, I). A amostra é não probabilística (participação voluntária); por isso, os percentuais descrevem os respondentes e só se estendem ao público total com cautela. As distâncias são calculadas em linha reta entre o centro do município (ou do país) de origem e Rio Verde.</p>
+      <h2>3. Perfil dos respondentes</h2>
+      ${tabela(A.perfil,o,n,'Perfil')}${tabela(A.idade,o,n,'Faixa etária')}${tabela(A.gen,o,n,'Gênero')}
+      <p>Primeira visita à Tecnoshow: ${pct(A.prim[0].n,n)}. Idioma do questionário: português ${pct(A.langs[0].n,n)}, inglês ${pct(A.langs[1].n,n)}, espanhol ${pct(A.langs[2].n,n)}.</p>
+      <h2>4. Origem e deslocamentos</h2>
+      <img class="map" alt="Rotas dos municípios de origem até Rio Verde" src="${mapaPNG(R)}">
+      <p class="note">Cada linha liga o município de origem a Rio Verde; a espessura é proporcional ao número de respondentes.</p>
+      <div class="kgrid"><div><b>${fmt(A.med)} km</b><span>distância mediana (todos)</span></div><div><b>${fmt(A.r50)} km</b><span>50% dos visitantes de fora</span></div><div><b>${fmt(A.r80)} km</b><span>80% dos visitantes de fora</span></div><div><b>${fmt(A.r95)} km</b><span>95% dos visitantes de fora</span></div><div><b>${fmt(A.totalKm)} km</b><span>soma das distâncias (ida)</span></div></div>
+      ${svgBars(A.bandas.map(b=>({l:b.l, v:b.n, t:pct(b.n,A.nOk)})))}
+      <div class="tw"><table><thead><tr><th>Principais municípios de origem</th><th class="n">Respostas</th><th class="n">Distância (km)</th></tr></thead><tbody>${A.origens.slice(0,15).map(x=>`<tr><td>${esc(x.nome)}</td><td class="n">${fmt(x.n)}</td><td class="n">${x.local?'–':fmt(x.km)}</td></tr>`).join('')}</tbody></table></div>
+      <div class="tw"><table><thead><tr><th>Estado</th><th class="n">Respostas</th><th class="n">%</th></tr></thead><tbody>${A.porUF.slice(0,12).map(([u,v])=>`<tr><td>${esc(u)}</td><td class="n">${fmt(v)}</td><td class="n">${pct(v,A.nOk)}</td></tr>`).join('')}</tbody></table></div>
+      <p><b>Leitura da bacia de atração.</b> A distância mediana por perfil indica até onde a feira alcança cada público: ${A.perfDist.filter(p=>p.n>=3).map(p=>`${o[p.p].toLowerCase()} ${fmt(p.med)} km`).join('; ') || 'ainda há poucas respostas por perfil'}. Perfis com mediana menor dependem mais do entorno de Rio Verde; perfis com mediana maior mostram o alcance nacional do evento.</p>
+      <h2>5. Satisfação e recomendação</h2>
+      ${svgBars(A.sat.map(s=>({l:av[s.d], v:s.media, t:s.media.toFixed(2).replace('.',',')+' · '+pct(s.top2*s.n,s.n)+' notas 4–5'})))}
+      <p>NPS = % de promotores (notas 9–10) − % de detratores (0–6): ${pct(A.prom,A.nNps)} − ${pct(A.det,A.nNps)} = <b>${A.nps==null?'–':A.nps}</b> (neutros: ${pct(A.neu,A.nNps)}).</p>
+      <h2>6. Motivação, conhecimento e negócios</h2>
+      ${tabela(A.obj,o,n,'Motivo da visita (múltipla escolha)')}
+      ${tabela(A.tecn,o,n,'Conheceu tecnologia que pretende adotar')}
+      ${tabela(A.neg,o,n,'Negócios realizados ou pretendidos')}
+      <p>Volume de negócios declarado pelos respondentes (ponto médio das faixas): ${brl(A.negVal)}. O valor refere-se apenas à amostra e não substitui o levantamento da organização junto aos expositores.</p>
+      <h2>7. Gasto dos visitantes e estimativa de impacto</h2>
+      ${tabela(A.gasto,o,n,'Gasto na visita')}
+      ${tabela(A.pern,o,n,'Pernoite')}
+      <div class="kgrid"><div><b>${brl(A.gastoMedFora)}</b><span>gasto médio, visitante de fora</span></div><div><b>${brl(A.gastoMedLocal)}</b><span>gasto médio, morador</span></div><div><b>${fmt(visFora)}</b><span>visitantes de fora estimados</span></div><div><b>${brl(gastoNovo)}</b><span>gasto novo estimado na cidade</span></div></div>
+      <p>Estimativa: público informado (${fmt(pub)}) × proporção de respondentes de fora de Rio Verde (${pct(A.fora,A.nOk)}) × gasto médio declarado pelos visitantes de fora (${brl(A.gastoMedFora)}) = <b>${brl(gastoNovo)}</b>. Os gastos dos moradores não entram, porque tenderiam a ocorrer na cidade de qualquer forma (CROMPTON, 1995). A estimativa usa o ponto médio das faixas e considera cada visitante uma única vez; o público informado pela organização pode contar o mesmo visitante em dias diferentes, o que superestimaria o resultado.</p>
+      <h2>8. Comentários dos visitantes</h2>
+      ${A.coments.length? `<ul>${A.coments.slice(0,40).map(c=>`<li>${esc(c)}</li>`).join('')}</ul>${A.coments.length>40?`<p class="note">Mais ${A.coments.length-40} comentários no arquivo de dados.</p>`:''}`:'<p>Nenhum comentário registrado.</p>'}
+      <h2>9. Recomendações para a próxima edição</h2>
+      <ul><li>Priorizar o item de pior avaliação (${av[satOrd[satOrd.length-1].d].toLowerCase()}) e acompanhar a mesma nota na próxima edição.</li><li>Usar a bacia de atração (50% até ${fmt(A.r50)} km) para orientar a divulgação regional e as parcerias com prefeituras e cooperativas do entorno.</li><li>Ponderar os resultados pela contagem diária da portaria e escalar entrevistadores em horários fixos para reduzir o viés de autosseleção.</li></ul>`;
+    document.getElementById('r-doc-body').innerHTML = html;
+    return html;
+  }
+  function csv(R){
+    const cols=['id','data_hora','tablet','idioma','brasil','municipio_ibge','municipio','uf','pais','distancia_km','perfil','idade','genero','primeira_vez','dias','pernoite','objetivos','av_estrutura','av_programacao','av_atendimento','av_seguranca','av_sinalizacao','av_conteudo','tecnologia','negocios','gasto','gasto_ponto_medio','nps','comentario','duracao_s'];
+    const q=v=>{ let s=v==null?'':String(v); if (typeof v==='string' && /^[=+\-@\t\r]/.test(s)) s="'"+s; return /[;"\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+    const lines=[cols.join(';')].concat(R.map(r=>{ const o=origemDe(r)||{}; const m=r.mun&&MUN.get(r.mun);
+      return [r.id,new Date(r.t).toISOString(),r.tab,r.lang,r.br,r.mun,m?m[0]:'',m?m[1]:'',r.pais,o.km!=null?Math.round(o.km):'',T.pt.o[r.perfil],T.pt.o[r.idade],T.pt.o[r.gen],T.pt.o[r.prim],T.pt.o[r.dias],T.pt.o[r.pern],(r.obj||[]).map(x=>T.pt.o[x]).join(' | '),
+        r.av?.est,r.av?.prog,r.av?.aten,r.av?.seg,r.av?.sin,r.av?.cont,T.pt.o[r.tecn],T.pt.o[r.neg],T.pt.o[r.gasto],GASTO_MID[r.gasto],r.nps,r.com,r.dur].map(q).join(';'); }));
+    return '﻿'+lines.join('\n');
+  }
+  function msg(t){ const m=document.getElementById('r-msg'); m.hidden=!t; m.textContent=t||''; }
+  async function baixar(nome, conteudo, tipo){
+    const blob = new Blob([conteudo],{type:tipo});
+    if (window.claude && window.claude.use){              // dentro do claude.ai o download passa pelo visualizador
+      const dl = await window.claude.use('downloads').catch(()=>null);
+      if (!dl){ msg('O download não está disponível nesta visualização.'); return; }
+      try{ await dl.save({filename:nome, data:blob}); msg('Arquivo enviado para download: '+nome); }catch(e){ msg('O download foi cancelado ou recusado.'); }
+      return;
+    }
+    const a=document.createElement('a'), url=URL.createObjectURL(blob); a.href=url; a.download=nome; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 10000); msg('Arquivo baixado: '+nome);
+  }
+  document.getElementById('r-doc').onclick = ()=>{ const body=montar(); if(!body){ msg('Não há respostas no período para gerar o relatório.'); return; } const doc=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>Relatório ${esc(cfg.edicao)}</title><style>body{font-family:Calibri,Arial,sans-serif;color:#13213f}h1{font-size:20pt}h2{font-size:14pt;border-bottom:1px solid #13213f}table{border-collapse:collapse;width:100%}td,th{border:1px solid #d9dfec;padding:4px 6px;font-size:10pt}.kgrid div{display:inline-block;border:1px solid #d9dfec;padding:6px 10px;margin:3px}.kgrid b{display:block;font-size:14pt;color:#1557c0}img{width:16cm}</style></head><body>${body}</body></html>`; baixar('relatorio_'+edSlug()+'.doc', doc, 'application/msword'); };
+  document.getElementById('r-csv').onclick = ()=> !filtrar().length ? msg('Não há respostas no período.') : baixar('respostas_'+edSlug()+'.csv', csv(filtrar()), 'text/csv;charset=utf-8');
+  ['r-publico','r-ini','r-fim'].forEach(id=>document.getElementById(id).addEventListener('change', ()=>{ LS.set('tsa_pub', +document.getElementById('r-publico').value); montar(); }));
+  let run=0;
+  async function start(d){
+    const meu=++run; demo=d; document.getElementById('r-publico').value = LS.get('tsa_pub',120000); msg('');
+    if (demo){ rs = Demo.base(600); montar(); return; }
+    const corpo = document.getElementById('r-doc-body');
+    rs=[]; corpo.innerHTML='<h1>Relatório técnico</h1><p class="sub">Carregando as respostas…</p>';
+    if (!Base.kind){ corpo.innerHTML='<h1>Relatório técnico</h1><p class="sub">Nenhuma base de respostas configurada nesta versão. Veja o relatório de demonstração ou configure o Supabase (LEIAME).</p>'; return; }
+    const ok = await Base.garantirAcesso(); if (meu!==run) return;
+    if (!ok){ go('inicio'); return; }
+    try{
+      rs = prepararDados(await Base.ler(edSlug())); if (meu!==run) return;
+      if (!rs.length){ corpo.innerHTML=`<h1>Relatório técnico · ${esc(cfg.edicao)}</h1><p class="sub">Ainda não há respostas desta edição. Elas aparecem aqui assim que os tablets começarem a enviar.</p>`; return; }
+      montar();
+    }catch(e){ corpo.innerHTML='<h1>Relatório técnico</h1><p class="sub">Não foi possível ler a base ('+esc(e.code||'erro')+'). Confira a internet e tente de novo.</p>'; }
+  }
+  return {start};
+})();
+
+
+/* Site próprio: guarda o app no aparelho para abrir mesmo sem internet. */
+if (CONFIG && 'serviceWorker' in navigator && location.protocol==='https:') navigator.serviceWorker.register('sw.js').catch(()=>{});
+route();
+</script>
