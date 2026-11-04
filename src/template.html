@@ -168,6 +168,62 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
 .login-box input{background:var(--deep);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:10px 12px;font:inherit}
 .login-msg{color:var(--bad)!important;min-height:1.2em}
 .cfg-aviso{flex-basis:100%;margin:0;font-size:.82rem;color:var(--warn)}
+/* ---------- ADMINISTRAÇÃO ---------- */
+#v-admin{min-height:100%;padding-block:28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:radial-gradient(ellipse at 80% -10%,#0e2a6b 0%,var(--night) 55%)}
+.adm{max-width:960px;margin:0 auto;display:grid;gap:18px}
+.adm-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:14px}
+.adm-top h1{font-family:var(--f-display);font-weight:800;font-size:clamp(1.6rem,4vw,2.4rem);margin:4px 0 0;line-height:1.05}
+.adm .k{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--glow)}
+.adm-tabs,.adm-acts,.seg-s{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.adm-bar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;background:var(--deep);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.adm-bar #a-status{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.9rem}
+.pill{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.06em;border-radius:999px;padding:3px 10px;border:1px solid currentColor}
+.pill.ok{color:var(--good)} .pill.warn{color:var(--warn)} .pill.mut{color:var(--muted)}
+.btn.sm{padding:10px 18px;font-size:1rem;box-shadow:none}
+.ghost.sm{padding:6px 12px;font-size:.8rem}
+.ghost:disabled,.btn:disabled{opacity:.4;cursor:default}
+.adm-msg{margin:0;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--deep);font-size:.9rem;line-height:1.5;white-space:pre-line}
+.adm-msg.ok{border-color:var(--good);color:var(--good)} .adm-msg.erro{border-color:var(--bad);color:#ffc2ca} .adm-msg.aviso{border-color:var(--warn);color:#ffe0b3}
+.adm-conf{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:12px 14px;border:1px solid var(--warn);border-radius:12px;background:rgba(255,179,71,.08)}
+.adm-conf p{margin:0;max-width:62ch;line-height:1.5;font-size:.92rem}
+.adm-lista{display:grid;gap:8px}
+.qbox{background:linear-gradient(170deg,rgba(11,31,74,.92),rgba(7,22,55,.92));border:1px solid var(--line);border-radius:12px;min-width:0}
+.qbox[open]{border-color:var(--glow)}
+.qbox.off{opacity:.55}
+.qbox summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:2.2ch minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:12px 14px}
+.qbox summary::-webkit-details-marker{display:none}
+.qbox .qn{font-family:var(--f-mono);color:var(--glow);font-size:.85rem}
+.qbox .qt{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qbox .meta{grid-column:2;display:flex;gap:6px;flex-wrap:wrap}
+.qbox .mv{grid-row:1/3;grid-column:3;display:flex;gap:4px}
+.ib{background:transparent;border:1px solid var(--line);border-radius:8px;width:34px;height:34px;color:var(--muted);flex:none}
+.ib:hover{color:var(--ink);border-color:var(--glow)}
+.qbody{display:grid;gap:12px;padding:4px 14px 16px}
+.fld{display:grid;gap:6px;font-size:.78rem;color:var(--muted);letter-spacing:.03em;min-width:0}
+.fld input,.fld textarea,.adm select,.adm-link input{background:var(--night);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:9px 11px;font:inherit;font-size:.95rem;min-width:0;width:100%;box-sizing:border-box}
+.fld textarea{resize:vertical}
+.orow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:center}
+.orow.it{grid-template-columns:minmax(0,1fr) minmax(0,14ch) auto}
+.orow.it.sem-x{grid-template-columns:minmax(0,1fr) minmax(0,14ch)}
+.nota{color:var(--muted);font-size:.78rem;line-height:1.45}
+.tgs{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.tg{display:flex;gap:8px;align-items:center;font-size:.9rem;color:var(--ink)}
+.tg input{width:20px;height:20px;accent-color:var(--glow)}
+.adm-add{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.adm-add select{width:auto}
+.adm-sec{display:grid;gap:10px;background:var(--deep);border:1px solid var(--line);border-radius:12px;padding:16px}
+.adm-sec h3{margin:0;font-family:var(--f-display);font-size:1.15rem}
+.adm-p{margin:0;color:var(--muted);line-height:1.55;max-width:70ch;font-size:.92rem}
+.adm-link{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.adm-tab{border-collapse:collapse;width:100%;font-size:.88rem}
+.adm-tab th,.adm-tab td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+.adm-tab th{font-family:var(--f-mono);font-weight:500;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.hist{display:grid;gap:6px}
+.hist div{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;border-bottom:1px dashed var(--line);padding-bottom:6px;font-size:.88rem}
+.conv{min-height:100%;display:grid;place-items:center;padding-block:32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.login-box .ok{color:var(--good)!important}
+.kbar .ghost{padding:4px 12px}
+@media (max-width:640px){.qbox summary{grid-template-columns:2.2ch minmax(0,1fr)}.qbox .mv{grid-row:auto;grid-column:2}.orow.it{grid-template-columns:minmax(0,1fr) auto}.orow.it input[data-curto]{grid-column:1}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -188,14 +244,14 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
         <input id="cfg-edicao" value="Tecnoshow Comigo 2027" maxlength="60"></label>
       <label for="cfg-chave" id="cfg-chave-wrap" hidden>Chave da coleta (só nos tablets)
         <input id="cfg-chave" type="password" autocomplete="off" spellcheck="false" maxlength="200"></label>
-      <div class="demo-links"><button class="ghost" id="go-painel-demo">Ver painel com dados de demonstração</button><button class="ghost" id="go-relatorio-demo">Ver relatório de demonstração</button><button class="ghost" id="cfg-sair" hidden>Sair da conta da equipe</button></div>
+      <div class="demo-links"><button class="ghost" id="go-painel-demo">Ver painel com dados de demonstração</button><button class="ghost" id="go-relatorio-demo">Ver relatório de demonstração</button><button class="ghost" id="go-admin">Administração</button><button class="ghost" id="cfg-sair" hidden>Sair da conta da equipe</button></div>
       <p class="cfg-aviso" id="cfg-aviso" hidden></p>
     </div>
   </div>
 </div>
 
 <div id="v-coleta" class="view" hidden>
-  <div class="kbar"><span class="brand">TECNOSHOW <i>AVALIA</i></span><span class="net"><span id="k-tab">Tablet 1</span> · <span class="dot" id="k-dot"></span><span id="k-net">online</span> · <span id="k-pend">0 na fila</span></span></div>
+  <div class="kbar"><span class="brand">TECNOSHOW <i>AVALIA</i></span><span class="net"><span class="badge-demo" id="k-previa" hidden>PRÉ-VISUALIZAÇÃO</span><button class="ghost" id="k-fechar" hidden>Fechar prévia</button><span id="k-tab">Tablet 1</span> · <span class="dot" id="k-dot"></span><span id="k-net">online</span> · <span id="k-pend">0 na fila</span></span></div>
   <div class="progress"><i id="k-prog"></i></div>
   <div class="kstage" id="k-stage"></div>
 </div>
@@ -249,6 +305,45 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
   <article class="doc" id="r-doc-body"></article>
 </div>
 
+
+<div id="v-admin" class="view" hidden>
+  <div class="adm">
+    <div class="adm-top">
+      <div><div class="k">Administração · <span id="a-ed"></span></div><h1>Questionário e equipe</h1></div>
+      <div class="adm-tabs"><button class="chip on" data-aba="form">Questionário</button><button class="chip" data-aba="equipe">Equipe</button><button class="ghost" id="a-voltar">Voltar ao início</button></div>
+    </div>
+    <p class="adm-msg erro" id="a-bloq" hidden></p>
+    <div id="a-corpo" hidden>
+      <section id="a-form" class="adm">
+        <div class="adm-bar"><div id="a-status"></div><div class="adm-acts"><button class="ghost" id="a-previa">Pré-visualizar</button><button class="ghost" id="a-descartar">Descartar alterações</button><button class="btn sm" id="a-publicar">Publicar versão</button></div></div>
+        <div class="adm-conf" id="a-conf" hidden><p id="a-conf-txt"></p><div class="adm-acts"><button class="ghost" id="a-conf-nao">Cancelar</button><button class="btn sm" id="a-conf-sim">Confirmar publicação</button></div></div>
+        <p class="adm-msg" id="a-msg" hidden></p>
+        <div class="adm-bar"><span class="nota">Idioma que você está editando. Textos vazios em inglês ou espanhol aparecem em português no tablet.</span><div class="seg-s" id="a-lang"><button class="chip on" data-l="pt">Português</button><button class="chip" data-l="en">English</button><button class="chip" data-l="es">Español</button></div></div>
+        <details class="qbox" id="a-abertura"><summary><span class="qn">·</span><span class="qt">Tela de abertura e termo de consentimento</span></summary><div class="qbody">
+          <label class="fld">Frase de abertura<input id="a-ab-sub" data-ab="sub"></label>
+          <label class="fld">Termo de consentimento (texto aprovado pelo CEP)<textarea id="a-ab-consent" data-ab="consent" rows="4"></textarea></label>
+        </div></details>
+        <div id="a-lista" class="adm-lista"></div>
+        <div class="adm-add"><label class="fld" for="a-novo-tipo">Nova pergunta<select id="a-novo-tipo"><option value="single">Escolha única</option><option value="multi">Múltipla escolha</option><option value="rating">Notas de 1 a 5 por item</option><option value="nps">Escala de 0 a 10</option><option value="text">Texto livre</option></select></label><button class="ghost" id="a-add" style="align-self:end">Adicionar pergunta</button></div>
+        <div class="adm-sec"><h3>Versões publicadas</h3><p class="adm-p">Cada publicação vira uma versão. Cada resposta guarda a versão em que foi dada, e o relatório informa quantas respostas há em cada uma.</p><div class="hist" id="a-hist"></div></div>
+      </section>
+      <section id="a-equipe" class="adm" hidden><div id="a-equipe-corpo" class="adm"></div></section>
+    </div>
+  </div>
+</div>
+
+<div id="v-convite" class="view" hidden>
+  <div class="conv"><form class="login-box" id="c-form" autocomplete="on">
+    <b>Convite para a equipe</b>
+    <p id="c-intro">Você foi convidado para a equipe de pesquisa do Tecnoshow Avalia. Crie sua conta ou entre com uma conta que já tem.</p>
+    <div class="seg" id="c-modo"><button type="button" class="lang sel" data-m="novo">Criar conta</button><button type="button" class="lang" data-m="entrar">Já tenho conta</button></div>
+    <label for="c-nome" id="c-nome-wrap">Seu nome<input id="c-nome" maxlength="80" autocomplete="name"></label>
+    <label for="c-email" id="c-email-wrap">E-mail<input id="c-email" type="email" autocomplete="username"></label>
+    <label for="c-senha" id="c-senha-wrap">Senha (mínimo de 8 caracteres)<input id="c-senha" type="password" autocomplete="new-password"></label>
+    <p class="login-msg" id="c-msg" role="alert"></p>
+    <div class="knav"><button type="button" class="ghost" id="c-voltar">Voltar ao início</button><button class="rbtn" type="submit" id="c-ok">Criar conta</button></div>
+  </form></div>
+</div>
 
 <div id="login" class="login" hidden>
   <form id="login-form" class="login-box" autocomplete="on">
@@ -338,7 +433,7 @@ const T = {
   av:{est:'Estructura y limpieza', prog:'Cumplimiento del programa', aten:'Atención del personal', seg:'Seguridad', sin:'Señalización y accesibilidad', cont:'Charlas y demostraciones'},
   thanks:'¡Gracias!', thanksSub:'Su ruta acaba de encenderse en la pantalla.', thanksKm:'km hasta la Tecnoshow', thanksLocal:'Gracias por recibir la Tecnoshow en Rio Verde.', noRes:'No se encontró ninguna coincidencia.'}
 };
-const QS = [
+let QS = [
  {id:'origem', type:'origem'},
  {id:'perfil', type:'single', opts:['pp','pm','pg','tec','exp','est','inv','vis']},
  {id:'idade',  type:'single', opts:['a1','a2','a3','a4','a5','a6']},
@@ -358,6 +453,86 @@ const GASTO_MID = {g0:0,g1:50,g2:200,g3:450,g4:800,g5:1500,g6:2500};
 const NEG_MID = {n0:0,n1:25000,n2:275000,n3:1250000,n4:3000000};
 const PERFIL_PT = T.pt.o;
 const AV_CURTO = {est:'Estrutura', prog:'Programação', aten:'Atendimento', seg:'Segurança', sin:'Sinalização', cont:'Palestras'};
+
+/* ================== INSTRUMENTO (questionário editável e versionado) ==================
+   O questionário publicado fica na base como JSON versionado. Perguntas do núcleo (as originais) têm
+   opções fixas, porque painel, mapa e relatório dependem delas; os textos são editáveis nos 3 idiomas.
+   Perguntas novas ("extras") são livres e suas respostas ficam em r.x[id]. Cada resposta guarda r.v (versão). */
+const LANGS = ['pt','en','es'], LNOME = {pt:'Português', en:'English', es:'Español'};
+const TIPOS = {origem:'Origem (município ou país)', single:'Escolha única', multi:'Múltipla escolha', rating:'Notas de 1 a 5 por item', nps:'Escala de 0 a 10', text:'Texto livre'};
+const FIXAS = ['origem','perfil','av','gasto','nps'];        // alimentam mapa, KPIs e impacto: não podem ser desativadas
+const AV_NUCLEO = ['est','prog','aten','seg','sin','cont'];
+const ID_RE = /^[a-z][a-z0-9_]{0,23}$/;
+const clone = o => JSON.parse(JSON.stringify(o));
+const INST_PADRAO = (() => {
+  const tx = f => Object.fromEntries(LANGS.map(l=>[l, f(T[l])]));
+  return {versao:0, abertura: tx(t=>({sub:t.welcomeSub, consent:t.consent})),
+    perguntas: QS.map(q=>{
+      const p = {id:q.id, type:q.type, nucleo:true, ativa:true, obrig:q.type!=='text', txt: tx(t=>({q:t.q[q.id]||'', help:t.help[q.id]||''}))};
+      if (q.opts) p.opts = q.opts.map(o=>({id:o, txt:tx(t=>t.o[o])}));
+      if (q.items) p.items = q.items.map(it=>({id:it, curto:AV_CURTO[it], txt:tx(t=>t.av[it])}));
+      return p; })};
+})();
+const T_BASE = clone(T);
+let INST = clone(INST_PADRAO);
+const OP = id => INST_PADRAO.perguntas.find(p=>p.id===id).opts.map(o=>o.id);      // opções do núcleo (fixas)
+const AV_ITENS_ATUAIS = () => (INST.perguntas.find(p=>p.id==='av')||{items:[]}).items.map(i=>i.id);
+
+/* Confere e normaliza um instrumento vindo da base ou do rascunho: nada fora do formato passa. */
+function limparInstrumento(x){
+  if (!x || typeof x!=='object' || !Array.isArray(x.perguntas)) return null;
+  const s = (v,n=600) => typeof v==='string' ? v.slice(0,n) : '';
+  const txs = o => Object.fromEntries(LANGS.map(l=>[l, s(o&&o[l],300)]));
+  const txq = o => Object.fromEntries(LANGS.map(l=>[l, {q:s(o&&o[l]&&o[l].q), help:s(o&&o[l]&&o[l].help)}]));
+  const out = {versao: Number.isInteger(x.versao)&&x.versao>=0 ? x.versao : 0,
+    abertura: Object.fromEntries(LANGS.map(l=>[l, {sub:s(x.abertura&&x.abertura[l]&&x.abertura[l].sub), consent:s(x.abertura&&x.abertura[l]&&x.abertura[l].consent,2000)}])),
+    perguntas: []};
+  if (typeof x.publicado_em==='string') out.publicado_em = x.publicado_em.slice(0,40);
+  const vistos = new Set();
+  x.perguntas.slice(0,60).forEach(p=>{
+    if (!p || typeof p!=='object' || typeof p.id!=='string' || !ID_RE.test(p.id) || vistos.has(p.id)) return;
+    const pad = INST_PADRAO.perguntas.find(q=>q.id===p.id);
+    if (pad){
+      const q = {id:pad.id, type:pad.type, nucleo:true, ativa: FIXAS.includes(pad.id) ? true : p.ativa!==false, obrig:pad.obrig, txt:txq(p.txt)};
+      if (pad.opts) q.opts = pad.opts.map(o=>{ const e=(Array.isArray(p.opts)?p.opts:[]).find(z=>z&&z.id===o.id); return {id:o.id, txt:txs(e&&e.txt)}; });
+      if (pad.items){
+        const its = Array.isArray(p.items) ? p.items : [];
+        const extra = its.filter(z=>z && typeof z.id==='string' && ID_RE.test(z.id) && !AV_NUCLEO.includes(z.id)).slice(0,14);
+        q.items = pad.items.map(i=>{ const e=its.find(z=>z&&z.id===i.id); return {id:i.id, curto:s(e&&e.curto,16)||i.curto, txt:txs(e&&e.txt)}; })
+          .concat(extra.map(z=>({id:z.id, curto:s(z.curto,16), txt:txs(z.txt), extra:true})));
+      }
+      out.perguntas.push(q); vistos.add(p.id); return;
+    }
+    if (!['single','multi','rating','nps','text'].includes(p.type)) return;
+    const q = {id:p.id, type:p.type, nucleo:false, ativa:p.ativa!==false, obrig:!!p.obrig, txt:txq(p.txt)};
+    const ids = a => (Array.isArray(a)?a:[]).filter(o=>o && typeof o.id==='string' && ID_RE.test(o.id));
+    if (p.type==='single'||p.type==='multi'){ q.opts = ids(p.opts).slice(0,30).map(o=>({id:o.id, txt:txs(o.txt)})); if (q.opts.length<2) return; }
+    if (p.type==='rating'){ q.items = ids(p.items).slice(0,20).map(o=>({id:o.id, curto:s(o.curto,16), txt:txs(o.txt)})); if (!q.items.length) return; }
+    out.perguntas.push(q); vistos.add(p.id);
+  });
+  INST_PADRAO.perguntas.forEach((pad,i)=>{ if (!vistos.has(pad.id)) out.perguntas.splice(Math.min(i,out.perguntas.length), 0, clone(pad)); });
+  const io = out.perguntas.findIndex(p=>p.id==='origem'); if (io>0) out.perguntas.unshift(out.perguntas.splice(io,1)[0]);
+  return out;
+}
+/* Coloca um instrumento em uso: textos em T (3 idiomas) e a lista de perguntas ativas em QS. */
+function aplicarInstrumento(inst){
+  INST = inst;
+  LANGS.forEach(l=>{
+    const t=T[l], b=T_BASE[l], ab=inst.abertura||{};
+    t.welcomeSub = (ab[l]&&ab[l].sub) || (ab.pt&&ab.pt.sub) || b.welcomeSub;
+    t.consent = (ab[l]&&ab[l].consent) || (ab.pt&&ab.pt.consent) || b.consent;
+    inst.perguntas.forEach(p=>{
+      const tl=p.txt[l]||{}, tp=p.txt.pt||{};
+      t.q[p.id] = tl.q || tp.q || b.q[p.id] || T_BASE.pt.q[p.id] || '';
+      t.help[p.id] = tl.help || tp.help || '';
+      (p.opts||[]).forEach(o=>{ t.o[o.id] = o.txt[l] || o.txt.pt || b.o[o.id] || o.id; });
+      (p.items||[]).forEach(it=>{ t.av[it.id] = it.txt[l] || it.txt.pt || b.av[it.id] || it.id; });
+    });
+  });
+  inst.perguntas.forEach(p=>(p.items||[]).forEach(it=>{ AV_CURTO[it.id] = it.curto || (T.pt.av[it.id]||it.id).slice(0,14); }));
+  QS = inst.perguntas.filter(p=>p.ativa!==false || FIXAS.includes(p.id)).map(p=>({id:p.id, type:p.type, nucleo:!!p.nucleo,
+    obrig: p.nucleo ? p.type!=='text' : !!p.obrig, opts:p.opts&&p.opts.map(o=>o.id), items:p.items&&p.items.map(i=>i.id)}));
+}
 
 /* ================== UTILITÁRIOS ================== */
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -388,7 +563,7 @@ const DEV = (() => { let d=LS.get('tsa_dev',null); if(!/^[a-z0-9]{6}$/.test(d||'
 const Base = (() => {
   const sbOk = !!(CONFIG && CONFIG.supabaseUrl && CONFIG.supabaseAnonKey && window.supabase && window.supabase.createClient);
   const kind = sbOk ? 'supabase' : (window.claude && window.claude.use ? 'claude' : null);
-  const sb = sbOk ? window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnonKey, {auth:{persistSession:true, autoRefreshToken:true, storageKey:'tsa_auth'}}) : null;
+  const sb = sbOk ? window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnonKey, {auth:{persistSession:true, autoRefreshToken:true, storageKey:'tsa_auth', flowType:'pkce'}}) : null;
   let dbP = null;
   const claudeDb = () => { if(!dbP) dbP = kind==='claude' ? window.claude.use('db').catch(()=>null) : Promise.resolve(null); return dbP; };
   const erro = (code, msg) => Object.assign(new Error(msg||code), {code});
@@ -461,14 +636,63 @@ const Base = (() => {
     return () => { vivo=false; if(unsub) unsub(); };
   }
 
-  /* ---- login da equipe (só no modo Supabase) ---- */
+  /* ---- questionário versionado ---- */
+  async function instrumentoAtual(ed){
+    if (kind==='supabase'){ const {data,error} = await sb.rpc('instrumento_atual', {p_ed:ed}); if (error) throw erro('rede', error.message); return data; }
+    const db = await claudeDb(); if (!db) return null;
+    const d = await db.doc('instrumento_atual/'+ed).get(); return d.exists ? d.data().def : null;
+  }
+  async function publicarInstrumento(ed, def){
+    if (kind==='supabase'){
+      const {data,error} = await sb.rpc('publicar_instrumento', {p_ed:ed, p_def:def});
+      if (error){ const m=error.message||''; throw erro(/edicao_inexistente/.test(m)?'edicao_inexistente':/sem_permissao/.test(m)?'sem_permissao':/instrumento_invalido/.test(m)?'instrumento_invalido':'rede', m); }
+      return data;
+    }
+    const db = await claudeDb(); if (!db) throw erro('sem_base');
+    const at = await db.doc('instrumento_atual/'+ed).get();
+    const versao = ((at.exists && at.data().versao) || 0) + 1, publicado_em = new Date().toISOString();
+    const d = {...def, versao, publicado_em};
+    await db.doc('instrumentos/'+ed+'_v'+versao).set({ed, versao, publicado_em, def:d});
+    await db.doc('instrumento_atual/'+ed).set({ed, versao, publicado_em, def:d});
+    return {versao, publicado_em};
+  }
+  async function historico(ed){
+    if (kind==='supabase'){
+      const {data,error} = await sb.from('instrumentos').select('versao,publicado_em,def').eq('ed',ed).order('versao',{ascending:false}).limit(50);
+      if (error) throw erro('rede', error.message); return data;
+    }
+    const db = await claudeDb(); if (!db) return [];
+    const q = await db.collection('instrumentos').where('ed','==',ed).limit(200).get();
+    return q.docs.map(d=>d.data()).sort((a,b)=>b.versao-a.versao);
+  }
+
+  /* ---- login e papéis ---- */
   const precisaLogin = kind==='supabase';
-  async function souEquipe(){ const {data,error} = await sb.rpc('sou_equipe'); return !error && data===true; }
-  async function logado(){ if(!sb) return false; const {data} = await sb.auth.getSession(); return !!(data && data.session) && await souEquipe(); }
+  async function rpc(nome, args){
+    const {data,error} = await sb.rpc(nome, args||{});
+    if (error){ const m=error.message||''; throw erro(/^[a-z_]{3,40}$/.test(m) ? m : 'rede', m); }
+    return data;
+  }
+  async function souEquipe(){ try{ return (await rpc('sou_equipe'))===true; }catch(e){ return false; } }
+  async function souCoordenador(){
+    if (kind==='supabase'){ try{ return (await rpc('sou_coordenador'))===true; }catch(e){ return false; } }
+    if (kind==='claude'){ const u = await window.claude.use('user').catch(()=>null); try{ return !!(u && await u.canEdit()); }catch(e){ return false; } }
+    return false;
+  }
+  async function temSessao(){ if(!sb) return false; const {data} = await sb.auth.getSession(); return !!(data && data.session); }
+  async function logado(){ return (await temSessao()) && await souEquipe(); }
   async function sair(){ if(sb) await sb.auth.signOut(); }
-  function garantirAcesso(){
-    if (!precisaLogin) return Promise.resolve(true);
-    return logado().catch(()=>false).then(ok => ok || new Promise(resolve=>{
+  async function entrar(email, senha){
+    const {error} = await sb.auth.signInWithPassword({email, password:senha});
+    if (error) throw erro(/invalid/i.test(error.message)?'credenciais':/confirm/i.test(error.message)?'nao_confirmado':'rede', error.message);
+  }
+  async function cadastrar(email, senha, nome, voltar){
+    const {data,error} = await sb.auth.signUp({email, password:senha, options:{emailRedirectTo:voltar, data:{nome}}});
+    if (error) throw erro(/registered|already/i.test(error.message)?'ja_existe':/password/i.test(error.message)?'senha_fraca':'rede', error.message);
+    return !!(data && data.session);
+  }
+  function pedirLogin(){
+    return new Promise(resolve=>{
       const box=document.getElementById('login'), f=document.getElementById('login-form'), m=document.getElementById('login-msg'), bt=document.getElementById('login-ok');
       box.hidden=false; m.textContent=''; setTimeout(()=>document.getElementById('login-email').focus(),30);
       const fim = v => { box.hidden=true; f.onsubmit=null; document.getElementById('login-cancel').onclick=null; document.getElementById('login-senha').value=''; resolve(v); };
@@ -476,15 +700,46 @@ const Base = (() => {
       f.onsubmit = async ev => {
         ev.preventDefault(); bt.disabled=true; m.textContent='';
         try{
-          const {error} = await sb.auth.signInWithPassword({email:document.getElementById('login-email').value.trim(), password:document.getElementById('login-senha').value});
-          if (error){ m.textContent = /invalid/i.test(error.message) ? 'E-mail ou senha incorretos.' : 'Não foi possível entrar agora. Confira a internet e tente de novo.'; return; }
-          if (!(await souEquipe())){ await sair(); m.textContent='Esta conta não está cadastrada na equipe. Peça a inclusão ao coordenador da pesquisa.'; return; }
+          await entrar(document.getElementById('login-email').value.trim(), document.getElementById('login-senha').value);
+          if (!(await souEquipe())){ await sair(); m.textContent='Esta conta não está na equipe. Peça um link de convite ao coordenador da pesquisa.'; return; }
           fim(true);
-        } finally { bt.disabled=false; }
+        }catch(e){ m.textContent = e.code==='credenciais' ? 'E-mail ou senha incorretos.' : e.code==='nao_confirmado' ? 'Confirme o e-mail de cadastro antes de entrar.' : 'Não foi possível entrar agora. Confira a internet e tente de novo.'; }
+        finally { bt.disabled=false; }
       };
-    }));
+    });
   }
-  return {kind, enviar, ler, acompanhar, precisaLogin, garantirAcesso, sair};
+  /* papel: 'equipe' (painel, relatório) ou 'coordenador' (editar questionário e equipe) */
+  async function garantirAcesso(papel){
+    if (kind==='claude') return papel==='coordenador' ? souCoordenador() : true;
+    if (!precisaLogin) return false;
+    const ok = (await logado().catch(()=>false)) || await pedirLogin();
+    if (!ok) return false;
+    return papel==='coordenador' ? souCoordenador() : true;
+  }
+  const equipe = {
+    listar: () => rpc('listar_equipe'), convites: () => rpc('listar_convites'),
+    convidar: () => rpc('criar_convite', {p_dias:7}), revogar: id => rpc('revogar_convite', {p_id:id}),
+    remover: id => rpc('remover_membro', {p_user:id}), aceitar: tok => rpc('aceitar_convite', {p_token:tok})
+  };
+  return {kind, enviar, ler, acompanhar, precisaLogin, garantirAcesso, sair, entrar, cadastrar, temSessao, souCoordenador,
+          instrumentoAtual, publicarInstrumento, historico, equipe};
+})();
+
+/* Questionário em uso neste aparelho: a última versão publicada da edição, guardada para uso offline. */
+const Inst = (() => {
+  let ed = null, pub = clone(INST_PADRAO);
+  const K = e => 'tsa_inst_'+e;
+  function daEdicao(e){ if (e!==ed){ ed=e; pub = limparInstrumento(LS.get(K(e),null)) || clone(INST_PADRAO); } }
+  async function buscar(e){                                // devolve true se chegou versão nova; não aplica sozinho
+    daEdicao(e);
+    const r = limparInstrumento(await Base.instrumentoAtual(e));
+    if (r && r.versao>=pub.versao && JSON.stringify(r)!==JSON.stringify(pub)){ pub=r; LS.set(K(e), r); return true; }
+    return false;
+  }
+  return { buscar, publicado: () => { daEdicao(edSlug()); return pub; },
+    restaurar(){ daEdicao(edSlug()); aplicarInstrumento(clone(pub)); },
+    usar(i){ aplicarInstrumento(clone(i)); },
+    definir(i){ daEdicao(edSlug()); pub=clone(i); LS.set(K(ed), pub); aplicarInstrumento(clone(pub)); } };
 })();
 
 (function initCfg(){
@@ -499,24 +754,31 @@ const Base = (() => {
     const w=document.getElementById('cfg-chave-wrap'), ch=document.getElementById('cfg-chave'); w.hidden=false;
     ch.value = LS.get('tsa_chave',''); ch.onchange = () => LS.set('tsa_chave', ch.value.trim());
     const sair=document.getElementById('cfg-sair'); sair.hidden=false; sair.onclick = async () => { await Base.sair(); aviso.hidden=false; aviso.textContent='Conta da equipe desconectada deste aparelho.'; };
-  } else if (!Base.kind){
+  }
+  document.getElementById('go-admin').onclick = () => go('admin');
+  if (!Base.kind){
     aviso.hidden=false; aviso.textContent='Nenhuma base de respostas configurada: só os modos de demonstração funcionam. Veja o LEIAME para ligar o Supabase.';
   }
 })();
 
 /* ================== ROTEAMENTO ================== */
-const VIEWS = ['inicio','coleta','painel','relatorio'];
+const VIEWS = ['inicio','coleta','painel','relatorio','admin','convite'];
 let current = null;
 function route(){
   const h = (location.hash||'').replace('#','');
   const demo = h.endsWith('-demo');
-  const base = demo ? h.replace('-demo','') : h;
+  let base = demo ? h.replace('-demo','') : h;
+  if (base==='previa') base='coleta';
+  if (/^convite-/.test(base)) base='convite';
   const v = VIEWS.includes(base) ? base : 'inicio';
   VIEWS.forEach(x => document.getElementById('v-'+x).hidden = x!==v);
   if (current === h) return; current = h;
-  if (v==='coleta') Coleta.start();
+  if (h!=='previa') Inst.restaurar();                     // a prévia usa o rascunho; o resto, a versão publicada
+  if (v==='coleta') Coleta.start(h==='previa');
   if (v==='painel') Painel.start(demo);
   if (v==='relatorio') Relatorio.start(demo);
+  if (v==='admin') Admin.start();
+  if (v==='convite') Convite.start(h.slice(8));
 }
 window.addEventListener('hashchange', route);
 const go = h => { location.hash = h; };
@@ -531,7 +793,7 @@ document.getElementById('r-voltar').onclick = () => go('inicio');
 /* ================== COLETA (tablet, offline-first) ================== */
 const Coleta = (() => {
   const st = document.getElementById('k-stage'), prog = document.getElementById('k-prog');
-  let lang='pt', step=-1, ans={}, idle=null, started=false, syncing=false, again=false, pendingTimer=null, tok=0, semEspaco=false;
+  let lang='pt', step=-1, ans={}, idle=null, started=false, syncing=false, again=false, pendingTimer=null, tok=0, semEspaco=false, previa=false;
   /* Fila local única do aparelho (não depende do número do tablet):
      {docId: {docId, ed, tab, hora, itens:[...], enviados:n}} — um documento por aparelho por hora. */
   const FKEY = 'tsa_fila', MAX_DOC = 300;
@@ -594,46 +856,56 @@ const Coleta = (() => {
   function el(html){ const d=document.createElement('div'); d.className='kcard'; d.innerHTML=html; st.replaceChildren(d); st.scrollTop=0; return d; }
   function welcome(){
     tok++; step=-1; ans={}; prog.style.width='0%';
+    if (!previa) Inst.restaurar();
     const t=L();
     const c = el(`<div class="langs">${['pt','en','es'].map(k=>`<button class="lang ${k===lang?'sel':''}" data-l="${k}">${T[k].lang}</button>`).join('')}</div>
       <h2 class="hero-k">${t.welcome[0]} <span>${t.welcome[1]}</span></h2>
-      <p class="qhelp">${t.welcomeSub}</p><p class="consent">${t.consent}</p>
+      <p class="qhelp">${esc(t.welcomeSub)}</p><p class="consent">${esc(t.consent)}</p>
       <div class="knav"><span></span><button class="btn" id="k-start">${t.start}</button></div>`);
     c.querySelectorAll('.lang').forEach(b=>b.onclick=()=>{ lang=b.dataset.l; welcome(); });
-    c.querySelector('#k-start').onclick=()=>{ ans={lang, t0:Date.now()}; show(0); };
+    c.querySelector('#k-start').onclick=()=>{ ans={lang, t0:Date.now(), x:{}}; show(0); };
+    if (!previa && Base.kind) Inst.buscar(edSlug()).then(novo=>{ if (novo && step<0 && !previa && current==='coleta') welcome(); }).catch(()=>{});
   }
-  function nav(canNext, onNext, label){
+  function nav(canNext, label){
     return `<div class="knav"><button class="btn sec" id="k-back">${L().back}</button><button class="btn" id="k-next" ${canNext?'':'disabled'}>${label||L().next}</button></div>`;
   }
   function wireNav(c, onNext){ c.querySelector('#k-back').onclick=()=> step===0 ? welcome() : show(step-1); const n=c.querySelector('#k-next'); if(n) n.onclick=onNext; }
+  /* Perguntas do núcleo gravam em ans[id]; perguntas criadas no editor, em ans.x[id]. */
+  const getA = q => q.nucleo ? ans[q.id] : ans.x[q.id];
+  const setA = (q,v) => { if (q.nucleo) ans[q.id]=v; else ans.x[q.id]=v; };
   function show(i){
     resetIdle(); step=i; const meu = ++tok; prog.style.width = (100*i/QS.length)+'%';
-    const q=QS[i], t=L(); const head=`<div class="qnum">${i+1} / ${QS.length}</div><h2 class="qtitle">${t.q[q.id]}</h2>${t.help[q.id]?`<p class="qhelp">${t.help[q.id]}</p>`:''}`;
-    const adv = () => setTimeout(()=>{ if (meu===tok) show(i+1); }, 220);   // não avança se a pessoa já voltou, ou se a tela reiniciou
+    const q=QS[i], t=L(), ultima = i===QS.length-1, lbl = ultima ? t.send : null;
+    const head=`<div class="qnum">${i+1} / ${QS.length}</div><h2 class="qtitle">${esc(t.q[q.id])}</h2>${t.help[q.id]?`<p class="qhelp">${esc(t.help[q.id])}</p>`:''}`;
+    const prox = () => ultima ? finish() : show(i+1);
+    const adv = () => { if (!ultima) setTimeout(()=>{ if (meu===tok) show(i+1); }, 220); };   // não avança se a pessoa voltou ou a tela reiniciou
+    const libera = (c, ok) => { c.querySelector('#k-next').disabled = !(ok || !q.obrig); };
     if (q.type==='single'){
-      const c=el(head+`<div class="opts">${q.opts.map(o=>`<button class="opt ${ans[q.id]===o?'sel':''}" data-o="${o}">${t.o[o]}</button>`).join('')}</div>`+nav(!!ans[q.id]));
-      c.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ ans[q.id]=b.dataset.o; c.querySelectorAll('.opt').forEach(x=>x.classList.toggle('sel',x===b)); c.querySelector('#k-next').disabled=false; adv(); });
-      wireNav(c, ()=>show(i+1));
+      const v = getA(q);
+      const c=el(head+`<div class="opts">${q.opts.map(o=>`<button class="opt ${v===o?'sel':''}" data-o="${esc(o)}">${esc(t.o[o])}</button>`).join('')}</div>`+nav(!!v || !q.obrig, lbl));
+      c.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ setA(q, b.dataset.o); c.querySelectorAll('.opt').forEach(x=>x.classList.toggle('sel',x===b)); libera(c,true); adv(); });
+      wireNav(c, prox);
     } else if (q.type==='multi'){
-      ans[q.id] = ans[q.id] || [];
-      const c=el(head+`<div class="opts">${q.opts.map(o=>`<button class="opt ${ans[q.id].includes(o)?'sel':''}" data-o="${o}"><span class="chk"></span>${t.o[o]}</button>`).join('')}</div>`+nav(ans[q.id].length>0));
-      c.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ resetIdle(); const a=ans[q.id], o=b.dataset.o; const k=a.indexOf(o); k>=0?a.splice(k,1):a.push(o); b.classList.toggle('sel'); c.querySelector('#k-next').disabled=!a.length; });
-      wireNav(c, ()=>show(i+1));
+      const a = getA(q) || []; setA(q, a);
+      const c=el(head+`<div class="opts">${q.opts.map(o=>`<button class="opt ${a.includes(o)?'sel':''}" data-o="${esc(o)}"><span class="chk"></span>${esc(t.o[o])}</button>`).join('')}</div>`+nav(a.length>0 || !q.obrig, lbl));
+      c.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ resetIdle(); const o=b.dataset.o; const k=a.indexOf(o); k>=0?a.splice(k,1):a.push(o); b.classList.toggle('sel'); libera(c, a.length>0); });
+      wireNav(c, prox);
     } else if (q.type==='rating'){
-      ans.av = ans.av || {};
-      const c=el(head+`<div class="rating">${q.items.map(it=>`<div class="rrow"><span>${t.av[it]}</span><div class="stars">${[1,2,3,4,5].map(v=>`<button class="star ${ans.av[it]===v?'sel':''}" data-i="${it}" data-v="${v}" aria-label="${t.av[it]} ${v}">${v}</button>`).join('')}</div></div>`).join('')}</div>`+nav(q.items.every(it=>ans.av[it])));
-      c.querySelectorAll('.star').forEach(b=>b.onclick=()=>{ resetIdle(); ans.av[b.dataset.i]=+b.dataset.v; c.querySelectorAll(`.star[data-i="${b.dataset.i}"]`).forEach(x=>x.classList.toggle('sel', +x.dataset.v<=+b.dataset.v)); c.querySelector('#k-next').disabled=!q.items.every(it=>ans.av[it]); });
+      const av = getA(q) || {}; setA(q, av);
+      const c=el(head+`<div class="rating">${q.items.map(it=>`<div class="rrow"><span>${esc(t.av[it])}</span><div class="stars">${[1,2,3,4,5].map(v=>`<button class="star ${av[it]===v?'sel':''}" data-i="${esc(it)}" data-v="${v}" aria-label="${esc(t.av[it])} ${v}">${v}</button>`).join('')}</div></div>`).join('')}</div>`+nav(q.items.every(it=>av[it]) || !q.obrig, lbl));
+      c.querySelectorAll('.star').forEach(b=>b.onclick=()=>{ resetIdle(); av[b.dataset.i]=+b.dataset.v; c.querySelectorAll(`.star[data-i="${b.dataset.i}"]`).forEach(x=>x.classList.toggle('sel', +x.dataset.v<=+b.dataset.v)); libera(c, q.items.every(it=>av[it])); });
       c.querySelectorAll('.rrow').forEach(r=>{ const sel=r.querySelector('.star.sel'); if(sel){ const v=+sel.dataset.v; r.querySelectorAll('.star').forEach(x=>x.classList.toggle('sel',+x.dataset.v<=v)); }});
-      wireNav(c, ()=>show(i+1));
+      wireNav(c, prox);
     } else if (q.type==='nps'){
-      const c=el(head+`<div class="nps">${[...Array(11).keys()].map(v=>`<button class="${ans.nps===v?'sel':''}" data-v="${v}">${v}</button>`).join('')}</div>`+nav(ans.nps!=null));
-      c.querySelectorAll('.nps button').forEach(b=>b.onclick=()=>{ ans.nps=+b.dataset.v; c.querySelectorAll('.nps button').forEach(x=>x.classList.toggle('sel',x===b)); c.querySelector('#k-next').disabled=false; adv(); });
-      wireNav(c, ()=>show(i+1));
+      const v = getA(q);
+      const c=el(head+`<div class="nps">${[...Array(11).keys()].map(k=>`<button class="${v===k?'sel':''}" data-v="${k}">${k}</button>`).join('')}</div>`+nav(v!=null || !q.obrig, lbl));
+      c.querySelectorAll('.nps button').forEach(b=>b.onclick=()=>{ setA(q, +b.dataset.v); c.querySelectorAll('.nps button').forEach(x=>x.classList.toggle('sel',x===b)); libera(c,true); adv(); });
+      wireNav(c, prox);
     } else if (q.type==='text'){
-      const c=el(head+`<textarea class="search" id="k-com" maxlength="400" aria-label="${t.q.com}"></textarea>`+nav(true, null, t.send));
-      const ta=c.querySelector('#k-com'); ta.value=ans.com||'';    // value, não innerHTML: o texto digitado nunca vira HTML
-      ta.oninput=()=>{ resetIdle(); ans.com=ta.value.slice(0,400); };
-      wireNav(c, finish);
+      const c=el(head+`<textarea class="search" id="k-com" maxlength="400" aria-label="${esc(t.q[q.id])}"></textarea>`+nav(!q.obrig || !!(getA(q)||'').trim(), lbl));
+      const ta=c.querySelector('#k-com'); ta.value=getA(q)||'';    // value, não innerHTML: o texto digitado nunca vira HTML
+      ta.oninput=()=>{ resetIdle(); setA(q, ta.value.slice(0,400)); libera(c, !!ta.value.trim()); };
+      wireNav(c, prox);
     } else if (q.type==='origem'){
       origem(head);
     }
@@ -663,18 +935,26 @@ const Coleta = (() => {
   }
   function finish(){
     if (step<0) return;                                   // evita envio duplo
-    const r = {id: cfg.tablet+'-'+Date.now().toString(36)+'-'+aleatorio(8), t: Date.now(), tab: cfg.tablet, ed: edSlug(),
+    const ativos = new Set(QS.map(q=>q.id)), itensAv = new Set((QS.find(q=>q.id==='av')||{items:[]}).items);
+    const av = {}; Object.entries(ans.av||{}).forEach(([k,v])=>{ if (itensAv.has(k)) av[k]=v; });
+    const x = {}; Object.entries(ans.x||{}).forEach(([k,v])=>{ if (ativos.has(k) && v!=null && v!=='' && !(Array.isArray(v)&&!v.length) && !(typeof v==='object' && !Array.isArray(v) && !Object.keys(v).length)) x[k] = typeof v==='string' ? v.trim().slice(0,400) : v; });
+    const r = {id: cfg.tablet+'-'+Date.now().toString(36)+'-'+aleatorio(8), t: Date.now(), tab: cfg.tablet, ed: edSlug(), v: INST.versao||0,
       lang: ans.lang, br: ans.br?1:0, mun: ans.br?ans.mun:null, pais: ans.br?'BR':ans.pais, perfil: ans.perfil, idade: ans.idade, gen: ans.gen, prim: ans.prim,
-      dias: ans.dias, pern: ans.pern, obj: ans.obj||[], av: ans.av||{}, tecn: ans.tecn, neg: ans.neg, gasto: ans.gasto, nps: ans.nps, com: (ans.com||'').trim().slice(0,400), dur: Math.round((Date.now()-ans.t0)/1000)};
+      dias: ans.dias, pern: ans.pern, obj: ans.obj||[], av, tecn: ans.tecn, neg: ans.neg, gasto: ans.gasto, nps: ans.nps, com: (ans.com||'').trim().slice(0,400), dur: Math.round((Date.now()-ans.t0)/1000)};
+    if (Object.keys(x).length) r.x = x;
     step=-1; tok++;
-    store(r);
+    if (!previa) store(r);
     const o = origemDe(r); const t=L(); prog.style.width='100%';
     const km = o ? Math.round(o.km) : 0;
-    el(`<div class="thanks kcard"><h2 class="hero-k">${t.thanks}</h2>${km>15?`<div class="km tabnum">${km.toLocaleString(lang==='en'?'en-US':'pt-BR')}</div><p class="qhelp">${t.thanksKm}</p>`:`<p class="qhelp">${t.thanksLocal}</p>`}<p class="qhelp">${t.thanksSub}</p></div>`);
+    el(`<div class="thanks kcard"><h2 class="hero-k">${t.thanks}</h2>${km>15?`<div class="km tabnum">${km.toLocaleString(lang==='en'?'en-US':'pt-BR')}</div><p class="qhelp">${t.thanksKm}</p>`:`<p class="qhelp">${t.thanksLocal}</p>`}<p class="qhelp">${previa?'Pré-visualização: esta resposta não foi gravada.':t.thanksSub}</p></div>`);
     clearTimeout(idle); idle=setTimeout(welcome, 7000);
   }
-  return { start(){
+  document.getElementById('k-fechar').onclick = () => go('admin');
+  return { start(p){
+    previa = !!p;
+    document.getElementById('k-previa').hidden = !previa; document.getElementById('k-fechar').hidden = !previa;
     document.getElementById('k-tab').textContent = cfg.tablet==='PAINEL'?'Sem número de tablet':('Tablet '+(+cfg.tablet.slice(1)));
+    if (previa){ welcome(); return; }
     if(!started){ started=true; scheduleSync(); manterTelaLigada(); try{ navigator.storage && navigator.storage.persist && navigator.storage.persist(); }catch(e){} }
     setNet(navigator.onLine, navigator.onLine?'online':'sem internet · guardando aqui'); welcome(); sync();
   } };
@@ -696,7 +976,7 @@ function analisar(rs){
   const npsv = rs.map(r=>r.nps).filter(v=>v!=null);
   const prom = npsv.filter(v=>v>=9).length, det = npsv.filter(v=>v<=6).length, neu = npsv.length-prom-det;
   const nps = npsv.length ? Math.round(100*(prom-det)/npsv.length) : null;
-  const dims = QS.find(q=>q.id==='av').items;
+  const dims = AV_ITENS_ATUAIS();
   const sat = dims.map(d=>{ const v=rs.map(r=>r.av&&r.av[d]).filter(Boolean); return {d, media: v.length? v.reduce((a,b)=>a+b,0)/v.length : 0, top2: v.length? v.filter(x=>x>=4).length/v.length:0, n:v.length}; });
   const cont = (campo, opts) => opts.map(o=>({o, n: rs.filter(r=>Array.isArray(r[campo])?r[campo].includes(o):r[campo]===o).length}));
   const bandas = BANDAS.map(([a,b,l])=>({l, n: ok.filter(o=> (o.local?0:o.km)>=a && (o.local?0:o.km)<b && (l!=='Rio Verde' || o.local) && !(l!=='Rio Verde' && o.local)).length}));
@@ -704,7 +984,7 @@ function analisar(rs){
   const origens = [...porOrig.values()].sort((a,b)=>b.n-a.n);
   const porUF = d3.rollups(ok.filter(o=>o.uf), v=>v.length, o=>o.uf).sort((a,b)=>b[1]-a[1]);
   const kmsFora = ok.filter(o=>!o.local).map(o=>o.km);
-  const perfDist = QS[1].opts.map(p=>{ const v=rs.map((r,i)=>[r,os[i]]).filter(([r,o])=>r.perfil===p && o).map(([r,o])=>o.local?0:o.km); return {p, n:v.length, med: quantil(v,.5)}; });
+  const perfDist = OP('perfil').map(p=>{ const v=rs.map((r,i)=>[r,os[i]]).filter(([r,o])=>r.perfil===p && o).map(([r,o])=>o.local?0:o.km); return {p, n:v.length, med: quantil(v,.5)}; });
   const gastoFora = rs.map((r,i)=>[r,os[i]]).filter(([r,o])=>o && !o.local && r.gasto).map(([r])=>GASTO_MID[r.gasto]);
   const gastoLocal = rs.map((r,i)=>[r,os[i]]).filter(([r,o])=>o && o.local && r.gasto).map(([r])=>GASTO_MID[r.gasto]);
   const pern = cont('pern',['pnao','prv','pout']);
@@ -713,30 +993,48 @@ function analisar(rs){
   return {n, nOk: ok.length, kms, totalKm: d3.sum(kmsFora), med: quantil(kms,.5), r50: quantil(kmsFora,.5), r80: quantil(kmsFora,.8), r95: quantil(kmsFora,.95),
     nMun: mun.size, nUF: ufs.size, nPais: paises.size, fora, pFora: ok.length? fora/ok.length:0,
     nps, prom, neu, det, nNps: npsv.length, sat, origens, porUF, bandas, perfDist,
-    perfil: cont('perfil', QS[1].opts), idade: cont('idade', QS[2].opts), gen: cont('gen', QS[3].opts), prim: cont('prim',['s','nn']), dias: cont('dias', QS[5].opts),
-    pern, obj: cont('obj', QS[7].opts), tecn: cont('tecn',['ts','tav','tn']), neg: cont('neg', QS[10].opts), gasto: cont('gasto', QS[11].opts),
+    perfil: cont('perfil', OP('perfil')), idade: cont('idade', OP('idade')), gen: cont('gen', OP('gen')), prim: cont('prim',['s','nn']), dias: cont('dias', OP('dias')),
+    pern, obj: cont('obj', OP('obj')), tecn: cont('tecn',['ts','tav','tn']), neg: cont('neg', OP('neg')), gasto: cont('gasto', OP('gasto')),
     gastoMedFora: gastoFora.length? d3.mean(gastoFora):0, gastoMedLocal: gastoLocal.length? d3.mean(gastoLocal):0, nGastoFora: gastoFora.length,
     negs, negVal, langs: cont('lang',['pt','en','es']), coments: rs.filter(r=>r.com).map(r=>r.com),
     porHora: d3.rollups(rs, v=>v.length, r=>{ const d=new Date(r.t); d.setMinutes(0,0,0); return +d; }).sort((a,b)=>a[0]-b[0]),
-    porDia: d3.rollups(rs, v=>v.length, r=>diaLocal(r.t)).sort((a,b)=>a[0].localeCompare(b[0])) };
+    porDia: d3.rollups(rs, v=>v.length, r=>diaLocal(r.t)).sort((a,b)=>a[0].localeCompare(b[0])),
+    versoes: d3.rollups(rs, v=>v.length, r=>r.v||0).sort((a,b)=>a[0]-b[0]), extras: analisarExtras(rs) };
 }
 
+/* Perguntas extras (criadas no editor), pela versão do questionário em uso. */
+function analisarExtras(rs){
+  return INST.perguntas.filter(p=>!p.nucleo).map(p=>{
+    const vals = rs.map(r=>r.x && r.x[p.id]).filter(v=>v!=null && v!=='' && !(Array.isArray(v) && !v.length));
+    const b = {p, n:vals.length};
+    if (p.type==='single') return {...b, cont:p.opts.map(o=>({o:o.id, n:vals.filter(v=>v===o.id).length}))};
+    if (p.type==='multi') return {...b, cont:p.opts.map(o=>({o:o.id, n:vals.filter(v=>Array.isArray(v) && v.includes(o.id)).length}))};
+    if (p.type==='rating') return {...b, itens:p.items.map(it=>{ const v=vals.map(x=>x && x[it.id]).filter(Number.isInteger); return {it, n:v.length, media:v.length?d3.mean(v):0}; })};
+    if (p.type==='nps'){ const v=vals.filter(Number.isInteger); return {...b, media:v.length?d3.mean(v):0, med:quantil(v,.5)}; }
+    return {...b, textos:vals.filter(v=>typeof v==='string')};
+  }).filter(e=>e.n>0 || e.p.ativa!==false);
+}
 /* Dados vindos da base são tratados como não confiáveis: só passam valores do questionário. */
-const OPC = Object.fromEntries(QS.filter(q=>q.opts).map(q=>[q.id, q.opts]));
-const AV_ITENS = QS.find(q=>q.id==='av').items;
 function limpar(x){
   if (!x || typeof x!=='object') return null;
   const t = +x.t; const id = typeof x.id==='string' && /^[A-Za-z0-9-]{4,80}$/.test(x.id) ? x.id : null;
   if (!id || !isFinite(t) || t<=0) return null;
-  const um = (campo) => OPC[campo].includes(x[campo]) ? x[campo] : null;
+  const um = (campo) => OP(campo).includes(x[campo]) ? x[campo] : null;
   const br = x.br ? 1 : 0;
-  const av = {}; if (x.av && typeof x.av==='object') AV_ITENS.forEach(k=>{ const v=x.av[k]; if (Number.isInteger(v) && v>=1 && v<=5) av[k]=v; });
+  const av = {}; if (x.av && typeof x.av==='object') Object.keys(x.av).slice(0,20).forEach(k=>{ const v=x.av[k]; if (ID_RE.test(k) && Number.isInteger(v) && v>=1 && v<=5) av[k]=v; });
+  const xx = {}; if (x.x && typeof x.x==='object' && !Array.isArray(x.x)) Object.entries(x.x).slice(0,40).forEach(([k,v])=>{
+    if (!ID_RE.test(k)) return;
+    if (typeof v==='string') xx[k]=v.slice(0,400);
+    else if (Number.isInteger(v) && v>=0 && v<=10) xx[k]=v;
+    else if (Array.isArray(v)) xx[k]=[...new Set(v.filter(o=>typeof o==='string' && ID_RE.test(o)))].slice(0,30);
+    else if (v && typeof v==='object'){ const o={}; Object.entries(v).slice(0,20).forEach(([a,n])=>{ if (ID_RE.test(a) && Number.isInteger(n) && n>=1 && n<=5) o[a]=n; }); xx[k]=o; }
+  });
   return {id, t, tab: typeof x.tab==='string' && /^(T\d{2}|PAINEL)$/.test(x.tab) ? x.tab : '', ed: typeof x.ed==='string' ? x.ed.slice(0,60) : '',
     lang: ['pt','en','es'].includes(x.lang) ? x.lang : 'pt', br,
     mun: br && Number.isInteger(x.mun) && MUN.has(x.mun) ? x.mun : null,
     pais: br ? 'BR' : (typeof x.pais==='string' && PAIS.has(x.pais) ? x.pais : null),
     perfil:um('perfil'), idade:um('idade'), gen:um('gen'), prim:um('prim'), dias:um('dias'), pern:um('pern'),
-    obj: Array.isArray(x.obj) ? [...new Set(x.obj.filter(o=>OPC.obj.includes(o)))] : [], av,
+    obj: Array.isArray(x.obj) ? [...new Set(x.obj.filter(o=>OP('obj').includes(o)))] : [], av, x:xx, v: Number.isInteger(x.v) && x.v>=0 ? x.v : 0,
     tecn:um('tecn'), neg:um('neg'), gasto:um('gasto'),
     nps: Number.isInteger(x.nps) && x.nps>=0 && x.nps<=10 ? x.nps : null,
     com: typeof x.com==='string' ? x.com.trim().slice(0,400) : '',
@@ -760,13 +1058,13 @@ const Demo = (() => {
     const z = Math.random(); let br=1, mun=null, pais='BR';
     if (z<.32) mun=FAIR.code; else if (z<.62) mun=perto[Math.floor(Math.random()*perto.length)]; else if (z<.74) mun=go[Math.floor(Math.random()*go.length)];
     else if (z<.9) mun=vizUF[Math.floor(Math.random()*vizUF.length)]; else if (z<.975) mun=resto[Math.floor(Math.random()*resto.length)]; else { br=0; pais=paises[Math.floor(Math.random()*paises.length)]; }
-    const perfil = pick(QS[1].opts,[16,14,9,15,10,12,5,19]);
+    const perfil = pick(OP('perfil'),[16,14,9,15,10,12,5,19]);
     const nps = Math.max(0,Math.min(10, Math.round(8.6 + (Math.random()-.5)*4.2 + (Math.random()<.08?-4:0))));
-    const av = {}; QS[8].items.forEach((d,i)=>av[d]=Math.max(1,Math.min(5, Math.round(4.1 + [.3,-.4,.2,.4,-.6,.3][i] + (Math.random()-.5)*2))));
+    const av = {}; AV_NUCLEO.forEach((d,i)=>av[d]=Math.max(1,Math.min(5, Math.round(4.1 + [.3,-.4,.2,.4,-.6,.3][i] + (Math.random()-.5)*2))));
     return {id:'demo-'+t+'-'+Math.random().toString(36).slice(2,7), t, tab:'T0'+(1+Math.floor(Math.random()*9)), ed:'demo', lang: br? 'pt' : pick(['en','es','pt'],[5,4,1]), br, mun, pais,
-      perfil, idade: pick(QS[2].opts,[2,12,24,26,26,10]), gen: pick(['f','m','o','n'],[30,64,1,5]), prim: pick(['s','nn'],[28,72]), dias: pick(QS[5].opts,[52,26,12,4,6]),
-      pern: mun===FAIR.code? 'pnao' : pick(['pnao','prv','pout'],[55,30,15]), obj: QS[7].opts.filter((o,i)=>Math.random()<[.7,.25,.2,.3,.35,.3][i]), av,
-      tecn: pick(['ts','tav','tn'],[34,46,20]), neg: pick(QS[10].opts,[62,18,12,5,3]), gasto: mun===FAIR.code? pick(QS[11].opts,[20,40,25,10,3,1,1]) : pick(QS[11].opts,[3,14,28,26,15,9,5]),
+      perfil, idade: pick(OP('idade'),[2,12,24,26,26,10]), gen: pick(['f','m','o','n'],[30,64,1,5]), prim: pick(['s','nn'],[28,72]), dias: pick(OP('dias'),[52,26,12,4,6]),
+      pern: mun===FAIR.code? 'pnao' : pick(['pnao','prv','pout'],[55,30,15]), obj: OP('obj').filter((o,i)=>Math.random()<[.7,.25,.2,.3,.35,.3][i]), av,
+      tecn: pick(['ts','tav','tn'],[34,46,20]), neg: pick(OP('neg'),[62,18,12,5,3]), gasto: mun===FAIR.code? pick(OP('gasto'),[20,40,25,10,3,1,1]) : pick(OP('gasto'),[3,14,28,26,15,9,5]),
       nps, com: Math.random()<.12 ? pick(['Mais sombra e bebedouros nas áreas de demonstração','Ótima feira, voltarei','Faltou sinalização para o estacionamento','Palestras excelentes sobre bioinsumos','Preços das máquinas ainda altos para pequeno produtor','Mais espaço para agricultura familiar'],[1,1,1,1,1,1]) : '', dur: 140+Math.floor(Math.random()*120)};
   }
   function base(n){ const now=Date.now(), arr=[]; for(let i=0;i<n;i++) arr.push(uma(now - (n-i)*45000 - Math.random()*20000)); return arr; }
@@ -893,7 +1191,7 @@ const Painel = (() => {
       vals.map((d,i)=>`<g transform="translate(116,${16+i*20})"><rect width="9" height="9" rx="2" fill="${d.c}"/><text x="14" y="9" fill="#c9d8f2" style="font:10px 'IBM Plex Sans',sans-serif">${d.l} <tspan fill="#e7f1ff" font-weight="600">${Math.round(100*d.v/tot)}%</tspan></text></g>`).join('');
   }
   function barsSat(A){
-    document.getElementById('g-sat').innerHTML = A.sat.map(s=>`<div class="bar"><span class="l" title="${T.pt.av[s.d]}">${AV_CURTO[s.d]}</span><span class="tr"><i style="width:${(s.media/5*100).toFixed(1)}%"></i></span><span class="v">${s.n?s.media.toFixed(1).replace('.',','):'–'}</span></div>`).join('');
+    document.getElementById('g-sat').innerHTML = A.sat.map(s=>`<div class="bar"><span class="l" title="${esc(T.pt.av[s.d])}">${esc(AV_CURTO[s.d])}</span><span class="tr"><i style="width:${(s.media/5*100).toFixed(1)}%"></i></span><span class="v">${s.n?s.media.toFixed(1).replace('.',','):'–'}</span></div>`).join('');
   }
   function barsDist(A){
     const mx = Math.max(1,...A.bandas.map(b=>b.n)), tot=d3.sum(A.bandas,b=>b.n)||1;
@@ -925,6 +1223,7 @@ const Painel = (() => {
     const ok = await Base.garantirAcesso();
     if (meu!==run) return;                                // a pessoa saiu da tela enquanto entrava
     if (!ok){ status(false,'login necessário'); go('inicio'); return; }
+    await Inst.buscar(edSlug()).catch(()=>{}); if (meu!==run) return; Inst.restaurar();
     const vistos = new Set();
     unsub = Base.acompanhar(edSlug(), (bruto, primeiro)=>{
       const all = prepararDados(bruto);
@@ -947,11 +1246,12 @@ const Relatorio = (() => {
   const fmt = v => Math.round(v).toLocaleString('pt-BR');
   const brl = v => 'R$ '+Math.round(v).toLocaleString('pt-BR');
   function tabela(lista, rotulos, total, titulo){
+    if (!lista.some(x=>x.n)) return '';                 // pergunta desativada nesta edição
     return `<div class="tw"><table><thead><tr><th>${esc(titulo)}</th><th class="n">Respostas</th><th class="n">%</th></tr></thead><tbody>${lista.map(x=>`<tr><td>${esc(rotulos[x.o]||x.o)}</td><td class="n">${fmt(x.n)}</td><td class="n">${pct(x.n,total)}</td></tr>`).join('')}</tbody></table></div>`;
   }
   function svgBars(items, w=640){
     const mx=Math.max(1,...items.map(i=>i.v)); const h=24*items.length+10;
-    return `<svg viewBox="0 0 ${w} ${h}" width="100%" role="img">${items.map((it,i)=>`<text x="0" y="${i*24+16}" font-size="12" fill="#13213f" font-family="IBM Plex Sans, Arial">${it.l}</text><rect x="210" y="${i*24+5}" width="${(w-290)*it.v/mx}" height="14" rx="3" fill="#1557c0"/><text x="${215+(w-290)*it.v/mx}" y="${i*24+16}" font-size="12" fill="#13213f" font-family="IBM Plex Mono, monospace">${it.t}</text>`).join('')}</svg>`;
+    return `<svg viewBox="0 0 ${w} ${h}" width="100%" role="img">${items.map((it,i)=>`<text x="0" y="${i*24+16}" font-size="12" fill="#13213f" font-family="IBM Plex Sans, Arial">${esc(it.l)}</text><rect x="210" y="${i*24+5}" width="${(w-290)*it.v/mx}" height="14" rx="3" fill="#1557c0"/><text x="${215+(w-290)*it.v/mx}" y="${i*24+16}" font-size="12" fill="#13213f" font-family="IBM Plex Mono, monospace">${esc(it.t)}</text>`).join('')}</svg>`;
   }
   function mapaPNG(rs){
     try{
@@ -984,51 +1284,69 @@ const Relatorio = (() => {
     const periodo = R.length ? new Date(R[0].t).toLocaleDateString('pt-BR')+' a '+new Date(R[R.length-1].t).toLocaleDateString('pt-BR') : '–';
     const satOrd = A.sat.filter(s=>s.n>0).sort((a,b)=>b.media-a.media);
     if (!satOrd.length) satOrd.push({d:A.sat[0].d, media:0, n:0});
+    let ns = 0; const H = t => `<h2>${++ns}. ${t}</h2>`;
+    const versoesTxt = A.versoes.map(([v,k])=>`${v?'versão '+v:'versão padrão'} (${fmt(k)} ${k===1?'resposta':'respostas'})`).join(', ');
     const html = `
       <h1>Relatório técnico de avaliação · ${esc(cfg.edicao)}</h1>
       <p class="sub">${demo?'<b>DADOS DE DEMONSTRAÇÃO</b> · ':''}${fmt(n)} questionários válidos · coleta de ${periodo} · Programa de Pós-Graduação Profissional em Administração, IF Goiano</p>
-      <h2>1. Resumo executivo</h2>
+      ${H('Resumo executivo')}
       <div class="kgrid"><div><b>${fmt(n)}</b><span>respostas</span></div><div><b>${A.nps==null?'–':A.nps}</b><span>NPS (−100 a 100)</span></div><div><b>${fmt(A.nMun)}</b><span>municípios de origem</span></div><div><b>${fmt(A.nUF)} · ${fmt(A.nPais)}</b><span>estados · outros países</span></div><div><b>${pct(A.fora,A.nOk)}</b><span>visitantes de fora de Rio Verde</span></div><div><b>${fmt(A.r50)} km</b><span>raio de 50% dos visitantes de fora</span></div></div>
-      <p>A avaliação geral foi ${A.nps==null?'–':A.nps>=75?'excelente':A.nps>=50?'muito boa':A.nps>=0?'positiva, com pontos a melhorar':'negativa'} (NPS ${A.nps==null?'–':A.nps}). O item mais bem avaliado foi <b>${av[satOrd[0].d]}</b> (média ${satOrd[0].media.toFixed(2).replace('.',',')}) e o de pior avaliação, <b>${av[satOrd[satOrd.length-1].d]}</b> (média ${satOrd[satOrd.length-1].media.toFixed(2).replace('.',',')}). Metade dos visitantes de fora veio de até ${fmt(A.r50)} km e 80% de até ${fmt(A.r80)} km.</p>
-      <h2>2. Método</h2>
+      <p>A avaliação geral foi ${A.nps==null?'–':A.nps>=75?'excelente':A.nps>=50?'muito boa':A.nps>=0?'positiva, com pontos a melhorar':'negativa'} (NPS ${A.nps==null?'–':A.nps}). O item mais bem avaliado foi <b>${esc(av[satOrd[0].d])}</b> (média ${satOrd[0].media.toFixed(2).replace('.',',')}) e o de pior avaliação, <b>${esc(av[satOrd[satOrd.length-1].d])}</b> (média ${satOrd[satOrd.length-1].media.toFixed(2).replace('.',',')}). Metade dos visitantes de fora veio de até ${fmt(A.r50)} km e 80% de até ${fmt(A.r80)} km.</p>
+      ${H('Método')}
       <p>Questionário estruturado aplicado em tablets na sala de avaliação, em português, inglês e espanhol, sem identificação do respondente (Resolução CNS nº 510/2016, art. 1º, parágrafo único, I). A amostra é não probabilística (participação voluntária); por isso, os percentuais descrevem os respondentes e só se estendem ao público total com cautela. As distâncias são calculadas em linha reta entre o centro do município (ou do país) de origem e Rio Verde.</p>
-      <h2>3. Perfil dos respondentes</h2>
+      <p>Instrumento de coleta, editado e versionado no próprio sistema: ${versoesTxt}. As perguntas do núcleo mantêm as mesmas opções em todas as versões, o que permite somar as respostas.</p>
+      ${H('Perfil dos respondentes')}
       ${tabela(A.perfil,o,n,'Perfil')}${tabela(A.idade,o,n,'Faixa etária')}${tabela(A.gen,o,n,'Gênero')}
       <p>Primeira visita à Tecnoshow: ${pct(A.prim[0].n,n)}. Idioma do questionário: português ${pct(A.langs[0].n,n)}, inglês ${pct(A.langs[1].n,n)}, espanhol ${pct(A.langs[2].n,n)}.</p>
-      <h2>4. Origem e deslocamentos</h2>
+      ${H('Origem e deslocamentos')}
       <img class="map" alt="Rotas dos municípios de origem até Rio Verde" src="${mapaPNG(R)}">
       <p class="note">Cada linha liga o município de origem a Rio Verde; a espessura é proporcional ao número de respondentes.</p>
       <div class="kgrid"><div><b>${fmt(A.med)} km</b><span>distância mediana (todos)</span></div><div><b>${fmt(A.r50)} km</b><span>50% dos visitantes de fora</span></div><div><b>${fmt(A.r80)} km</b><span>80% dos visitantes de fora</span></div><div><b>${fmt(A.r95)} km</b><span>95% dos visitantes de fora</span></div><div><b>${fmt(A.totalKm)} km</b><span>soma das distâncias (ida)</span></div></div>
       ${svgBars(A.bandas.map(b=>({l:b.l, v:b.n, t:pct(b.n,A.nOk)})))}
       <div class="tw"><table><thead><tr><th>Principais municípios de origem</th><th class="n">Respostas</th><th class="n">Distância (km)</th></tr></thead><tbody>${A.origens.slice(0,15).map(x=>`<tr><td>${esc(x.nome)}</td><td class="n">${fmt(x.n)}</td><td class="n">${x.local?'–':fmt(x.km)}</td></tr>`).join('')}</tbody></table></div>
       <div class="tw"><table><thead><tr><th>Estado</th><th class="n">Respostas</th><th class="n">%</th></tr></thead><tbody>${A.porUF.slice(0,12).map(([u,v])=>`<tr><td>${esc(u)}</td><td class="n">${fmt(v)}</td><td class="n">${pct(v,A.nOk)}</td></tr>`).join('')}</tbody></table></div>
-      <p><b>Leitura da bacia de atração.</b> A distância mediana por perfil indica até onde a feira alcança cada público: ${A.perfDist.filter(p=>p.n>=3).map(p=>`${o[p.p].toLowerCase()} ${fmt(p.med)} km`).join('; ') || 'ainda há poucas respostas por perfil'}. Perfis com mediana menor dependem mais do entorno de Rio Verde; perfis com mediana maior mostram o alcance nacional do evento.</p>
-      <h2>5. Satisfação e recomendação</h2>
+      <p><b>Leitura da bacia de atração.</b> A distância mediana por perfil indica até onde a feira alcança cada público: ${A.perfDist.filter(p=>p.n>=3).map(p=>`${esc(o[p.p].toLowerCase())} ${fmt(p.med)} km`).join('; ') || 'ainda há poucas respostas por perfil'}. Perfis com mediana menor dependem mais do entorno de Rio Verde; perfis com mediana maior mostram o alcance nacional do evento.</p>
+      ${H('Satisfação e recomendação')}
       ${svgBars(A.sat.map(s=>({l:av[s.d], v:s.media, t:s.media.toFixed(2).replace('.',',')+' · '+pct(s.top2*s.n,s.n)+' notas 4–5'})))}
       <p>NPS = % de promotores (notas 9–10) − % de detratores (0–6): ${pct(A.prom,A.nNps)} − ${pct(A.det,A.nNps)} = <b>${A.nps==null?'–':A.nps}</b> (neutros: ${pct(A.neu,A.nNps)}).</p>
-      <h2>6. Motivação, conhecimento e negócios</h2>
+      ${H('Motivação, conhecimento e negócios')}
       ${tabela(A.obj,o,n,'Motivo da visita (múltipla escolha)')}
       ${tabela(A.tecn,o,n,'Conheceu tecnologia que pretende adotar')}
       ${tabela(A.neg,o,n,'Negócios realizados ou pretendidos')}
       <p>Volume de negócios declarado pelos respondentes (ponto médio das faixas): ${brl(A.negVal)}. O valor refere-se apenas à amostra e não substitui o levantamento da organização junto aos expositores.</p>
-      <h2>7. Gasto dos visitantes e estimativa de impacto</h2>
+      ${H('Gasto dos visitantes e estimativa de impacto')}
       ${tabela(A.gasto,o,n,'Gasto na visita')}
       ${tabela(A.pern,o,n,'Pernoite')}
       <div class="kgrid"><div><b>${brl(A.gastoMedFora)}</b><span>gasto médio, visitante de fora</span></div><div><b>${brl(A.gastoMedLocal)}</b><span>gasto médio, morador</span></div><div><b>${fmt(visFora)}</b><span>visitantes de fora estimados</span></div><div><b>${brl(gastoNovo)}</b><span>gasto novo estimado na cidade</span></div></div>
       <p>Estimativa: público informado (${fmt(pub)}) × proporção de respondentes de fora de Rio Verde (${pct(A.fora,A.nOk)}) × gasto médio declarado pelos visitantes de fora (${brl(A.gastoMedFora)}) = <b>${brl(gastoNovo)}</b>. Os gastos dos moradores não entram, porque tenderiam a ocorrer na cidade de qualquer forma (CROMPTON, 1995). A estimativa usa o ponto médio das faixas e considera cada visitante uma única vez; o público informado pela organização pode contar o mesmo visitante em dias diferentes, o que superestimaria o resultado.</p>
-      <h2>8. Comentários dos visitantes</h2>
+      ${A.extras.length ? H('Perguntas adicionais') + '<p class="note">Perguntas incluídas pela coordenação no editor do questionário. Os percentuais consideram quem respondeu cada pergunta.</p>' + A.extras.map(e=>{
+        const tit = T.pt.q[e.p.id] || e.p.id;
+        if (e.cont) return tabela(e.cont, T.pt.o, e.n, tit) || `<p><b>${esc(tit)}</b>: sem respostas.</p>`;
+        if (e.itens) return `<p><b>${esc(tit)}</b></p>` + svgBars(e.itens.map(i=>({l:T.pt.av[i.it.id]||i.it.id, v:i.media, t:i.n ? i.media.toFixed(2).replace('.',',')+' · '+fmt(i.n)+' notas' : '–'})));
+        if (e.med!=null) return `<p><b>${esc(tit)}</b>: média ${e.media.toFixed(1).replace('.',',')}, mediana ${fmt(e.med)} (escala de 0 a 10; ${fmt(e.n)} respostas).</p>`;
+        return `<p><b>${esc(tit)}</b> (${fmt(e.n)} respostas)</p>` + (e.textos.length ? `<ul>${e.textos.slice(0,30).map(c=>`<li>${esc(c)}</li>`).join('')}</ul>` : '');
+      }).join('') : ''}
+      ${H('Comentários dos visitantes')}
       ${A.coments.length? `<ul>${A.coments.slice(0,40).map(c=>`<li>${esc(c)}</li>`).join('')}</ul>${A.coments.length>40?`<p class="note">Mais ${A.coments.length-40} comentários no arquivo de dados.</p>`:''}`:'<p>Nenhum comentário registrado.</p>'}
-      <h2>9. Recomendações para a próxima edição</h2>
-      <ul><li>Priorizar o item de pior avaliação (${av[satOrd[satOrd.length-1].d].toLowerCase()}) e acompanhar a mesma nota na próxima edição.</li><li>Usar a bacia de atração (50% até ${fmt(A.r50)} km) para orientar a divulgação regional e as parcerias com prefeituras e cooperativas do entorno.</li><li>Ponderar os resultados pela contagem diária da portaria e escalar entrevistadores em horários fixos para reduzir o viés de autosseleção.</li></ul>`;
+      ${H('Recomendações para a próxima edição')}
+      <ul><li>Priorizar o item de pior avaliação (${esc(av[satOrd[satOrd.length-1].d].toLowerCase())}) e acompanhar a mesma nota na próxima edição.</li><li>Usar a bacia de atração (50% até ${fmt(A.r50)} km) para orientar a divulgação regional e as parcerias com prefeituras e cooperativas do entorno.</li><li>Ponderar os resultados pela contagem diária da portaria e escalar entrevistadores em horários fixos para reduzir o viés de autosseleção.</li></ul>`;
     document.getElementById('r-doc-body').innerHTML = html;
     return html;
   }
   function csv(R){
-    const cols=['id','data_hora','tablet','idioma','brasil','municipio_ibge','municipio','uf','pais','distancia_km','perfil','idade','genero','primeira_vez','dias','pernoite','objetivos','av_estrutura','av_programacao','av_atendimento','av_seguranca','av_sinalizacao','av_conteudo','tecnologia','negocios','gasto','gasto_ponto_medio','nps','comentario','duracao_s'];
+    const slug = v => norm(v||'').replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'').slice(0,30);
+    const avExtra = AV_ITENS_ATUAIS().filter(k=>!AV_NUCLEO.includes(k));
+    const ext = [];
+    INST.perguntas.filter(p=>!p.nucleo).forEach(p=>{
+      const b = 'extra_'+(slug(T.pt.q[p.id])||p.id);
+      if (p.type==='rating') p.items.forEach(it=>ext.push([b+'__'+(slug(T.pt.av[it.id])||it.id), r=>r.x&&r.x[p.id]&&r.x[p.id][it.id]]));
+      else ext.push([b, r=>{ const v=r.x&&r.x[p.id]; if (v==null) return ''; if (p.type==='single') return T.pt.o[v]||v; if (p.type==='multi') return (v||[]).map(o=>T.pt.o[o]||o).join(' | '); return v; }]);
+    });
+    const cols=['id','data_hora','tablet','idioma','brasil','municipio_ibge','municipio','uf','pais','distancia_km','perfil','idade','genero','primeira_vez','dias','pernoite','objetivos','av_estrutura','av_programacao','av_atendimento','av_seguranca','av_sinalizacao','av_conteudo','tecnologia','negocios','gasto','gasto_ponto_medio','nps','comentario','duracao_s', ...avExtra.map(k=>'av_'+(slug(T.pt.av[k])||k)), 'versao_questionario', ...ext.map(c=>c[0])];
     const q=v=>{ let s=v==null?'':String(v); if (typeof v==='string' && /^[=+\-@\t\r]/.test(s)) s="'"+s; return /[;"\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
     const lines=[cols.join(';')].concat(R.map(r=>{ const o=origemDe(r)||{}; const m=r.mun&&MUN.get(r.mun);
       return [r.id,new Date(r.t).toISOString(),r.tab,r.lang,r.br,r.mun,m?m[0]:'',m?m[1]:'',r.pais,o.km!=null?Math.round(o.km):'',T.pt.o[r.perfil],T.pt.o[r.idade],T.pt.o[r.gen],T.pt.o[r.prim],T.pt.o[r.dias],T.pt.o[r.pern],(r.obj||[]).map(x=>T.pt.o[x]).join(' | '),
-        r.av?.est,r.av?.prog,r.av?.aten,r.av?.seg,r.av?.sin,r.av?.cont,T.pt.o[r.tecn],T.pt.o[r.neg],T.pt.o[r.gasto],GASTO_MID[r.gasto],r.nps,r.com,r.dur].map(q).join(';'); }));
+        r.av?.est,r.av?.prog,r.av?.aten,r.av?.seg,r.av?.sin,r.av?.cont,T.pt.o[r.tecn],T.pt.o[r.neg],T.pt.o[r.gasto],GASTO_MID[r.gasto],r.nps,r.com,r.dur, ...avExtra.map(k=>r.av&&r.av[k]), r.v||0, ...ext.map(c=>c[1](r))].map(q).join(';'); }));
     return '﻿'+lines.join('\n');
   }
   function msg(t){ const m=document.getElementById('r-msg'); m.hidden=!t; m.textContent=t||''; }
@@ -1056,6 +1374,7 @@ const Relatorio = (() => {
     const ok = await Base.garantirAcesso(); if (meu!==run) return;
     if (!ok){ go('inicio'); return; }
     try{
+      await Inst.buscar(edSlug()).catch(()=>{}); if (meu!==run) return; Inst.restaurar();
       rs = prepararDados(await Base.ler(edSlug())); if (meu!==run) return;
       if (!rs.length){ corpo.innerHTML=`<h1>Relatório técnico · ${esc(cfg.edicao)}</h1><p class="sub">Ainda não há respostas desta edição. Elas aparecem aqui assim que os tablets começarem a enviar.</p>`; return; }
       montar();
@@ -1064,6 +1383,238 @@ const Relatorio = (() => {
   return {start};
 })();
 
+
+/* ================== ADMINISTRAÇÃO (coordenador) ================== */
+const Admin = (() => {
+  const $ = id => document.getElementById(id);
+  let ed=null, pub=null, rasc=null, lingua='pt', run=0, abertos=new Set(), tSalvar=null, hist=[];
+  const RK = () => 'tsa_rascunho_'+ed;
+  const novoId = p => p + aleatorio(6);
+  const vazioTxt = () => Object.fromEntries(LANGS.map(l=>[l,'']));
+  const vazioQ = () => Object.fromEntries(LANGS.map(l=>[l,{q:'',help:''}]));
+  const semMeta = d => JSON.stringify({a:d.abertura, p:d.perguntas});
+  const alterado = () => semMeta(rasc)!==semMeta(pub);
+  function salvar(){ clearTimeout(tSalvar); tSalvar=setTimeout(()=>LS.set(RK(), rasc), 300); status(); }
+  function msg(t, tipo){ const m=$('a-msg'); m.hidden=!t; m.textContent=t||''; m.className='adm-msg'+(tipo?' '+tipo:''); }
+  const quando = iso => { try{ return new Date(iso).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}); }catch(e){ return ''; } };
+  function status(){
+    const alt = alterado();
+    $('a-status').innerHTML = `<b>${pub.versao ? 'Versão publicada: v'+pub.versao : 'Versão padrão (ainda não publicada)'}</b>${pub.publicado_em?`<span class="nota">${esc(quando(pub.publicado_em))}</span>`:''}<span class="pill ${alt?'warn':'ok'}">${alt?'alterações não publicadas':'sem alterações'}</span>`;
+    $('a-publicar').disabled = !alt && pub.versao>0; $('a-descartar').disabled = !alt;
+  }
+  function cartao(p, i){
+    const tl = p.txt[lingua] || {q:'',help:''}, tp = p.txt.pt || {};
+    const fixa = FIXAS.includes(p.id), ph = v => lingua==='pt' ? '' : ` placeholder="${esc(v||'')}"`;
+    const badges = [p.nucleo?'<span class="pill mut">núcleo</span>':'<span class="pill ok">nova</span>', p.ativa===false?'<span class="pill warn">desativada</span>':'', (!p.nucleo&&p.obrig)?'<span class="pill mut">obrigatória</span>':''].join('');
+    const mv = p.id==='origem' ? '' : `<span class="mv"><button class="ib" data-act="up" aria-label="Subir pergunta" ${i<=1?'disabled':''}>↑</button><button class="ib" data-act="down" aria-label="Descer pergunta" ${i>=rasc.perguntas.length-1?'disabled':''}>↓</button></span>`;
+    let corpo = `<label class="fld">Pergunta (${LNOME[lingua]})<textarea data-f="q" rows="2"${ph(tp.q)}>${esc(tl.q)}</textarea></label>
+      <label class="fld">Texto de ajuda (opcional)<input data-f="help" value="${esc(tl.help)}"${ph(tp.help)}></label>`;
+    if (p.type==='origem') corpo += `<p class="nota">A busca de municípios e países é fixa: ela desenha as rotas do mapa e calcula as distâncias.</p>`;
+    if (p.opts) corpo += `<div class="fld"><span>Opções</span>${p.opts.map((o,j)=>`<div class="orow"><input data-o="${j}" value="${esc(o.txt[lingua]||'')}"${ph(o.txt.pt)} aria-label="Opção ${j+1}">${p.nucleo?'':`<button class="ib" data-act="del-o" data-j="${j}" aria-label="Remover opção ${j+1}">✕</button>`}</div>`).join('')}
+      ${p.nucleo?'<span class="nota">As opções desta pergunta são fixas, porque o painel e o relatório dependem delas. Os textos podem ser editados.</span>':'<div><button class="ghost sm" data-act="add-o">Adicionar opção</button></div>'}</div>`;
+    if (p.items) corpo += `<div class="fld"><span>Itens avaliados${lingua==='pt'?' · rótulo curto usado no painel':''}</span>${p.items.map((it,j)=>{ const pode = !p.nucleo || it.extra;
+        return `<div class="orow it${pode?'':' sem-x'}"><input data-it="${j}" value="${esc(it.txt[lingua]||'')}"${ph(it.txt.pt)} aria-label="Item ${j+1}"><input data-curto="${j}" value="${esc(it.curto||'')}" maxlength="16" placeholder="Rótulo curto" aria-label="Rótulo curto do item ${j+1}" ${lingua==='pt'?'':'disabled'}>${pode?`<button class="ib" data-act="del-it" data-j="${j}" aria-label="Remover item ${j+1}">✕</button>`:''}</div>`; }).join('')}
+      <div><button class="ghost sm" data-act="add-it">Adicionar item</button></div>${p.nucleo?'<span class="nota">Os 6 itens originais são fixos; itens novos entram no painel de satisfação e no relatório.</span>':''}</div>`;
+    const tgs = [];
+    if (!fixa) tgs.push(`<label class="tg"><input type="checkbox" data-tg="ativa" ${p.ativa!==false?'checked':''}> Fazer esta pergunta</label>`);
+    if (!p.nucleo) tgs.push(`<label class="tg"><input type="checkbox" data-tg="obrig" ${p.obrig?'checked':''}> Resposta obrigatória</label>`);
+    if (!p.nucleo) tgs.push(`<button class="ghost sm" data-act="del-q">Excluir pergunta</button>`);
+    if (fixa) tgs.push(`<span class="nota">Pergunta essencial para o mapa, os indicadores ou o impacto econômico: não pode ser desativada.</span>`);
+    corpo += `<div class="tgs">${tgs.join('')}</div>`;
+    return `<details class="qbox${p.ativa===false?' off':''}" data-i="${i}" ${abertos.has(p.id)?'open':''}><summary><span class="qn">${i+1}</span><span class="qt">${esc(tp.q||'(pergunta sem texto)')}</span>${mv}<span class="meta"><span class="pill mut">${esc(TIPOS[p.type])}</span>${badges}</span></summary><div class="qbody">${corpo}</div></details>`;
+  }
+  function render(){
+    document.querySelectorAll('#a-lang .chip').forEach(b=>b.classList.toggle('on', b.dataset.l===lingua));
+    const ab = rasc.abertura[lingua] || {sub:'',consent:''}, abp = rasc.abertura.pt || {};
+    $('a-ab-sub').value = ab.sub||''; $('a-ab-consent').value = ab.consent||'';
+    $('a-ab-sub').placeholder = lingua==='pt' ? T_BASE.pt.welcomeSub : (abp.sub||''); $('a-ab-consent').placeholder = lingua==='pt' ? T_BASE.pt.consent : (abp.consent||'');
+    $('a-lista').innerHTML = rasc.perguntas.map(cartao).join('');
+    status();
+  }
+  const pergunta = el => { const d=el.closest('.qbox[data-i]'); return d ? rasc.perguntas[+d.dataset.i] : null; };
+  function ligar(){
+    $('a-lista').addEventListener('toggle', e=>{ const d=e.target; if (!d.matches || !d.matches('.qbox[data-i]')) return; const p=rasc.perguntas[+d.dataset.i]; if (!p) return; d.open ? abertos.add(p.id) : abertos.delete(p.id); }, true);
+    $('a-lista').addEventListener('input', e=>{
+      const el=e.target, p=pergunta(el); if (!p) return;
+      if (el.dataset.f){ p.txt[lingua] = p.txt[lingua] || {q:'',help:''}; p.txt[lingua][el.dataset.f] = el.value.slice(0,600);
+        if (lingua==='pt' && el.dataset.f==='q') el.closest('.qbox').querySelector('.qt').textContent = el.value || '(pergunta sem texto)'; }
+      else if (el.dataset.o!=null) p.opts[+el.dataset.o].txt[lingua] = el.value.slice(0,300);
+      else if (el.dataset.it!=null) p.items[+el.dataset.it].txt[lingua] = el.value.slice(0,300);
+      else if (el.dataset.curto!=null) p.items[+el.dataset.curto].curto = el.value.slice(0,16);
+      salvar();
+    });
+    $('a-lista').addEventListener('change', e=>{ const el=e.target, p=pergunta(el); if (!p || !el.dataset.tg) return; p[el.dataset.tg] = el.checked; render(); salvar(); });
+    $('a-lista').addEventListener('click', e=>{
+      const b = e.target.closest('[data-act]'); if (!b) return; e.preventDefault();
+      const p = pergunta(b), i = rasc.perguntas.indexOf(p), L = rasc.perguntas, a = b.dataset.act, j = +b.dataset.j;
+      if (a==='up' && i>1) [L[i-1],L[i]] = [L[i],L[i-1]];
+      if (a==='down' && i<L.length-1) [L[i+1],L[i]] = [L[i],L[i+1]];
+      if (a==='add-o') p.opts.push({id:novoId('o'), txt:vazioTxt()});
+      if (a==='del-o'){ if (p.opts.length<=2){ msg('Uma pergunta de escolha precisa de pelo menos 2 opções.','aviso'); return; } p.opts.splice(j,1); }
+      if (a==='add-it') p.items.push({id:novoId('i'), curto:'', txt:vazioTxt(), ...(p.nucleo?{extra:true}:{})});
+      if (a==='del-it'){ if (!p.nucleo && p.items.length<=1){ msg('Uma pergunta de notas precisa de pelo menos 1 item.','aviso'); return; } p.items.splice(j,1); }
+      if (a==='del-q'){
+        if (b.dataset.conf!=='1'){ b.dataset.conf='1'; b.textContent='Confirmar exclusão'; return; }
+        L.splice(i,1); abertos.delete(p.id);
+      }
+      msg(''); render(); salvar();
+    });
+    document.querySelectorAll('#a-lang .chip').forEach(b=>b.onclick=()=>{ lingua=b.dataset.l; render(); });
+    ['a-ab-sub','a-ab-consent'].forEach(id=>$(id).addEventListener('input', e=>{ rasc.abertura[lingua] = rasc.abertura[lingua] || {sub:'',consent:''}; rasc.abertura[lingua][e.target.dataset.ab] = e.target.value.slice(0, e.target.dataset.ab==='consent'?2000:600); salvar(); }));
+    $('a-add').onclick = () => {
+      const type = $('a-novo-tipo').value, p = {id:novoId('q'), type, nucleo:false, ativa:true, obrig:false, txt:vazioQ()};
+      if (type==='single'||type==='multi') p.opts = [{id:novoId('o'), txt:vazioTxt()},{id:novoId('o'), txt:vazioTxt()}];
+      if (type==='rating') p.items = [{id:novoId('i'), curto:'', txt:vazioTxt()}];
+      const ic = rasc.perguntas.findIndex(q=>q.id==='com');        // entra antes do comentário final
+      rasc.perguntas.splice(ic>0?ic:rasc.perguntas.length, 0, p); abertos.add(p.id); render(); salvar();
+      const card = $('a-lista').querySelector(`.qbox[data-i="${rasc.perguntas.indexOf(p)}"]`); if (card){ card.scrollIntoView({block:'center'}); const t=card.querySelector('textarea'); if (t) t.focus(); }
+    };
+    $('a-descartar').onclick = () => { rasc = clone(pub); LS.set(RK(), null); $('a-conf').hidden=true; msg('Alterações descartadas.','ok'); render(); };
+    $('a-previa').onclick = () => { const d = limparInstrumento({...rasc, versao:pub.versao}); if (!d) return; Inst.usar(d); go('previa'); };
+    $('a-publicar').onclick = () => {
+      const pr = problemas(rasc);
+      if (pr.length){ msg('Antes de publicar, corrija:\n• '+pr.join('\n• '), 'erro'); return; }
+      const ft = faltaTraducao(rasc);
+      $('a-conf-txt').textContent = `Publicar como versão ${pub.versao+1}? Os tablets passam a usar esta versão a partir da próxima pessoa que começar o questionário (ou quando voltarem a ter internet). As respostas já coletadas continuam valendo.` + (ft ? ` Há ${ft} ${ft===1?'texto':'textos'} sem tradução; nesses casos o tablet mostra o português.` : '');
+      $('a-conf').hidden = false; msg('');
+    };
+    $('a-conf-nao').onclick = () => { $('a-conf').hidden = true; };
+    $('a-conf-sim').onclick = publicar;
+    $('a-voltar').onclick = () => go('inicio');
+    document.querySelectorAll('.adm-tabs .chip').forEach(b=>b.onclick=()=>aba(b.dataset.aba));
+  }
+  function problemas(d){
+    const out = [];
+    d.perguntas.forEach((p,i)=>{
+      if (p.ativa===false && !FIXAS.includes(p.id)) return;
+      const n = `Pergunta ${i+1}`;
+      if (!((p.txt.pt||{}).q||'').trim()) out.push(n+': falta o texto em português.');
+      if (p.opts){ if (p.opts.length<2) out.push(n+': precisa de pelo menos 2 opções.'); if (p.opts.some(o=>!(o.txt.pt||'').trim())) out.push(n+': há opção sem texto em português.'); }
+      if (p.items){ if (!p.items.length) out.push(n+': precisa de pelo menos 1 item.'); if (p.items.some(o=>!(o.txt.pt||'').trim())) out.push(n+': há item sem texto em português.'); }
+    });
+    return out;
+  }
+  function faltaTraducao(d){
+    let n=0; d.perguntas.forEach(p=>{ if (p.ativa===false) return; ['en','es'].forEach(l=>{ if (!((p.txt[l]||{}).q||'').trim()) n++; (p.opts||[]).concat(p.items||[]).forEach(o=>{ if (!(o.txt[l]||'').trim()) n++; }); }); }); return n;
+  }
+  async function publicar(){
+    const bt=$('a-conf-sim'); bt.disabled=true;
+    try{
+      const def = limparInstrumento(rasc); delete def.versao; delete def.publicado_em;
+      const r = await Base.publicarInstrumento(ed, def);
+      const novo = {...def, versao:r.versao, publicado_em:r.publicado_em};
+      Inst.definir(novo); pub = clone(Inst.publicado()); rasc = clone(pub); LS.set(RK(), null);
+      $('a-conf').hidden = true; msg(`Versão ${r.versao} publicada. Os tablets recebem a mudança na próxima pessoa que começar o questionário.`, 'ok'); render(); historicoCarregar();
+    }catch(e){
+      msg(e.code==='edicao_inexistente' ? `A edição "${ed}" não está cadastrada no banco. Cadastre-a no Supabase (README, passo 5) e publique de novo.` :
+          e.code==='sem_permissao' ? 'Sua conta não tem papel de coordenador.' : e.code==='instrumento_invalido' ? 'O banco recusou o questionário por estar fora do formato. Revise as perguntas novas.' :
+          'Não foi possível publicar agora. Confira a internet e tente de novo. O rascunho continua salvo neste aparelho.', 'erro');
+    } finally { bt.disabled=false; }
+  }
+  async function historicoCarregar(){
+    const box=$('a-hist'); box.innerHTML='<span class="nota">Carregando…</span>';
+    try{ hist = await Base.historico(ed); }catch(e){ hist=[]; }
+    box.innerHTML = hist.length ? hist.map((h,k)=>`<div><span><b>v${h.versao}</b> · ${esc(quando(h.publicado_em))} · ${((h.def&&h.def.perguntas)||[]).filter(p=>p.ativa!==false).length} perguntas</span><button class="ghost sm" data-h="${k}">Copiar para o rascunho</button></div>`).join('') : '<span class="nota">Nenhuma versão publicada ainda. Os tablets usam o questionário padrão.</span>';
+    box.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{ const d=limparInstrumento(hist[+b.dataset.h].def); if(!d) return; rasc={...d, versao:pub.versao, publicado_em:pub.publicado_em}; salvar(); render(); msg(`A versão ${hist[+b.dataset.h].versao} foi copiada para o rascunho. Revise e publique para voltar a usá-la.`, 'ok'); aba('form'); window.scrollTo(0,0); });
+  }
+  function aba(n){ document.querySelectorAll('.adm-tabs .chip').forEach(b=>b.classList.toggle('on', b.dataset.aba===n)); $('a-form').hidden = n!=='form'; $('a-equipe').hidden = n!=='equipe'; if (n==='equipe') equipe(); }
+  async function equipe(){
+    const box=$('a-equipe-corpo');
+    if (Base.kind!=='supabase'){ box.innerHTML = `<div class="adm-sec"><h3>Equipe no claude.ai</h3><p class="adm-p">Nesta versão, a equipe é quem você convida pelo menu <b>Compartilhar</b> do Artifact. Quem recebe permissão de edição também pode alterar o questionário. Quem só pode usar a página consegue coletar nos tablets e ver o painel e o relatório.</p></div>`; return; }
+    box.innerHTML = '<p class="adm-p">Carregando a equipe…</p>';
+    try{
+      const [m, c] = await Promise.all([Base.equipe.listar(), Base.equipe.convites()]);
+      box.innerHTML = `<div class="adm-sec"><h3>Convidar para a equipe</h3><p class="adm-p">Gere um link e envie para a pessoa por e-mail ou WhatsApp. O link vale por 7 dias e serve para um único cadastro. Quem entra pelo link vê o painel e o relatório; só o coordenador edita o questionário.</p>
+          <div><button class="btn sm" id="a-convidar">Gerar link de convite</button></div><div class="adm-link" id="a-link" hidden><input id="a-link-txt" readonly aria-label="Link de convite"><button class="ghost" id="a-copiar">Copiar</button></div></div>
+        <div class="adm-sec"><h3>Pessoas da equipe (${m.length})</h3><div class="tw"><table class="adm-tab"><thead><tr><th>Nome</th><th>E-mail</th><th>Papel</th><th>Desde</th><th></th></tr></thead><tbody>${m.map(x=>`<tr><td>${esc(x.nome||'–')}</td><td>${esc(x.email||'')}</td><td>${x.papel==='coordenador'?'Coordenador':'Equipe'}</td><td>${esc(new Date(x.criado_em).toLocaleDateString('pt-BR'))}</td><td>${x.papel==='coordenador'?'':`<button class="ghost sm" data-rm="${esc(x.user_id)}">Remover</button>`}</td></tr>`).join('')}</tbody></table></div></div>
+        <div class="adm-sec"><h3>Convites ainda não usados (${c.length})</h3>${c.length?`<div class="tw"><table class="adm-tab"><thead><tr><th>Criado em</th><th>Vale até</th><th></th></tr></thead><tbody>${c.map(x=>`<tr><td>${esc(quando(x.criado_em))}</td><td>${esc(quando(x.expira_em))}</td><td><button class="ghost sm" data-rv="${esc(x.id)}">Cancelar convite</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="adm-p">Nenhum convite pendente.</p>'}</div>
+        <p class="adm-msg" id="a-eq-msg" hidden></p>`;
+      const em = (t,tipo) => { const x=$('a-eq-msg'); x.hidden=!t; x.textContent=t; x.className='adm-msg'+(tipo?' '+tipo:''); };
+      $('a-convidar').onclick = async () => {
+        try{ const tok = await Base.equipe.convidar(); const url = location.origin+location.pathname+'#convite-'+tok;
+          $('a-link').hidden=false; $('a-link-txt').value=url; $('a-link-txt').select(); em('Link criado. Envie para a pessoa; ele vale por 7 dias e funciona uma única vez.','ok');
+        }catch(e){ em('Não foi possível criar o convite agora. Tente de novo.','erro'); }
+      };
+      $('a-copiar').onclick = () => { const t=$('a-link-txt'); navigator.clipboard.writeText(t.value).then(()=>em('Link copiado.','ok')).catch(()=>{ t.select(); em('Selecionei o link: copie com Ctrl+C (ou toque e segure).','aviso'); }); };
+      box.querySelectorAll('[data-rm]').forEach(b=>b.onclick=async()=>{ if (b.dataset.conf!=='1'){ b.dataset.conf='1'; b.textContent='Confirmar remoção'; return; } try{ await Base.equipe.remover(b.dataset.rm); equipe(); }catch(e){ em('Não foi possível remover agora.','erro'); } });
+      box.querySelectorAll('[data-rv]').forEach(b=>b.onclick=async()=>{ try{ await Base.equipe.revogar(b.dataset.rv); equipe(); }catch(e){ em('Não foi possível cancelar o convite agora.','erro'); } });
+    }catch(e){ box.innerHTML = '<p class="adm-msg erro">Não foi possível carregar a equipe. Confira a internet e tente de novo.</p>'; }
+  }
+  let ligado=false;
+  async function start(){
+    const meu = ++run; ed = edSlug(); $('a-ed').textContent = cfg.edicao; $('a-corpo').hidden = true; $('a-bloq').hidden = true;
+    if (!ligado){ ligado=true; ligar(); }
+    const bloq = t => { $('a-bloq').hidden=false; $('a-bloq').innerHTML = t; };
+    if (!Base.kind){ bloq('Nenhuma base de respostas configurada nesta versão. A edição do questionário precisa do Supabase (site próprio) ou do claude.ai.'); return; }
+    const ok = await Base.garantirAcesso('coordenador'); if (meu!==run) return;
+    if (!ok){
+      bloq('Só o coordenador da pesquisa edita o questionário e a equipe.' + (Base.kind==='supabase' ? ' <button class="ghost sm" id="a-outra">Entrar com outra conta</button>' : ' No claude.ai, é preciso ter permissão de edição do Artifact.'));
+      const o=$('a-outra'); if (o) o.onclick = async () => { await Base.sair(); start(); };
+      return;
+    }
+    await Inst.buscar(ed).catch(()=>{}); if (meu!==run) return;
+    pub = clone(Inst.publicado());
+    const r = limparInstrumento(LS.get(RK(), null));
+    rasc = r ? {...r, versao:pub.versao, publicado_em:pub.publicado_em} : clone(pub);
+    $('a-corpo').hidden = false; msg(r && alterado() ? 'Rascunho recuperado deste aparelho, com alterações ainda não publicadas.' : '', r && alterado() ? 'aviso' : '');
+    render(); aba('form'); historicoCarregar();
+  }
+  return {start};
+})();
+
+/* ================== CONVITE (cadastro na equipe por link) ================== */
+const Convite = (() => {
+  const $ = id => document.getElementById(id);
+  let tok='', modo='novo';
+  const PK = 'tsa_convite';
+  function texto(m, ok){ const e=$('c-msg'); e.textContent=m||''; e.classList.toggle('ok', !!ok); }
+  function modoUI(){
+    document.querySelectorAll('#c-modo .lang').forEach(b=>b.classList.toggle('sel', b.dataset.m===modo));
+    $('c-nome-wrap').hidden = modo!=='novo'; $('c-modo').hidden = modo==='aceitar';
+    ['c-email-wrap','c-senha-wrap'].forEach(id=>$(id).hidden = modo==='aceitar');
+    $('c-senha').autocomplete = modo==='novo' ? 'new-password' : 'current-password';
+    $('c-ok').textContent = modo==='novo' ? 'Criar conta' : modo==='entrar' ? 'Entrar e aceitar' : 'Aceitar convite';
+  }
+  async function aceitar(t){
+    try{ await Base.equipe.aceitar(t); LS.set(PK, null); return true; }
+    catch(e){ LS.set(PK, null); texto(e.code==='convite_invalido' ? 'Este convite expirou, foi cancelado ou já foi usado. Peça um novo link ao coordenador.' : 'Não foi possível aceitar o convite agora. Tente de novo.'); return false; }
+  }
+  async function concluir(){ if (await aceitar(tok)){ history.replaceState(null,'',location.pathname+'#painel'); texto('Pronto! Você agora faz parte da equipe. Abrindo o painel…', true); setTimeout(()=>{ current=null; route(); }, 1200); } }
+  document.querySelectorAll('#c-modo .lang').forEach(b=>b.onclick=()=>{ modo=b.dataset.m; texto(''); modoUI(); });
+  $('c-voltar').onclick = () => go('inicio');
+  $('c-form').onsubmit = async ev => {
+    ev.preventDefault(); const bt=$('c-ok'); bt.disabled=true; texto('');
+    try{
+      if (modo==='aceitar'){ await concluir(); return; }
+      const email=$('c-email').value.trim(), senha=$('c-senha').value;
+      if (!/^\S+@\S+\.\S+$/.test(email)){ texto('Informe um e-mail válido.'); return; }
+      if (senha.length<8){ texto('A senha precisa ter pelo menos 8 caracteres.'); return; }
+      LS.set(PK, tok);
+      if (modo==='novo'){
+        const sessao = await Base.cadastrar(email, senha, $('c-nome').value.trim().slice(0,80), location.origin+location.pathname+'#convite-'+tok);
+        if (sessao){ await concluir(); return; }
+        texto('Conta criada. Enviamos um e-mail de confirmação: abra o link do e-mail neste aparelho. Se abrir em outro, volte a este convite e use "Já tenho conta".', true); return;
+      }
+      await Base.entrar(email, senha); await concluir();
+    }catch(e){
+      texto(e.code==='ja_existe' ? 'Já existe uma conta com este e-mail. Use "Já tenho conta".' : e.code==='credenciais' ? 'E-mail ou senha incorretos.' : e.code==='nao_confirmado' ? 'Confirme seu e-mail antes de entrar: procure a mensagem de confirmação na caixa de entrada.' : e.code==='senha_fraca' ? 'Escolha uma senha mais forte.' : 'Não foi possível concluir agora. Confira a internet e tente de novo.');
+    } finally { bt.disabled=false; }
+  };
+  async function start(t){
+    tok = /^[a-f0-9]{32}$/.test(t||'') ? t : ''; texto('');
+    if (Base.kind!=='supabase' || !tok){ $('c-intro').textContent = 'Este link de convite não é válido. Peça um novo link ao coordenador da pesquisa.'; modo='aceitar'; modoUI(); $('c-ok').hidden=true; return; }
+    $('c-ok').hidden=false; $('c-intro').textContent = 'Você foi convidado para a equipe de pesquisa do Tecnoshow Avalia. Crie sua conta ou entre com uma conta que já tem.';
+    modo = (await Base.temSessao().catch(()=>false)) ? 'aceitar' : 'novo';
+    if (modo==='aceitar') $('c-intro').textContent = 'Você já está conectado. Toque em Aceitar convite para entrar na equipe.';
+    modoUI();
+  }
+  /* Volta da confirmação de e-mail: se havia convite pendente e agora há sessão, aceita sozinho. */
+  setTimeout(async ()=>{
+    const p = LS.get(PK, null); if (!p || Base.kind!=='supabase') return;
+    if (await Base.temSessao().catch(()=>false)){ if (await aceitar(p)){ const a=document.getElementById('cfg-aviso'); a.hidden=false; a.textContent='Convite aceito: você agora faz parte da equipe.'; } }
+  }, 1500);
+  return {start};
+})();
 
 /* Site próprio: guarda o app no aparelho para abrir mesmo sem internet. */
 if (CONFIG && 'serviceWorker' in navigator && location.protocol==='https:') navigator.serviceWorker.register('sw.js').catch(()=>{});

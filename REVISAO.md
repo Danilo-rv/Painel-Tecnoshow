@@ -58,3 +58,14 @@ Revisão da versão original (`tecnoshow_avalia.html` / `template.html`), com o 
 - **Chave da coleta no tablet**: fica no `localStorage`. Quem pegar um tablet desbloqueado pode enviar respostas falsas, mas não consegue ler nem apagar nada. Use modo quiosque e troque a chave (novo hash em `edicoes`) se um tablet sumir.
 - **Senhas da equipe**: use senhas fortes. Se possível, ative a verificação em duas etapas (MFA) no Supabase.
 - **Versão do claude.ai**: segue as permissões do Artifact. Quem tem acesso de edição ou interação grava e lê as respostas. Compartilhe o link só com a equipe e os tablets.
+
+## Editor do questionário e papéis (segunda etapa)
+
+| Item | Como funciona | Proteção |
+|---|---|---|
+| Papéis | `equipe` (painel e relatório) e `coordenador` (também edita o questionário e a equipe) | Funções `sou_equipe` e `sou_coordenador` no banco. Toda ação de coordenador é conferida no servidor, não só na tela |
+| Convites | Link de uso único, válido por 7 dias. O banco guarda só o hash | Convite usado, vencido ou cancelado é recusado. Uma conta sem convite não lê nada |
+| Questionário versionado | Tabela `instrumentos` (uma linha por versão). Os tablets leem a versão atual por `instrumento_atual` e guardam uma cópia para uso offline | Só o coordenador publica (`publicar_instrumento`). O formato é validado no banco e no app (`limparInstrumento`) |
+| Respostas a perguntas novas | Ficam em `x` (por id da pergunta), com `v` = versão | `enviar_respostas` confere cada resposta contra a versão em que foi dada: pergunta existente, opção válida, nota de 1 a 5, texto de até 400 caracteres |
+| Textos editáveis | Perguntas, opções, ajuda, abertura e termo | Sempre exibidos com escape de HTML. Testado com `<img onerror>` num texto de opção |
+| Núcleo protegido | Origem, perfil, satisfação, gasto e NPS não podem ser removidas; as opções do núcleo não mudam | Garante que o mapa, os indicadores, o impacto econômico e a comparação entre versões continuem válidos |
