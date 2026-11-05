@@ -227,9 +227,93 @@ A feira não termina no portão. À noite e nos intervalos, o visitante consome 
 - **Avaliação de comércio pode gerar conflito.** São necessários regras públicas, direito de resposta e avaliação só após check-in.
 - **Amostra autosselecionada:** quem usa o app não representa todos. Calibrar com a contagem da portaria e com os dados dos hotéis.
 
+## 11. Governança dos dados
+
+Com tantos atores (visitante, expositor, comércio, hotel, organização, ITA, público), a confiança é o ativo central. Se um expositor desconfiar que seus dados vão para o concorrente, ou um hotel que sua ocupação vai vazar, a plataforma perde o valor.
+
+### 11.1 Quem é dono de quê
+
+| Dado | Dono / controlador | Quem acessa |
+|---|---|---|
+| Dados pessoais do visitante (contato, histórico) | O próprio visitante; a plataforma é controladora | Só ele, e o expositor a quem ele **escolheu** enviar contato |
+| Leads, visitas e avaliações de um estande | O expositor | O expositor (completo) e a organização (agregado) |
+| Dados comerciais de hotéis e bares (ocupação, diária) | O estabelecimento | A organização e o ITA, só agregados (mínimo de 3 a 5 por grupo) |
+| Dados operacionais da feira (fluxo, ocupação por setor) | A organização | A organização; o ITA para pesquisa |
+| Base de pesquisa anonimizada | O Observatório ITA | Pesquisadores autorizados; versão aberta agregada para o público |
+
+### 11.2 Instrumentos
+- **Acordo de cooperação técnica** entre Comigo, IF Goiano e, depois, Prefeitura e parceiros. Define papéis LGPD (controlador, operador), finalidades e o uso para pesquisa.
+- **Encarregado de dados (DPO)** nomeado e **Relatório de Impacto à Proteção de Dados (RIPD)**, por envolver localização, imagem e muitos titulares.
+- **Bases legais por finalidade:**
+  - consentimento para leads, fotos e prêmios;
+  - legítimo interesse para métricas operacionais;
+  - pesquisa com anonimização (art. 7º, IV, e art. 11, II, c, da LGPD).
+- **Aprovação no CEP** para a parte de pesquisa, com o termo de consentimento versionado no próprio sistema.
+- **Política de retenção:** dados pessoais apagados ou anonimizados após um prazo definido; a base de pesquisa guarda só o anonimizado.
+- **Regra de publicação:** nenhum número aberto com grupos menores que 5 (anonimato k ≥ 5).
+- **Comitê gestor** com representantes da organização, do ITA, dos expositores e do comércio. Aprova regras de ranking, prêmios e publicação de dados.
+- **Painel de transparência para o visitante:** o que foi coletado, com quem foi compartilhado, botão para apagar.
+
+## 12. Indicadores-chave (o "painel do sucesso")
+
+**Métrica norte sugerida:** *interações qualificadas por visitante*. Conta check-in em estande, avaliação, lead, palestra assistida ou check-in na cidade. Ela resume o valor para os dois lados da plataforma.
+
+| Camada | Indicadores |
+|---|---|
+| Adoção | % do público da portaria que usa o app; % de expositores ativos; nº de parceiros na cidade |
+| Engajamento | Interações por visitante; retorno em 30 dias; uso na entressafra; adesão aos desafios |
+| Valor para o expositor | Leads por estande; nota de atendimento; renovação do premium; NPS do expositor |
+| Valor para a organização | NPS do visitante; reocupação de estandes; novos expositores vindos do funil da cidade; patrocínio captado |
+| Território (ITA) | Gasto na cidade por origem; ocupação hoteleira; transbordamento regional; raio da bacia de atração; difusão tecnológica por microrregião |
+| Visibilidade | Matérias na imprensa; citações do Índice; visitas ao painel aberto; feiras que licenciaram o sistema; visitantes estrangeiros |
+| Sustentabilidade | Receita sobre custo; % de autossustentação sem fomento |
+| Qualidade dos dados | Cobertura da amostra versus portaria; viés por perfil; taxa de respostas inválidas |
+
+Referências para estruturar: framework **HEART** (Google) para experiência e métricas **AARRR** para o funil de adoção. Também é possível usar um **Balanced Scorecard** da plataforma, que conversa bem com o mestrado em administração.
+
+## 13. Estratégia de implantação no território
+
+### 13.1 Cronograma reverso (a partir da data da feira)
+
+| Prazo | Ações |
+|---|---|
+| 6 meses antes | Acordos institucionais, comitê gestor, encarregado de dados, submissão ao CEP, captação de fomento e patrocínio |
+| 4 meses antes | Mapa da feira, cadastro dos expositores, regulamento dos prêmios |
+| 3 meses antes | Equipe de campo visita bares, restaurantes e hotéis para adesão ao selo "Parceiro Tecnoshow" |
+| 2 meses antes | Materiais com QR, treinamento dos expositores e parceiros, campanha (rádio, sindicatos rurais, base de cooperados, WhatsApp) |
+| 1 mês antes | Piloto num evento menor; ajustes; agenda e "quem vai" abertos ao público |
+| Durante | Embaixadores nos portões, plantão de moderação e suporte, sala de controle |
+| 30 dias depois | Relatórios para expositores, parceiros e organização; devolutiva pública; lançamento do Índice |
+
+### 13.2 Papel dos alunos do mestrado
+- **Agentes de campo:** adesão de comércio e hotéis, embaixadores na feira e coleta qualitativa (entrevistas com expositores e hoteleiros).
+- **Cada mestrando adota um eixo** (hotelaria, comércio noturno, um segmento de expositores, difusão tecnológica, mobilidade), que vira capítulo ou dissertação inteira.
+- **Método:** pesquisa-ação. O grupo intervém (cria e ajusta a plataforma) e estuda os efeitos da intervenção, o que é muito adequado a um mestrado profissional.
+- Envolver graduação e técnico (bolsas de extensão, disciplina prática), com certificação de horas.
+
+## 14. Carona para a feira: viável, mas com desenho cuidadoso
+
+**Riscos de uma carona aberta entre desconhecidos:**
+- **Segurança pessoal:** assalto, assédio, violência. Um incidente grave associado à marca Tecnoshow, Comigo ou IF Goiano seria muito danoso.
+- **Segurança viária:** rodovias com tráfego pesado de caminhões e consumo de álcool à noite.
+- **Responsabilidade:** a plataforma pode ser questionada se não tiver verificação mínima.
+- **Regulação:** cobrar além da divisão de custos vira transporte remunerado irregular (Lei 12.587/2012 e regras municipais). A divisão de custos sem lucro, como faz o BlaBlaCar, é aceita.
+
+**O que recomendo, em vez de uma carona aberta:**
+1. **Transporte oficial planejado com os dados da plataforma.** O ITA sabe de onde vêm os visitantes e onde se hospedam. Isso permite planejar **vans e ônibus** de cidades vizinhas e de hotéis, com horários e pontos de embarque. É o uso mais seguro e o mais "inteligência territorial".
+2. **Caravanas institucionais:** sindicatos rurais, cooperativas, prefeituras e escolas cadastram suas caravanas, e o visitante se inscreve. O responsável é identificado.
+3. **Carona só em grupos fechados e verificados** (opcional, numa segunda fase):
+   - cooperados, funcionários de expositores, alunos e servidores com e-mail institucional;
+   - perfil verificado e avaliação mútua;
+   - compartilhamento da viagem com um contato de confiança;
+   - só divisão de custos, sem menores desacompanhados, e termo de uso claro;
+   - ou parceria com um app já existente, em vez de operação própria.
+
+**Ganhos extras:** dados de demanda de transporte por origem e um indicador de **pegada de carbono da feira** (km × modo de transporte). É um indicador ESG que a organização pode divulgar e reduzir a cada edição.
+
 ---
 
-## 11. Decisões pendentes (acumuladas)
+## 15. Decisões pendentes (acumuladas)
 
 Perguntas que serão feitas todas de uma vez ao final da ideação.
 
@@ -256,9 +340,17 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 16. Hotéis: aceitariam informar a ocupação diária (sigilosa, publicada só de forma agregada)?
 17. Alcance territorial: só Rio Verde, ou também as cidades vizinhas que recebem hóspedes durante a feira?
 
+**Da etapa de governança, indicadores, implantação e transporte**
+18. Comitê gestor e encarregado de dados: quem compõe o comitê e quem será o encarregado (DPO)?
+19. Métrica norte: "interações qualificadas por visitante" serve, ou a organização prefere outra (por exemplo, leads gerados)?
+20. Calendário: qual a data da próxima edição? Ela define o cronograma reverso e o que cabe na 1ª fase.
+21. Equipe: quantos mestrandos e bolsistas podem atuar como agentes de campo e embaixadores?
+22. Transporte: começar com transporte oficial e caravanas, e deixar a carona em grupos verificados para depois? Há interesse de prefeituras vizinhas em vans?
+
 ---
 
 ## Histórico
 
 - 04/11/2026: módulos A a F, cuidados, faseamento, mecanismos de dependência, viés do Observatório ITA, decisões 1 a 10.
 - 05/11/2026: valor para o visitante, sustentabilidade financeira, Tecnoshow na Cidade (comércio, hospedagem, interações urbanas), decisões 11 a 17.
+- 05/11/2026: governança dos dados, indicadores-chave, implantação no território, carona e transporte, decisões 18 a 22.
