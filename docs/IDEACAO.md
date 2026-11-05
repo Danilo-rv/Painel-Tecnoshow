@@ -311,9 +311,42 @@ Referências para estruturar: framework **HEART** (Google) para experiência e m
 
 **Ganhos extras:** dados de demanda de transporte por origem e um indicador de **pegada de carbono da feira** (km × modo de transporte). É um indicador ESG que a organização pode divulgar e reduzir a cada edição.
 
+## 15. Identidade e nome
+
+**Proposta: ITA-e (Inteligência Territorial em Eventos).**
+
+Pontos fortes:
+- Liga a plataforma ao Observatório ITA e transfere a reputação acadêmica para o produto (e vice-versa).
+- "Em eventos" deixa claro que serve a qualquer feira, o que favorece o licenciamento (seção 9).
+- O "-e" sugere ao mesmo tempo *eventos* e *eletrônico*, como e-mail ou e-commerce.
+
+Pontos de atenção:
+- **Confusão com o ITA** (Instituto Tecnológico de Aeronáutica), marca muito conhecida no Brasil. Fora de Goiás, "ITA" remete primeiro a ele. Vale uma busca de anterioridade no INPI (classes 9, 35, 41 e 42) antes de adotar.
+- **Hífen:** atrapalha domínio, hashtag e a forma de falar ("ita-é" ou "ita-ê"?). Uma forma sem hífen (ITAe) ou uma pronúncia oficial definida resolve.
+- **Para o visitante, a sigla não diz nada.** O produtor não vai abrir "ITA-e"; ele abre "a Tecnoshow".
+
+**Sugestão de arquitetura de marca em dois níveis:**
+- **Marca-mãe (institucional, científica e comercial):** ITA-e. Aparece para organizadores, expositores, patrocinadores, imprensa e outras feiras: "Plataforma ITA-e", "Índice ITA-e de Inovação Agro", "powered by ITA-e".
+- **Marca do evento (para o visitante):** com o nome da feira, por exemplo "Tecnoshow Conecta", "Tecnoshow+", "Minha Tecnoshow". Cada feira que licenciar o sistema tem a sua: "Agrishow Conecta, com tecnologia ITA-e".
+
+**Alternativas na mesma linha, caso a busca no INPI ou a confusão com o ITA pesem:**
+
+| Nome | Ideia |
+|---|---|
+| ITE (Inteligência Territorial de Eventos) | Mais curta, sem hífen; perde o elo direto com o ITA |
+| ITA Eventos / ITA Feiras | Mais explícita, menos marca |
+| Radar ITA | Monitoramento ao vivo; boa para o painel e para o Índice |
+| Pulso | "O pulso da feira", em tempo real; fácil de falar em PT/EN/ES |
+| Bacia | Referência à bacia de atração, conceito central do projeto |
+| Rota | Origens, deslocamentos e jornada do visitante; combina com o mapa de arcos |
+| Atlas ITA | Acento cartográfico e territorial; ótimo para o produto de dados abertos |
+| Elo | Conexão entre visitante, expositor, cidade e organização |
+
+Combinações possíveis: "ITA-e" como plataforma, "Radar ITA-e" como painel ao vivo, "Atlas ITA-e" como portal de dados abertos, "Tecnoshow Conecta" como app do visitante.
+
 ---
 
-## 15. Decisões pendentes (acumuladas)
+## 16. Decisões pendentes (acumuladas)
 
 Perguntas que serão feitas todas de uma vez ao final da ideação.
 
@@ -347,6 +380,9 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 21. Equipe: quantos mestrandos e bolsistas podem atuar como agentes de campo e embaixadores?
 22. Transporte: começar com transporte oficial e caravanas, e deixar a carona em grupos verificados para depois? Há interesse de prefeituras vizinhas em vans?
 
+**Da etapa de identidade**
+23. Nome: ITA-e como marca-mãe, com uma marca própria para o visitante de cada feira? Grafia com ou sem hífen? Fazer a busca no INPI antes de divulgar?
+
 ---
 
 ## Histórico
@@ -354,3 +390,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 04/11/2026: módulos A a F, cuidados, faseamento, mecanismos de dependência, viés do Observatório ITA, decisões 1 a 10.
 - 05/11/2026: valor para o visitante, sustentabilidade financeira, Tecnoshow na Cidade (comércio, hospedagem, interações urbanas), decisões 11 a 17.
 - 05/11/2026: governança dos dados, indicadores-chave, implantação no território, carona e transporte, decisões 18 a 22.
+- 05/11/2026: identidade e nome (ITA-e e alternativas), decisão 23.
