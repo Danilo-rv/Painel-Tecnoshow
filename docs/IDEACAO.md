@@ -378,9 +378,35 @@ Antes de escolher, verificar a disponibilidade dos finalistas:
 - domínios `.com.br` e `.com`;
 - perfis nas redes sociais.
 
+## 16. Requisitos de usabilidade (registrados para a próxima versão)
+
+### 16.1 Navegação: seta de voltar em todas as telas
+Situação atual:
+- **Painel:** sem nenhuma forma de voltar.
+- **Coleta:** só volta entre perguntas, nunca para a tela inicial.
+- **Relatório:** tem um botão "Voltar", mas fica no meio dos botões de download, sem destaque.
+- **Administração:** tem um botão "Voltar ao início".
+
+Requisito:
+- Uma **seta de voltar (←) no canto superior esquerdo**, no mesmo lugar e com o mesmo estilo em todas as telas, além do botão "voltar" do navegador.
+- Cada tela volta para a anterior do caminho: por exemplo, relatório → início, prévia → administração.
+
+A seta muda conforme o uso de cada tela:
+
+| Tela | Comportamento da seta |
+|---|---|
+| Painel ao vivo (telão) | Aparece ao mover o mouse ou tocar na tela e some sozinha depois de alguns segundos, para não poluir o telão |
+| Coleta (tablet com visitante) | **Escondida do visitante**, para ele não sair do questionário. Saída da equipe por um gesto (tocar e segurar o logotipo por 3 segundos) seguido de um código numérico definido na Administração |
+| Relatório, Administração, Convite, telas da plataforma futura | Seta sempre visível |
+
+### 16.2 Outros pontos a manter na plataforma futura
+- **Breadcrumb** (início › administração › questionário) nas áreas com vários níveis: expositor, organização, ITA.
+- **Botão de tela cheia** no painel e no telão social.
+- **Endereços próprios para cada tela,** para guardar como favorito ou abrir direto no telão (já existe: `#painel`, `#coleta`, `#relatorio`).
+
 ---
 
-## 16. Decisões pendentes (acumuladas)
+## 17. Decisões pendentes (acumuladas)
 
 Perguntas que serão feitas todas de uma vez ao final da ideação.
 
@@ -417,6 +443,9 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 **Da etapa de identidade**
 23. Nome: escolher 2 ou 3 finalistas da seção 15 (ITA-e, iTA, ITAvents, Expolytics, ExpoIQ…) para a busca no INPI, USPTO e domínios. A sigla ITA precisa estar na marca ou basta a assinatura "by Observatório ITA"?
 
+**Da etapa de usabilidade**
+24. Saída da coleta pela equipe: gesto + código numérico serve? Quem define e guarda o código?
+
 ---
 
 ## Histórico
@@ -426,3 +455,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 05/11/2026: governança dos dados, indicadores-chave, implantação no território, carona e transporte, decisões 18 a 22.
 - 05/11/2026: identidade e nome (ITA-e e alternativas), decisão 23.
 - 05/11/2026: variação iTA e nomes com "eventos" em inglês; decisão 23 revista.
+- 05/11/2026: requisito de navegação (seta de voltar em todas as telas), decisão 24.
