@@ -404,9 +404,57 @@ A seta muda conforme o uso de cada tela:
 - **Botão de tela cheia** no painel e no telão social.
 - **Endereços próprios para cada tela,** para guardar como favorito ou abrir direto no telão (já existe: `#painel`, `#coleta`, `#relatorio`).
 
+## 17. Interação instantânea no QR do estande
+
+Ao ler o QR, o visitante já cai numa tela de **um toque**, sem cadastro. É a interação de menor atrito da plataforma, e por isso a que mais gera volume de dados para o estande.
+
+### 17.1 Dois termômetros separados
+Curtir e amar medem **interesse** (quero isso); as carinhas medem **satisfação** (como fui atendido). Misturar os dois numa fileira só confunde o visitante e a análise. Por isso, dois blocos:
+
+| Bloco | Opções | Onde se aplica | O que mede |
+|---|---|---|---|
+| **Interesse** | 👍 Curti · ❤️ Amei | Cada produto ou lançamento, e a loja | Atratividade e intenção de compra |
+| **Atendimento** | 😀 Bom · 😐 Neutro · ☹️ Ruim | A loja (o atendimento recebido) | Satisfação (escala de carinhas, como os terminais *Happy or Not* dos aeroportos) |
+
+- **Carinha triste pede um motivo em um toque:** fila, demora, preço, falta do produto, atendimento. Sem motivo, a nota negativa não ajuda o expositor a melhorar.
+- **Comentário opcional** com emojis rápidos (🔥 👏 💡 💰 🤝) e texto. O visitante escolhe se o comentário é sobre o **produto** ou sobre a **loja**, e se é **público** ou **só para a loja**.
+
+### 17.2 Compartilhar no Instagram e no WhatsApp
+- Botão **Compartilhar** que gera um **cartão vertical para story** (1080×1920) com:
+  - a foto do produto ou o perfil da loja;
+  - "Estou na Tecnoshow 2027";
+  - o nome do estande e a moldura oficial da feira;
+  - um link curto ou QR.
+- **Funcionamento técnico:** no celular, o compartilhamento nativo (Web Share) abre direto o Instagram, o WhatsApp ou outro app. Não precisa de integração com a Meta.
+- **Variante "moldura":** o visitante tira uma selfie no estande com a moldura da feira e da loja. Ela alimenta o telão social (com moderação) e o story.
+- **O link compartilhado é rastreável** (por exemplo, `?ref=estande-123`). Com ele, a plataforma mede quantas pessoas chegaram ao estande por causa de um compartilhamento: **alcance e efeito viral**.
+
+### 17.3 Novas métricas para o estande
+
+| Métrica | Leitura |
+|---|---|
+| Taxa de reação por visita (reações ÷ check-ins) | Quanto o estande engaja quem passa |
+| Índice de "amei" (❤️ ÷ todas as reações de interesse) | Intensidade do interesse, por produto |
+| Ranking de produtos por interesse | Qual lançamento atraiu mais; serve ao planejamento do expositor |
+| Índice de satisfação (% 😀 − % ☹️) e motivos de ☹️ | Atendimento e o que corrigir, hora a hora |
+| Compartilhamentos e alcance (cliques no link) | Visibilidade gerada fora da feira |
+| Conversão do compartilhamento (cliques que viraram check-in) | Boca a boca que trouxe gente de verdade |
+| Curva por horário | Pico de interesse e momento de reforçar a equipe |
+
+Base teórica: escalas de satisfação com carinhas (CSAT), resposta afetiva ao serviço, **boca a boca eletrônico** e **marketing viral** (coeficiente viral). O ranking de produtos por interesse dialoga com o modelo AIDA: atenção → interesse → desejo → ação.
+
+### 17.4 Cuidados
+- **Uma reação por visitante, por item.** Ela pode ser trocada, mas não repetida, e é atrelada ao check-in, o que evita "torcida organizada" e robôs.
+- **Negativos:**
+  - a carinha triste e os comentários negativos vão **só para o painel da loja e da organização**;
+  - em público aparecem apenas os indicadores agregados, e só com um número mínimo de avaliações;
+  - isso protege o expositor de exposição injusta e mantém a adesão.
+- **Comentários públicos passam pela moderação** (filtro automático + fila), como no telão social.
+- **Imagem:** a selfie com moldura segue o termo de uso de imagem. Fotos com menores não vão ao telão.
+
 ---
 
-## 17. Decisões pendentes (acumuladas)
+## 18. Decisões pendentes (acumuladas)
 
 Perguntas que serão feitas todas de uma vez ao final da ideação.
 
@@ -446,6 +494,10 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 **Da etapa de usabilidade**
 24. Saída da coleta pela equipe: gesto + código numérico serve? Quem define e guarda o código?
 
+**Da etapa de interação no QR do estande**
+25. Visibilidade dos negativos: carinha triste e comentários negativos só para a loja e a organização, como sugerido, ou também públicos?
+26. Cartão de story: quem desenha a moldura oficial da feira? Cada estande pode ter a sua? Ela leva a marca de patrocinador?
+
 ---
 
 ## Histórico
@@ -456,3 +508,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 05/11/2026: identidade e nome (ITA-e e alternativas), decisão 23.
 - 05/11/2026: variação iTA e nomes com "eventos" em inglês; decisão 23 revista.
 - 05/11/2026: requisito de navegação (seta de voltar em todas as telas), decisão 24.
+- 05/11/2026: interação instantânea no QR do estande (reações, carinhas, comentários, story), decisões 25 e 26.
