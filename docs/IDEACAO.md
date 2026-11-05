@@ -495,8 +495,17 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 24. Saída da coleta pela equipe: gesto + código numérico serve? Quem define e guarda o código?
 
 **Da etapa de interação no QR do estande**
-25. Visibilidade dos negativos: carinha triste e comentários negativos só para a loja e a organização, como sugerido, ou também públicos?
-26. Cartão de story: quem desenha a moldura oficial da feira? Cada estande pode ter a sua? Ela leva a marca de patrocinador?
+25. ~~Visibilidade dos negativos~~ → **decidida** (ver seção 19).
+26. Cartão de story: a logo do app já é obrigatória (seção 19). Falta decidir quem desenha a moldura, se cada estande pode ter a sua versão e se há espaço para patrocinador.
+
+---
+
+## 19. Decisões tomadas
+
+| Nº | Decisão | Data | Consequência no desenho |
+|---|---|---|---|
+| 25 | **Negativos só para a loja e a organização.** Carinha triste, motivos e comentários negativos nunca aparecem em público | 05/11/2026 | Em telas públicas (rankings, telão, perfil da loja) só entram indicadores agregados. O detalhe negativo fica no painel da loja e no da organização. Rankings públicos seguem com número mínimo de avaliações |
+| 26 (parcial) | **Toda postagem e toda moldura levam a logo do app** (logo ainda a definir, ver seção 15) | 05/11/2026 | Cartões de story, selfies com moldura, fotos do telão social e qualquer imagem gerada pela plataforma recebem a logo num lugar fixo. Cada compartilhamento divulga a plataforma, além da feira e do estande. A logo entra na lista de entregas da identidade visual |
 
 ---
 
@@ -509,3 +518,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 05/11/2026: variação iTA e nomes com "eventos" em inglês; decisão 23 revista.
 - 05/11/2026: requisito de navegação (seta de voltar em todas as telas), decisão 24.
 - 05/11/2026: interação instantânea no QR do estande (reações, carinhas, comentários, story), decisões 25 e 26.
+- 05/11/2026: decisão 25 tomada (negativos só para loja e organização); decisão 26 em parte (logo do app em toda postagem e moldura).
