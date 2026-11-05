@@ -344,6 +344,40 @@ Pontos de atenção:
 
 Combinações possíveis: "ITA-e" como plataforma, "Radar ITA-e" como painel ao vivo, "Atlas ITA-e" como portal de dados abertos, "Tecnoshow Conecta" como app do visitante.
 
+### 15.1 Variação "iTA" e nomes com "eventos" em inglês
+
+**iTA (i minúsculo):**
+- Lê-se como *intelligence* ou *interativo* e tem cara de produto digital.
+- Resolve o hífen.
+- Ainda carrega a confusão com o ITA da Aeronáutica.
+- Fica muito próximo do **"iti"**, o banco digital do Itaú, com risco de confusão de marca no INPI.
+- O "i" minúsculo também lembra a Apple (iPhone, iPad), o que dá sensação de imitação.
+
+**Critério para o inglês:** o público principal é o produtor brasileiro. As palavras que ele já pronuncia sem esforço são **show** e **expo** (o próprio nome "Tecnoshow" prova isso). *Event* e *fair* são menos naturais em português; *hub*, *map* e *IQ* são conhecidas no meio de negócios.
+
+| Grupo | Nome | Ideia | Observação |
+|---|---|---|---|
+| ITA + inglês | **ITA Events** | Direto: Inteligência Territorial Analítica em eventos | Claro em qualquer país; pouco distintivo como marca |
+| | **ITAvents** | Fusão de ITA + *events* | Distintivo e registrável; pronúncia "itavents" pede costume |
+| | **ITA Expo** | ITA + *expo* | Fácil em PT, EN e ES |
+| | **ITA Hub** | Plataforma que conecta todos os atores | "Hub" já é usado por muitos |
+| Só inglês | **Expolytics** | *Expo* + *analytics* | Muito descritivo do que o sistema faz; bom para vender a outras feiras |
+| | **ExpoIQ** / **ShowIQ** | A "inteligência" da feira | Curto, internacional, tom de produto de dados |
+| | **FairSense** | A feira "sentida" em tempo real (sensor territorial) | Bom conceito; "fair" é menos natural no Brasil |
+| | **EventScape** | *Event* + *landscape*, remetendo ao *servicescape* (Bitner) | Forte base teórica; mais difícil de falar |
+| Agro + território | **TerraExpo** / **TerraShow** | *Terra* (território e agro) + feira | Funciona igual em PT, EN e ES |
+| | **AgroPulse** | O pulso do agro na feira | Bom para o painel ao vivo |
+
+**Recomendação provisória:**
+- **Marca-mãe:** **Expolytics** (ou **ExpoIQ**), com a assinatura "by Observatório ITA". O nome diz o que o produto faz para qualquer feira, no Brasil ou fora, e o ITA aparece como a autoridade científica por trás.
+- **Para o visitante:** "Tecnoshow Conecta".
+- **Alternativa, se o nome ITA precisar estar na marca:** **ITAvents** é a opção mais registrável dessa família.
+
+Antes de escolher, verificar a disponibilidade dos finalistas:
+- INPI e USPTO;
+- domínios `.com.br` e `.com`;
+- perfis nas redes sociais.
+
 ---
 
 ## 16. Decisões pendentes (acumuladas)
@@ -381,7 +415,7 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 22. Transporte: começar com transporte oficial e caravanas, e deixar a carona em grupos verificados para depois? Há interesse de prefeituras vizinhas em vans?
 
 **Da etapa de identidade**
-23. Nome: ITA-e como marca-mãe, com uma marca própria para o visitante de cada feira? Grafia com ou sem hífen? Fazer a busca no INPI antes de divulgar?
+23. Nome: escolher 2 ou 3 finalistas da seção 15 (ITA-e, iTA, ITAvents, Expolytics, ExpoIQ…) para a busca no INPI, USPTO e domínios. A sigla ITA precisa estar na marca ou basta a assinatura "by Observatório ITA"?
 
 ---
 
@@ -391,3 +425,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 05/11/2026: valor para o visitante, sustentabilidade financeira, Tecnoshow na Cidade (comércio, hospedagem, interações urbanas), decisões 11 a 17.
 - 05/11/2026: governança dos dados, indicadores-chave, implantação no território, carona e transporte, decisões 18 a 22.
 - 05/11/2026: identidade e nome (ITA-e e alternativas), decisão 23.
+- 05/11/2026: variação iTA e nomes com "eventos" em inglês; decisão 23 revista.
