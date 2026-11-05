@@ -143,9 +143,93 @@ A feira como **sensor territorial**: cinco dias por ano em que o agronegócio de
 - **Cruzamento com dados públicos** (IBGE, PAM, PPM, CAR, Censo Agro): normaliza os fluxos por população e PIB agropecuário. Base do modelo gravitacional, que mostra onde a feira capta abaixo do potencial.
 - **Produção acadêmica contínua:** dissertações, artigos e TCCs a partir da mesma base, com dados longitudinais.
 
+## 8. Valor para o visitante (por que o produtor abre o app sem precisar de prêmio)
+
+Princípio: o app precisa resolver **tarefas reais** do visitante (*jobs to be done*, Christensen). O prêmio atrai no primeiro uso; a utilidade é o que faz voltar.
+
+| Tarefa do visitante | O que o app oferece |
+|---|---|
+| "Quero ver o que é novo para a minha lavoura ou criação" | Filtro por cultura e atividade (soja, milho, algodão, pecuária de corte e de leite…): lançamentos, estandes e palestras que interessam |
+| "Não quero me perder nem perder tempo" | Mapa da feira com rota até o estande, agenda pessoal com alerta, informações de estacionamento, filas e clima |
+| "Preciso comparar antes de decidir" | Favoritos lado a lado (máquinas, insumos, condições da feira) e um **"caderno da feira"** para levar para casa e decidir com a família ou o sócio (PDF e envio por WhatsApp) |
+| "Quero a melhor condição" | Ofertas válidas só na feira, simulação de crédito e consórcio com bancos e a cooperativa |
+| "Quero aprender" | Resumos e materiais das palestras e dos estandes, reunidos num lugar só |
+| "Quero ser lembrado" | Histórico pessoal ("sua 5ª Tecnoshow"), selo de visitante fiel, contatos dos estandes que visitou |
+| "Quero ser ouvido" | Avaliações que viram melhorias visíveis na edição seguinte: "vocês pediram, fizemos" |
+
+Pontos de desenho:
+- **WhatsApp como porta de entrada.** O produtor rural vive no WhatsApp. Um assistente oficial no WhatsApp (agenda, mapa, "caderno da feira", ofertas) pode ter mais adesão que qualquer app. O link web continua para o que precisa de tela (mapa, comparação).
+- **Sem atrito:** abre por QR ou link, sem baixar nada e sem senha; o cadastro só é pedido quando há benefício claro (prêmio, lead, caderno).
+- **Público ampliado:** trilhas para a família, estudantes e delegações estrangeiras.
+
+## 9. Sustentabilidade financeira
+
+Custos esperados: a infraestrutura é barata (dezenas a poucas centenas de dólares por mês). O custo real está em **pessoas** (desenvolvimento, suporte, moderação durante a feira), em material (QR codes, sinalização) e em prêmios.
+
+Fontes de receita, da mais imediata à mais escalável:
+
+| Fonte | Como funciona |
+|---|---|
+| **Expositor freemium** | Básico grátis (vitrine, check-in, avaliações). Premium: leads, benchmark com o segmento, relatório pós-feira, destaque no mapa, prioridade na rodada de negócios. Pode ser vendido à parte ou incluído no contrato do estande pela organização |
+| **Patrocínio** | Telão social com marca, desafios e prêmios patrocinados, "rota patrocinada", cota do Índice Tecnoshow de Inovação Agro |
+| **Parceiros na cidade** | Bares, restaurantes e hotéis pagam um valor baixo pelo selo "Parceiro Tecnoshow" e pela vitrine no app (seção 10) |
+| **Inteligência e dados agregados** | Relatórios setoriais para empresas, associações e governo; estudos para prefeituras e secretarias de turismo; sempre anonimizados e agregados |
+| **Licenciamento para outras feiras (SaaS)** | O mesmo sistema e o mesmo instrumento, oferecidos a outras feiras agro. É a fonte mais escalável e a que leva o nome do ITA para fora de Goiás |
+| **Fomento** | FAPEG, CNPq, Finep, Sebrae, editais de inovação e extensão. Financiam o desenvolvimento inicial e a pesquisa |
+
+Arranjo institucional possível:
+- O Marco Legal de CT&I (Leis 10.973/2004 e 13.243/2016) permite ao IF Goiano, como ICT:
+  - licenciar a tecnologia;
+  - firmar acordos de parceria com empresas;
+  - ter receitas geridas por uma **fundação de apoio**.
+- Mais adiante, uma **spin-off** do Observatório ITA pode assumir a operação comercial, enquanto o ITA mantém a pesquisa e os dados abertos.
+
+Sequência sugerida: 1ª edição gratuita e financiada por fomento e patrocínio (provar valor) → 2ª edição com premium para expositores e parceiros da cidade → 3ª edição em diante com licenciamento para outras feiras.
+
+## 10. Tecnoshow na Cidade: o território expandido durante os 7 dias
+
+A feira não termina no portão. À noite e nos intervalos, o visitante consome a cidade, e esse rastro é o que hoje ninguém mede.
+
+### 10.1 Comércio (bares, restaurantes, lojas)
+- Selo **"Parceiro Tecnoshow"** com QR no balcão ou na mesa. O visitante faz check-in, avalia e responde: **"Gostaria de ver este estabelecimento na feira?"**
+- Isso vira um **funil de prospecção de novos expositores** (gastronomia, artesanato, serviços), com evidência de demanda para convencê-los: "320 visitantes pediram vocês na feira".
+- Os check-ins mostram onde o visitante gasta à noite: **mapa de calor do consumo urbano** durante a feira.
+
+### 10.2 Hospedagem
+- Pesquisa curta do hóspede pelo QR do hotel:
+  - origem;
+  - número de noites e de pessoas;
+  - faixa de diária;
+  - antecedência da reserva;
+  - motivo da viagem;
+  - satisfação.
+- Com a ocupação diária informada pelos hotéis (sigilosa, publicada só de forma agregada), o ITA consegue:
+  - **prever a demanda de hóspedes** da próxima edição;
+  - identificar **déficit de leitos** e o transbordamento para cidades vizinhas (Jataí, Santa Helena, Montividiu…);
+  - orientar a hospedagem alternativa (casas de família, aluguel por temporada);
+  - mostrar o perfil e o gasto real do visitante, que hoje é estimado.
+
+### 10.3 Outras interações na cidade
+- **Passaporte da Cidade:** desafios fora da feira (jantar em 2 restaurantes parceiros, visitar um ponto turístico), com prêmios do comércio local. Incentiva o visitante a ficar mais tempo e a gastar na cidade.
+- **Agenda noturna:** shows, eventos e happy hours dos expositores.
+- **Mobilidade:** pontos de táxi e transporte, estacionamentos, tempo até a feira.
+- **Serviços úteis:** farmácias, oficinas, postos, saúde e segurança.
+- **Jornada completa:** o mesmo identificador anônimo une feira e cidade. Ele mostra, por exemplo, que quem visita estandes de máquinas fica mais noites e gasta mais em restaurantes.
+
+### 10.4 Base teórica e parceiros
+- Turismo de negócios e eventos (MICE), gestão de destinos (DMO) e **Destinos Turísticos Inteligentes** (metodologia do MTur e da SEGITTUR).
+- Transbordamento espacial e impacto econômico de eventos com dados observados, não só declarados.
+- Parceiros naturais: Prefeitura e Secretaria de Turismo, associação comercial (ACIRV/CDL), Sebrae, sindicato de hotéis e bares. Também são possíveis financiadores (seção 9).
+
+### 10.5 Cuidados
+- **Sem rastreamento contínuo por GPS.** Só check-ins pontuais e consentidos por QR, o que preserva a privacidade e evita rejeição.
+- **Dados comerciais dos hotéis e bares são sigilosos.** Só publicar agregados com pelo menos 3 estabelecimentos por grupo.
+- **Avaliação de comércio pode gerar conflito.** São necessários regras públicas, direito de resposta e avaliação só após check-in.
+- **Amostra autosselecionada:** quem usa o app não representa todos. Calibrar com a contagem da portaria e com os dados dos hotéis.
+
 ---
 
-## 8. Decisões pendentes (acumuladas)
+## 11. Decisões pendentes (acumuladas)
 
 Perguntas que serão feitas todas de uma vez ao final da ideação.
 
@@ -163,8 +247,18 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 9. Dados abertos: o que o ITA pode publicar, com que nível de agregação e com que periodicidade?
 10. Abrangência: o instrumento será oferecido a outras feiras? Isso muda a arquitetura (uma base por feira ou multifeira).
 
+**Da etapa de visitante, sustentabilidade e cidade**
+11. Canal principal do visitante: WhatsApp oficial (a API tem custo por conversa), link web, ou os dois?
+12. Bancos e cooperativa: há interesse em oferecer simulação de crédito e consórcio dentro do app?
+13. Estrutura para receber recursos: fundação de apoio do IF Goiano, convênio com a Comigo, spin-off, ou uma combinação?
+14. Preço: cobrar o premium já na 1ª edição ou só depois de provar valor (sugestão: só a partir da 2ª)?
+15. Parceiros na cidade: quais podem ser formais desde o início (Prefeitura, Secretaria de Turismo, ACIRV/CDL, Sebrae, sindicato de hotéis e bares)?
+16. Hotéis: aceitariam informar a ocupação diária (sigilosa, publicada só de forma agregada)?
+17. Alcance territorial: só Rio Verde, ou também as cidades vizinhas que recebem hóspedes durante a feira?
+
 ---
 
 ## Histórico
 
 - 04/11/2026: módulos A a F, cuidados, faseamento, mecanismos de dependência, viés do Observatório ITA, decisões 1 a 10.
+- 05/11/2026: valor para o visitante, sustentabilidade financeira, Tecnoshow na Cidade (comércio, hospedagem, interações urbanas), decisões 11 a 17.
