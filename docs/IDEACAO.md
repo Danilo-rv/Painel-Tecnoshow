@@ -574,7 +574,7 @@ A agenda oficial vira a base de **trilhas**: combinações de check-ins que dão
 |---|---|
 | Conteúdo + estande | 2 palestras de bioinsumos + estande da Embrapa → brinde |
 | Institucional | 2 palestras + estande da Prefeitura → brinde da Prefeitura |
-| Setorial | Visitar 5 estandes de máquinas → sorteio substituído por prêmio por ordem de chegada ou por pontos (decisão 3) |
+| Setorial | Visitar 5 estandes de máquinas → prêmio por ordem de chegada ou por pontos, sem sorteio (decisão 3) |
 | Território | Palestra + jantar num restaurante parceiro → desconto no parceiro |
 | Família | Teatro Sementinhas do Agro + Praça das Flores → brinde infantil |
 
