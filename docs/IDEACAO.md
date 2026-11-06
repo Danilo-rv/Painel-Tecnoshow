@@ -618,6 +618,24 @@ Detalhado na seção 16 do plano de implantação (documento "Plano de implanta�
 
   Prioridade: seguir, salvar, perguntas e enquetes nas palestras, e assuntos em alta.
 
+## 18-D. Vitrine do expositor com condições comerciais
+
+Detalhado na seção 16.5 do plano de implantação.
+
+- **A vitrine pelo QR:** ao ler o QR do expositor, o visitante vê os produtos. Se o expositor quiser, cada produto traz:
+  - preço (ou faixa, ou "sob consulta") e desconto da feira;
+  - formas de pagamento (à vista, parcelado, prazo safra, barter, consórcio);
+  - financiamento (linha, juros, parcelas, entrada, carência, custo efetivo total);
+  - entrega, garantia e assistência técnica;
+  - a validade da condição.
+- **Funil por produto:** ver → curtir → salvar → pedir proposta → venda (opcional e sigilosa).
+- **Dado novo:** painel de condições comerciais da feira por segmento (só agregados de 5 ou mais), benchmark anônimo para o expositor e base para a simulação de crédito da 2ª fase.
+- **Cuidados:**
+  - oferta publicada deve ser honrada (CDC), com validade visível;
+  - crédito informa o CET e a instituição (conferir com o jurídico);
+  - nenhum expositor vê o preço de outro identificado;
+  - sem ranking de preço entre concorrentes: o visitante compara só o que salvou.
+
 ---
 
 ## 19. Decisões pendentes (acumuladas)
@@ -737,3 +755,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 06/11/2026: mosaico do mapa 2026 guardado e transcrito (113 lotes em `docs/mapa-2026/`); decisão 32 com as dúvidas do mapa.
 - 06/11/2026: decisão 31 tomada (ITex é camada de dados, sem app próprio nem competição); agenda como mecanismo de gamificação (seção 18-B).
 - 06/11/2026: avaliação de palestras e serviços com análise de sentimento só para a organização; mecanismos do Instagram (seção 18-C e seção 16 do plano).
+- 06/11/2026: vitrine do expositor com preço, pagamento e financiamento opcionais (seção 18-D e seção 16.5 do plano).
