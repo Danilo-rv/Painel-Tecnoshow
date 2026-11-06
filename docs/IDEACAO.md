@@ -792,6 +792,39 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 15. Interesse da Comigo e dos bancos parceiros na simulação de crédito da 2ª fase (decisão 12).
 16. Patrocinadores e órgãos públicos interessados em lançar trilhas com brinde (exemplo: Prefeitura de Rio Verde).
 
+---
+
+## 22. Tudo editável por feira: o sistema não espera a Comigo
+
+**Princípio:** nada do que depende da organização fica fixo no código. Planta, lotes, categorias, palcos, locais, agenda e expositores são **cadastros editáveis na Administração**. A plataforma pode ser construída agora, com os dados de 2026 como rascunho, e serve a qualquer feira.
+
+**Como cada pendência vira cadastro**
+
+| Pendência | Na Administração | O que se atualiza sozinho ao editar |
+|---|---|---|
+| Planta 2027 em vetor | Enviar a imagem ou o PDF da planta como fundo da edição | Os lotes continuam ligados; só se ajusta a posição deles sobre a nova planta |
+| Lotes e numeração | Editor de mapa: desenhar ou ajustar cada lote sobre a planta; número e tipo editáveis | Expositores do lote, QR (que é por expositor e não muda), check-ins e painéis |
+| Georreferência | Arrastar 4 pinos sobre os cantos do parque, ou digitar as coordenadas coletadas | O "você está aqui" e as distâncias em metros |
+| Categorias | Lista editável (nome, ícone, cor) | Todos os expositores daquela categoria, os filtros, os benchmarks por segmento e as cores no mapa |
+| Palcos e locais (banheiros, ambulatório, portarias, acessibilidade) | Cadastro de locais com tipo e posição no mapa | Agenda (cada evento aponta para um palco), avaliações de serviço, alertas de banheiro |
+| Agenda | Cadastro ou importação por planilha; cada evento ligado a um palco | Check-in de palestra, trilhas, avaliações e relatórios |
+| Expositores | Cadastro, importação por planilha e confirmação pelo próprio expositor por convite | Vitrine, QR, painel, rankings |
+| Nomes de leitura incerta | Marcar o dado como **"a confirmar"** | Aparece numa lista de pendências até alguém confirmar |
+
+**Por que as atualizações se propagam**
+- Tudo se liga por **identificador, nunca por nome**. Renomear uma categoria, trocar o palco de uma palestra ou mudar um expositor de lote atualiza todas as telas, painéis e relatórios que usam aquele item.
+- Os números dos painéis são calculados no banco a partir dos cadastros, então refletem a mudança na hora.
+- O QR é do expositor (decisão 32-2): mudar de lote não exige reimprimir.
+- Toda edição fica na auditoria, com antes e depois.
+
+**Recursos que facilitam a adaptação a qualquer feira**
+- **Clonar edição:** a Tecnoshow 2027 nasce como cópia da 2026 e é ajustada; uma feira nova nasce de um modelo vazio.
+- **Importação por planilha** com modelo para baixar e relatório de erros (linhas sem categoria, lote inexistente).
+- **Painel de pendências de dados:** tudo o que está "a confirmar", sem posição no mapa, sem categoria ou sem palco, com quem é o responsável.
+- **Dados semente de 2026:** os 113 lotes de `docs/mapa-2026/lotes.csv`, as 24 categorias do app oficial e os locais conhecidos entram como rascunho marcado "a confirmar".
+
+**Cuidado:** mudanças de planta ou de lote durante a feira mexem no que o visitante vê ao vivo. Na edição em curso, a Administração pede confirmação e registra o motivo.
+
 
 ## Histórico
 
@@ -817,3 +850,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 06/11/2026: perfil do visitante como porta de entrada da interatividade (seção 18-E e seção 16.6 do plano); decisão 33.
 - 06/11/2026: decisões 33a, 33b, 32-2 e 32-3 tomadas.
 - 06/11/2026: decisões 33b-c, 32-7, 32-10 e 31-r/32 tomadas; pauta para a reunião com a Comigo (seção 21). Todas as decisões em aberto foram respondidas.
+- 06/11/2026: princípio de tudo editável por feira, com propagação por identificador e dados semente de 2026 (seção 22).
