@@ -38,6 +38,9 @@ As respostas ficam num banco **Supabase** do próprio projeto. Uma versão alter
 
 ### Opção A: GitHub Pages (automático)
 
+O arquivo `config.json`, na raiz do repositório, já traz a URL do projeto e a chave **anon**. Essa chave é pública por definição: ela vai dentro do site, e a proteção dos dados está nas regras do banco. As variáveis abaixo são opcionais e, quando existem, têm prioridade sobre o arquivo.
+
+
 1. No repositório, abra **Settings → Secrets and variables → Actions → aba Variables** e crie:
    - `SUPABASE_URL`: a Project URL
    - `SUPABASE_ANON_KEY`: a chave anon
