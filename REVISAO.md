@@ -87,3 +87,17 @@ Testes: as regras de cada papel foram testadas num Postgres local que imita o Su
 - funções de validação sem permissão de uso;
 - painel da versão claude.ai pedindo login;
 - identificadores repetidos entre as telas de Cadastros e de convite.
+
+## Visitante e página do estande (quarta etapa)
+
+| Item | Como funciona | Proteção |
+|---|---|---|
+| Identidade do visitante | Credencial aleatória no aparelho; o banco guarda só o SHA-256 | Toda ação passa por `interagir`, que confere a credencial; a chave pública não lê nem grava tabelas |
+| WhatsApp | HMAC com segredo do servidor (busca) + cópia cifrada com `pgp_sym_encrypt` | A tabela `_segredos` não é acessível pela API; a equipe não lê as colunas de WhatsApp nem a credencial |
+| Perfil | `_perfil_valido` aceita só os valores do questionário | Perfil fora do formato é recusado |
+| Interações | Reação, salvar e seguir alternam (fazer/desfazer); uma carinha por estande; check-in a cada 30 minutos | Produto precisa ser do expositor do estande; estande precisa ser da edição do visitante |
+| Abuso | No máximo 5 perfis por número por hora, 300 ações e 20 comentários por visitante por hora | Ações acima do limite são recusadas |
+| Menores | Perfil "até 17 anos" marca o visitante como menor | Sem pedido de contato e sem comentário público |
+| Comentário público | Entra como "pendente" | Só vai a público depois da moderação (tela de moderação: próxima etapa) |
+
+Testes: as funções foram testadas no Postgres local, inclusive com ataques (credencial falsa, produto de outro estande, ação inventada, valor inválido). A tela do visitante foi testada no navegador chamando as funções reais do banco local. O teste pegou um defeito, corrigido antes da publicação: um número brasileiro digitado sem +55 perdia o código do país quando o celular estava em outro idioma.

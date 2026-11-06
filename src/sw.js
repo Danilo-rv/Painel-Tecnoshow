@@ -1,7 +1,7 @@
 /* Guarda o app no aparelho para que o tablet abra o questionário mesmo sem internet.
    As respostas NÃO passam por aqui: ficam na fila do localStorage até a base confirmar. */
 const CACHE = 'tsa-__VERSAO__';
-const APP = ['./', 'index.html', 'vendor/d3.min.js', 'vendor/supabase.js'];
+const APP = ['./', 'index.html', 'vendor/d3.min.js', 'vendor/supabase.js', 'vendor/qrcode.js'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(APP)).then(() => self.skipWaiting()));

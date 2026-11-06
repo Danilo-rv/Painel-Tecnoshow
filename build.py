@@ -60,7 +60,7 @@ def main():
     cfg = config()
     (DIST / 'vendor').mkdir(exist_ok=True)
     libs = []
-    for nome in ('d3.min.js', 'supabase.js'):
+    for nome in ('d3.min.js', 'supabase.js', 'qrcode.js'):
         b = (RAIZ / 'vendor' / nome).read_bytes()
         shutil.copyfile(RAIZ / 'vendor' / nome, DIST / 'vendor' / nome)
         libs.append(f'<script src="vendor/{nome}" integrity="{sri(b)}"></script>')

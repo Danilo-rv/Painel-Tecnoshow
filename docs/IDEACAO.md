@@ -853,3 +853,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 06/11/2026: princípio de tudo editável por feira, com propagação por identificador e dados semente de 2026 (seção 22).
 - 06/11/2026: Supabase em São Paulo instalado e testado; site publicado; plano de implantação atualizado para a versão 2 (decisões 31 a 33 e ideias das seções 18-A a 22 aplicadas).
 - 06/11/2026: base multifeira construída e aplicada em produção (migração 002, sementes de 2027, abas Cadastros, Mapa e Pendências na Administração).
+- 06/11/2026: porta de entrada do visitante e página do estande por QR construídas e em produção (migração 003); produtos e QR na Administração.

@@ -250,6 +250,42 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
 .mapa-lado .adm-sec{padding:12px}
 .geo-lin{display:grid;grid-template-columns:2.5ch minmax(0,1fr) minmax(0,1fr);gap:6px;align-items:center;font-family:var(--f-mono);font-size:.78rem}
 @media (max-width:860px){.mapa-lay{grid-template-columns:1fr}}
+/* ---------- VISITANTE (pontos de contato por QR) ---------- */
+#v-visitante{min-height:100%;background:radial-gradient(ellipse at 50% -10%,#123681 0%,var(--night) 58%);padding-block:16px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.vis{max-width:640px;margin:0 auto;display:grid;gap:16px}
+.vis-top{display:flex;justify-content:space-between;align-items:center;gap:10px;font-family:var(--f-mono);font-size:.74rem;color:var(--muted)}
+.vis-top .brand{font-family:var(--f-display);font-weight:700;letter-spacing:.06em;color:var(--ink);font-size:.9rem}
+.vis-top .brand i{font-style:normal;color:var(--glow)}
+.vis h1{font-family:var(--f-display);font-weight:800;font-size:clamp(1.7rem,6vw,2.4rem);line-height:1.05;margin:0;text-wrap:balance}
+.vis .sub{color:var(--muted);margin:0;line-height:1.5}
+.vis-card{display:grid;gap:12px;background:linear-gradient(170deg,rgba(11,31,74,.92),rgba(7,22,55,.92));border:1px solid var(--line);border-radius:14px;padding:16px}
+.vis-card h2{margin:0;font-family:var(--f-display);font-size:1.2rem}
+.vis-card h3{margin:0;font-family:var(--f-display);font-size:1.05rem}
+.vis-lbl{font-size:.82rem;color:var(--muted);letter-spacing:.03em}
+.vis-chips{display:flex;flex-wrap:wrap;gap:8px}
+.vis-chip{border:2px solid var(--line);background:transparent;border-radius:999px;padding:9px 14px;font-size:.95rem;color:var(--ink)}
+.vis-chip.sel{border-color:var(--glow);background:rgba(95,208,255,.16);color:var(--glow2)}
+.vis-acts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.vis-bt{border:2px solid var(--line);background:rgba(4,11,31,.5);border-radius:12px;padding:12px 8px;font-size:1rem;color:var(--ink);display:grid;justify-items:center;gap:2px}
+.vis-bt b{font-size:1.5rem;line-height:1}
+.vis-bt.on{border-color:var(--glow);background:rgba(95,208,255,.18);color:var(--glow2)}
+.vis-bt:disabled{opacity:.5}
+.vis-in{width:100%;box-sizing:border-box;font:inherit;font-size:1.05rem;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:rgba(4,11,31,.7);color:var(--ink)}
+.vis-in:focus{border-color:var(--glow)}
+.vis-prod{display:grid;gap:8px;border-top:1px solid var(--line);padding-top:12px}
+.vis-prod:first-of-type{border-top:0;padding-top:0}
+.vis-prod img{width:100%;max-height:220px;object-fit:cover;border-radius:10px}
+.vis-prod .preco{color:var(--gold);font-weight:600}
+.vis-prod .acts{display:flex;gap:8px;flex-wrap:wrap}
+.vis-prod .acts .vis-bt{grid-auto-flow:column;padding:8px 12px;font-size:.9rem}
+.vis-prod .acts .vis-bt b{font-size:1.1rem}
+.vis-msg{margin:0;padding:10px 12px;border-radius:10px;font-size:.9rem;border:1px solid var(--line)}
+.vis-msg.ok{border-color:var(--good);color:var(--good)} .vis-msg.erro{border-color:var(--bad);color:#ffc2ca}
+.vis-tag{display:inline-block;border-radius:999px;padding:3px 10px;font-size:.78rem;font-family:var(--f-mono);border:1px solid currentColor}
+.vis-consent{display:flex;gap:10px;align-items:flex-start;font-size:.88rem;color:var(--muted);line-height:1.5}
+.vis-consent input{width:22px;height:22px;flex:none;accent-color:var(--glow);margin-top:2px}
+.qr-box{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center}
+.qr-box img{width:132px;height:132px;background:#fff;border-radius:8px;padding:6px;image-rendering:pixelated}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -391,6 +427,8 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
     </div>
   </div>
 </div>
+
+<div id="v-visitante" class="view" hidden><div class="vis" id="vis-corpo"></div></div>
 
 <div id="v-convite" class="view" hidden>
   <div class="conv"><form class="login-box" id="c-form" autocomplete="on">
@@ -802,6 +840,14 @@ const Base = (() => {
       }
       return out;
     },
+    async listarEm(tab, col, vals){
+      const out=[];
+      for (let i=0;i<vals.length;i+=150){
+        const {data,error} = await sb.from(tab).select('*').in(col, vals.slice(i,i+150));
+        if (error) throw erro(codErro(error), error.message); out.push(...data);
+      }
+      return out;
+    },
     async vinculos(ids){
       const out=[];
       for (let i=0;i<ids.length;i+=150){
@@ -830,8 +876,16 @@ const Base = (() => {
     convidar: () => rpc('criar_convite', {p_dias:7}), revogar: id => rpc('revogar_convite', {p_id:id}),
     remover: id => rpc('remover_membro', {p_user:id}), aceitar: tok => rpc('aceitar_convite', {p_token:tok})
   };
+  /* Visitante: sem login. A credencial vive no aparelho; o banco guarda só o hash. */
+  const vis = {
+    disponivel: () => kind==='supabase',
+    estande: id => rpc('estande_publico', {p_estande:id}),
+    criar: (ed, perfil, whatsapp, lang) => rpc('criar_visitante', {p_ed:ed, p_perfil:perfil, p_whatsapp:whatsapp, p_lang:lang}),
+    estado: (token, est) => rpc('estado_visitante', {p_token:token, p_estande:est}),
+    agir: (token, est, acao, extra={}) => rpc('interagir', {p_token:token, p_estande:est, p_acao:acao, p_produto:extra.produto||null, p_valor:extra.valor||null, p_texto:extra.texto||null, p_publico:!!extra.publico})
+  };
   return {kind, enviar, ler, acompanhar, precisaLogin, garantirAcesso, sair, entrar, cadastrar, temSessao, souCoordenador, meuPapel,
-          instrumentoAtual, publicarInstrumento, historico, equipe, cad};
+          instrumentoAtual, publicarInstrumento, historico, equipe, cad, vis};
 })();
 
 /* Questionário em uso neste aparelho: a última versão publicada da edição, guardada para uso offline. */
@@ -871,7 +925,7 @@ const Inst = (() => {
 })();
 
 /* ================== ROTEAMENTO ================== */
-const VIEWS = ['inicio','coleta','painel','relatorio','admin','convite'];
+const VIEWS = ['inicio','coleta','painel','relatorio','admin','convite','visitante'];
 let current = null;
 function route(){
   const h = (location.hash||'').replace('#','');
@@ -879,6 +933,7 @@ function route(){
   let base = demo ? h.replace('-demo','') : h;
   if (base==='previa') base='coleta';
   if (/^convite-/.test(base)) base='convite';
+  if (/^e-[0-9a-f-]{36}$/.test(base)) base='visitante';
   const v = VIEWS.includes(base) ? base : 'inicio';
   VIEWS.forEach(x => document.getElementById('v-'+x).hidden = x!==v);
   if (current === h) return; current = h;
@@ -888,6 +943,7 @@ function route(){
   if (v==='relatorio') Relatorio.start(demo);
   if (v==='admin') Admin.start();
   if (v==='convite') Convite.start(h.slice(8));
+  if (v==='visitante') Visit.estande(h.slice(2));
 }
 window.addEventListener('hashchange', route);
 const go = h => { location.hash = h; };
@@ -1705,11 +1761,17 @@ const Cad = (() => {
       {k:'titulo', l:'Título', t:'text', req:1, max:200}, {k:'tipo', l:'Tipo', t:'sel', op:TA, req:1},
       {k:'local_id', l:'Palco ou local', t:'ref', ref:'locais'}, {k:'inicio', l:'Início', t:'dt'}, {k:'fim', l:'Fim', t:'dt'},
       {k:'palestrante', l:'Palestrante', t:'text', max:200}, st, {k:'descricao', l:'Descrição', t:'area', max:2000}]},
+    produtos: {nome:'Produtos', esc:'expositor', chave:'nome', campos:[
+      {k:'expositor_id', l:'Expositor', t:'ref', ref:'expositores', req:1}, {k:'nome', l:'Produto', t:'text', req:1, max:120},
+      {k:'preco_texto', l:'Preço ou condição (opcional, ex.: "R$ 12.000" ou "condição especial na feira")', t:'text', max:120},
+      {k:'validade', l:'Condição válida até', t:'data'}, {k:'foto_url', l:'Endereço da foto (https://…)', t:'text', max:400},
+      {k:'ordem', l:'Ordem na vitrine', t:'num'}, st, {k:'descricao', l:'Descrição', t:'area', max:1000},
+      {k:'condicoes', l:'Pagamento e financiamento (formas, parcelas, juros, CET, banco)', t:'area', max:1000}]},
     categorias: {nome:'Categorias', esc:'feira', chave:'nome', campos:[
       {k:'nome', l:'Nome', t:'text', req:1, max:80}, {k:'cor', l:'Cor no mapa', t:'cor'}, {k:'icone', l:'Ícone (nome curto)', t:'text', max:40},
       {k:'ordem', l:'Ordem', t:'num'}, st]}
   };
-  const ORDEM = ['expositores','lotes','locais','agenda','categorias'];
+  const ORDEM = ['expositores','produtos','lotes','locais','agenda','categorias'];
   let ed=null, edi=null, d=null, ent='expositores', sel=null, papel=null, carregando=null;
   const ger = () => papel==='admin_geral' || papel==='coordenador';
   const num = v => { const n = parseInt(v,10); return isNaN(n) ? 1e9 : n; };
@@ -1732,7 +1794,8 @@ const Cad = (() => {
       B.listar('categorias','feira_id',f), B.listar('expositores','feira_id',f), B.listar('lotes','ed',ed),
       B.listar('locais','ed',ed), B.listar('agenda','ed',ed), B.listar('estandes','ed',ed), B.listar('plantas','ed',ed)]);
     const vinc = await B.vinculos(estandes.map(s=>s.id));
-    d = {categorias, expositores, lotes, locais, agenda, estandes, plantas, vinc};
+    const produtos = await B.listarEm('produtos','expositor_id', expositores.map(x=>x.id));
+    d = {categorias, expositores, lotes, locais, agenda, estandes, plantas, vinc, produtos};
   }
   function garantir(){ if (!carregando) carregando = carregar().finally(()=>{ carregando=null; }); return carregando; }
 
@@ -1742,7 +1805,7 @@ const Cad = (() => {
     let L = d[ent].filter(r => lixo ? true : !r.excluido_em);
     if (ent==='expositores'){ const noEd = new Set(d.estandes.filter(s=>!s.excluido_em).map(s=>s.expositor_id)); L = L.filter(r=>noEd.has(r.id) || lixo || !d.estandes.length); }
     if (soPend) L = L.filter(r=>r.status==='a_confirmar');
-    if (q) L = L.filter(r => norm([r.nome, r.numero, r.titulo, r.rotulo, r.palestrante, ent==='expositores' ? lotesDe(r.id).join(' ') : ''].filter(Boolean).join(' ')).includes(q));
+    if (q) L = L.filter(r => norm([r.nome, r.numero, r.titulo, r.rotulo, r.palestrante, ent==='expositores' ? lotesDe(r.id).join(' ') : '', ent==='produtos' ? (d.expositores.find(x=>x.id===r.expositor_id)||{}).nome : ''].filter(Boolean).join(' ')).includes(q));
     const k = ENT[ent].chave;
     return L.sort((a,b)=> k==='numero' ? num(a.numero)-num(b.numero) : ent==='agenda' ? String(a.inicio||'').localeCompare(String(b.inicio||'')) : ent==='categorias' ? (a.ordem-b.ordem) : String(a[k]).localeCompare(String(b[k]),'pt'));
   }
@@ -1750,6 +1813,7 @@ const Cad = (() => {
     expositores: [['Nome', r=>esc(r.nome)], ['Lotes', r=>`<span class="num">${esc(lotesDe(r.id).join(', ')||'–')}</span>`], ['Categoria', r=>esc(nomeCat(r.categoria_id)||'–')]],
     lotes: [['Nº', r=>`<span class="num">${esc(r.numero)}</span>`], ['Tipo', r=>esc(TL[r.tipo]||r.tipo)], ['Ocupantes', r=>esc(r.rotulo||'')], ['No mapa', r=>r.poligono?'sim':'–']],
     locais: [['Nome', r=>esc(r.nome)], ['Tipo', r=>esc(TC[r.tipo]||r.tipo)], ['Lote', r=>`<span class="num">${esc(numLote(r.lote_id)||'–')}</span>`], ['No mapa', r=>(r.ponto||r.lote_id)?'sim':'–']],
+    produtos: [['Produto', r=>esc(r.nome)], ['Expositor', r=>esc((d.expositores.find(x=>x.id===r.expositor_id)||{}).nome||'–')], ['Preço ou condição', r=>esc(r.preco_texto||'–')]],
     agenda: [['Início', r=>`<span class="num">${esc(r.inicio ? new Date(r.inicio).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}) : '–')}</span>`], ['Título', r=>esc(r.titulo)], ['Local', r=>esc(nomeLocal(r.local_id)||'–')], ['Palestrante', r=>esc(r.palestrante||'')]],
     categorias: [['Ordem', r=>`<span class="num">${r.ordem}</span>`], ['Nome', r=>esc(r.nome)], ['Cor', r=>r.cor?`<span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:${esc(r.cor)};vertical-align:middle"></span> <span class="num">${esc(r.cor)}</span>`:'–']]
   };
@@ -1766,6 +1830,7 @@ const Cad = (() => {
   const dtLocal = iso => { if (!iso) return ''; const x = new Date(iso), p = n => String(n).padStart(2,'0'); return `${x.getFullYear()}-${p(x.getMonth()+1)}-${p(x.getDate())}T${p(x.getHours())}:${p(x.getMinutes())}`; };
   function opcoesRef(ref, atual){
     const base = ref==='categorias' ? d.categorias.filter(c=>!c.excluido_em).sort((a,b)=>a.ordem-b.ordem).map(c=>[c.id,c.nome])
+      : ref==='expositores' ? d.expositores.filter(x=>!x.excluido_em).sort((a,b)=>a.nome.localeCompare(b.nome,'pt')).map(x=>[x.id,x.nome])
       : ref==='lotes' ? d.lotes.filter(l=>!l.excluido_em).sort((a,b)=>num(a.numero)-num(b.numero)).map(l=>[l.id,'Lote '+l.numero])
       : d.locais.filter(l=>!l.excluido_em).sort((a,b)=>a.nome.localeCompare(b.nome,'pt')).map(l=>[l.id, l.nome+' ('+(TC[l.tipo]||l.tipo)+')']);
     return '<option value="">—</option>' + base.map(([v,t])=>`<option value="${esc(v)}" ${v===atual?'selected':''}>${esc(t)}</option>`).join('');
@@ -1778,6 +1843,7 @@ const Cad = (() => {
     if (c.t==='bool') return `<label class="tg"><input type="checkbox" id="${id}" data-k="${c.k}" ${v!==false?'checked':''}> ${lbl}</label>`;
     if (c.t==='area') return `<label class="fld${larga}" for="${id}">${lbl}<textarea id="${id}" data-k="${c.k}" rows="2" maxlength="${c.max||500}">${esc(v||'')}</textarea></label>`;
     if (c.t==='dt') return `<label class="fld" for="${id}">${lbl}<input type="datetime-local" id="${id}" data-k="${c.k}" value="${esc(dtLocal(v))}"></label>`;
+    if (c.t==='data') return `<label class="fld" for="${id}">${lbl}<input type="date" id="${id}" data-k="${c.k}" value="${esc(v||'')}"></label>`;
     if (c.t==='num') return `<label class="fld" for="${id}">${lbl}<input type="number" id="${id}" data-k="${c.k}" value="${esc(v??0)}"></label>`;
     if (c.t==='cor') return `<label class="fld" for="${id}">${lbl}<input type="color" id="${id}" data-k="${c.k}" value="${esc(v||'#5fd0ff')}"></label>`;
     return `<label class="fld" for="${id}">${lbl}<input id="${id}" data-k="${c.k}" maxlength="${c.max||200}" value="${esc(v||'')}"></label>`;
@@ -1786,10 +1852,17 @@ const Cad = (() => {
     sel = r ? r.id : null;
     if (r===undefined){ $('cd-form').innerHTML=''; lista(); return; }
     const novo = !r, R = r || {};
-    const extra = ent==='lotes' && r ? `<p class="nota larga">Expositores neste lote: ${esc(expositoresDoLote(r.id).join(', ')||'nenhum')}.</p>` : '';
+    let extra = ent==='lotes' && r ? `<p class="nota larga">Expositores neste lote: ${esc(expositoresDoLote(r.id).join(', ')||'nenhum')}.</p>` : '';
+    const est = ent==='expositores' && r ? estandeDe(r.id) : null;
+    if (est){
+      const link = location.origin + location.pathname + '#e-' + est.id;
+      extra += `<div class="larga qr-box"><img id="cf-qr" alt="QR do estande ${esc(R.nome)}" src="${qrDataURL(link)}"><div class="fld"><span>QR do estande: abre a página do estande no celular do visitante</span><input readonly id="cf-link" value="${esc(link)}" aria-label="Link do estande"><div class="adm-acts"><button class="ghost sm" id="cf-copiar">Copiar link</button><button class="ghost sm" id="cf-baixar-qr">Baixar QR (imagem)</button><a class="ghost sm" href="${esc(link)}" target="_blank" rel="noopener">Abrir a página</a></div></div></div>`;
+    } else if (ent==='expositores' && r) extra += '<p class="nota larga">Informe os lotes desta edição e salve para gerar o QR do estande.</p>';
     $('cd-form').innerHTML = `<div class="cad-form"><h3>${novo?'Novo registro':'Editar'} · ${esc(ENT[ent].nome)}</h3>${ENT[ent].campos.map(c=>campo(c,R)).join('')}${extra}
       <div class="acts">${!novo ? (R.excluido_em ? '<button class="ghost sm" id="cf-rest">Restaurar da lixeira</button>' : '<button class="ghost sm" id="cf-exc">Mover para a lixeira</button>') : ''}<button class="ghost sm" id="cf-cancel">Cancelar</button><button class="btn sm" id="cf-salvar">Salvar</button></div></div>`;
     $('cf-cancel').onclick = () => form(undefined);
+    if ($('cf-copiar')) $('cf-copiar').onclick = () => { const t=$('cf-link'); navigator.clipboard.writeText(t.value).then(()=>msg('Link copiado.','ok')).catch(()=>{ t.select(); }); };
+    if ($('cf-baixar-qr')) $('cf-baixar-qr').onclick = () => { const a=document.createElement('a'); a.href=qrDataURL($('cf-link').value, 12); a.download='qr_'+norm(R.nome).replace(/[^a-z0-9]+/g,'_')+'.gif'; document.body.appendChild(a); a.click(); a.remove(); };
     $('cf-salvar').onclick = () => salvar(R);
     if ($('cf-exc')) $('cf-exc').onclick = async () => { await lixeira(R, true); };
     if ($('cf-rest')) $('cf-rest').onclick = async () => { await lixeira(R, false); };
@@ -1804,6 +1877,7 @@ const Cad = (() => {
       if (c.t==='ref' || c.t==='sel') v = v || null;
       if (c.t==='num') v = parseInt(v,10) || 0;
       if (c.t==='dt') v = v ? new Date(v).toISOString() : null;
+      if (c.t==='data') v = v || null;
       o[c.k] = v;
     });
     return o;
@@ -1813,7 +1887,8 @@ const Cad = (() => {
     for (const c of E.campos) if (c.req && !o[c.k]) throw Object.assign(new Error('req'), {code:'req', campo:c.l});
     if (o.cnpj && !/^[0-9]{14}$/.test(o.cnpj)) throw Object.assign(new Error('cnpj'), {code:'invalido'});
     const lotesTxt = o.lotes, juntar = o.juntar_lotes; delete o.lotes; delete o.juntar_lotes;
-    if (E.esc==='feira') o.feira_id = edi.feira_id; else o.ed = ed;
+    if (o.foto_url && !/^https:\/\//.test(o.foto_url)) throw Object.assign(new Error('foto'), {code:'invalido'});
+    if (E.esc==='feira') o.feira_id = edi.feira_id; else if (E.esc==='ed') o.ed = ed;
     const rec = R.id ? await Base.cad.alterar(ent, R.id, o) : await Base.cad.inserir(ent, o);
     if (ent==='expositores' && lotesTxt!==undefined) await sincronizarLotes(rec.id, lotesTxt, juntar);
     return rec;
@@ -1841,6 +1916,11 @@ const Cad = (() => {
     catch(e){ msg(erroTexto(e),'erro'); }
   }
 
+  function qrDataURL(texto, celula=4){
+    if (typeof qrcode!=='function') return '';
+    const q = qrcode(0, 'M'); q.addData(texto); q.make(); return q.createDataURL(celula, 2);
+  }
+
   /* ---------- planilha (CSV) ---------- */
   function lerCSV(txt){
     txt = txt.replace(/^﻿/,''); const sep = (txt.split('\n')[0].match(/;/g)||[]).length >= (txt.split('\n')[0].match(/,/g)||[]).length ? ';' : ',';
@@ -1853,10 +1933,10 @@ const Cad = (() => {
     if (cel || row.length){ row.push(cel.replace(/\r$/,'')); rows.push(row); }
     return rows.filter(r=>r.some(x=>x.trim()));
   }
-  const colunasModelo = () => ENT[ent].campos.map(c=>c.k==='categoria_id'?'categoria':c.k==='lote_id'?'lote':c.k==='local_id'?'local':c.k);
+  const colunasModelo = () => ENT[ent].campos.map(c=>c.k==='categoria_id'?'categoria':c.k==='lote_id'?'lote':c.k==='local_id'?'local':c.k==='expositor_id'?'expositor':c.k);
   function baixarModelo(){
     const cols = colunasModelo();
-    const ex = {expositores:['Exemplo Máquinas Ltda','Máquinas e equipamentos','99, 100','sim','','','a_confirmar',''], lotes:['114','expositores','Exemplo Máquinas','2','a_confirmar',''], locais:['Auditório 4','palco','18','9h às 18h','a_confirmar',''], agenda:['Manejo de pastagens','palestra','Auditório 1','2027-04-06 09:00','2027-04-06 10:00','Nome da pessoa','a_confirmar','Descrição curta'], categorias:['Bioinsumos','#2e7d32','bioinsumos','30','a_confirmar']}[ent];
+    const ex = {produtos:['Exemplo Máquinas Ltda','Plantadeira 12 linhas','Condição especial na feira','2027-04-09','','1','a_confirmar','Descrição curta','Entrada de 20% e saldo na safra'], expositores:['Exemplo Máquinas Ltda','Máquinas e equipamentos','99, 100','sim','','','a_confirmar',''], lotes:['114','expositores','Exemplo Máquinas','2','a_confirmar',''], locais:['Auditório 4','palco','18','9h às 18h','a_confirmar',''], agenda:['Manejo de pastagens','palestra','Auditório 1','2027-04-06 09:00','2027-04-06 10:00','Nome da pessoa','a_confirmar','Descrição curta'], categorias:['Bioinsumos','#2e7d32','bioinsumos','30','a_confirmar']}[ent];
     const csv = '﻿' + cols.join(';') + '\n' + ex.join(';') + '\n';
     const a=document.createElement('a'), url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})); a.href=url; a.download=`modelo_${ent}.csv`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),5000);
   }
@@ -1870,15 +1950,16 @@ const Cad = (() => {
       try{
         const o = {};
         for (const c of E.campos){
-          const k = c.k==='categoria_id'?'categoria':c.k==='lote_id'?'lote':c.k==='local_id'?'local':c.k;
+          const k = c.k==='categoria_id'?'categoria':c.k==='lote_id'?'lote':c.k==='local_id'?'local':c.k==='expositor_id'?'expositor':c.k;
           if (!(k in v)) continue; let x = v[k];
           if (c.t==='ref'){
             if (!x){ o[c.k]=null; continue; }
-            const alvo = c.ref==='categorias' ? d.categorias.find(z=>!z.excluido_em && norm(z.nome)===norm(x)) : c.ref==='lotes' ? d.lotes.find(z=>!z.excluido_em && z.numero===x) : d.locais.find(z=>!z.excluido_em && norm(z.nome)===norm(x));
+            const alvo = c.ref==='expositores' ? d.expositores.find(z=>!z.excluido_em && norm(z.nome)===norm(x)) : c.ref==='categorias' ? d.categorias.find(z=>!z.excluido_em && norm(z.nome)===norm(x)) : c.ref==='lotes' ? d.lotes.find(z=>!z.excluido_em && z.numero===x) : d.locais.find(z=>!z.excluido_em && norm(z.nome)===norm(x));
             if (!alvo) throw new Error(`${c.l} "${x}" não encontrado`); o[c.k]=alvo.id;
           } else if (c.t==='bool') o[c.k] = !/^(n|nao|não|false|0)$/i.test(x);
           else if (c.t==='num') o[c.k] = parseInt(x,10)||0;
           else if (c.t==='dt') o[c.k] = x ? new Date(x.replace(' ','T')).toISOString() : null;
+          else if (c.t==='data') o[c.k] = /^\d{4}-\d{2}-\d{2}$/.test(x) ? x : null;
           else if (c.t==='sel'){ if (x && !(x in c.op)){ const achou = Object.entries(c.op).find(([,t])=>norm(t)===norm(x)); if (!achou) throw new Error(`${c.l} "${x}" inválido`); x = achou[0]; } o[c.k] = x || (c.k==='status'?'a_confirmar':null); }
           else o[c.k] = x || null;
         }
@@ -2041,6 +2122,193 @@ const Cad = (() => {
     }catch(e){ msg(e.code==='edicao' ? `A edição "${edSlug()}" não está cadastrada no banco. Confira o campo Edição na tela inicial.` : ERRO[e.code]||ERRO.rede,'erro'); }
   }
   return {abrir, papel: p => { papel = p; }};
+})();
+
+/* ================== VISITANTE: PORTA DE ENTRADA E PÁGINA DO ESTANDE ==================
+   Abre pelo QR (#e-<id do estande>). Sem perfil, o visitante responde a porta de entrada
+   (cerca de 40 segundos) e recebe uma credencial guardada só neste aparelho. */
+const Visit = (() => {
+  const $ = id => document.getElementById(id);
+  const VT = {
+    pt:{entrar:'Antes de interagir, conte um pouco sobre você', entrarSub:'Leva cerca de 40 segundos e vale para toda a feira. Não pedimos nome nem CPF.',
+        idioma:'Idioma', origem:'De onde você veio?', cidade:'Digite sua cidade', pais:'Digite seu país', perfil:'Qual é o seu perfil?', idade:'Faixa etária',
+        culturas:'Culturas e atividades de interesse', prim:'É sua primeira vez na feira?', dias:'Quantos dias você vem?', pern:'Vai dormir fora de casa por causa da feira?',
+        whats:'Seu WhatsApp (com DDD)', whatsAj:'Usamos só para enviar a avaliação da feira e, se você pedir, para o estande falar com você. Nunca é mostrado a ninguém sem o seu pedido.',
+        aceito:'Li e aceito participar.', continuar:'Continuar', falta:'Responda todas as perguntas e aceite o termo.', whatsInv:'Informe um WhatsApp válido, com DDD.',
+        lote:'Lote', curti:'Curti', amei:'Amei', seguir:'Seguir', seguindo:'Seguindo', salvar:'Salvar', salvo:'Salvo', vitrine:'Vitrine', semProd:'Este estande ainda não publicou produtos.',
+        valida:'Condição válida até', atend:'Como foi o atendimento?', bom:'Bom', neutro:'Neutro', ruim:'Ruim', porque:'O que aconteceu?',
+        motivos:{fila:'Fila', demora:'Demora', preco:'Preço', falta_produto:'Faltou produto', atendimento:'Atendimento', outro:'Outro'},
+        coment:'Deixe um comentário', soLoja:'Só para a loja', publico:'Público (passa por moderação)', enviar:'Enviar', enviado:'Comentário enviado. Obrigado!',
+        contato:'Quero contato', contatoAj:'O estande recebe seu WhatsApp para falar com você.', contatoOk:'Pedido enviado. O estande vai falar com você.',
+        compartilhar:'Compartilhar', copiado:'Link copiado.', obrigado:'Registrado!', erro:'Não foi possível registrar agora. Confira a internet e tente de novo.',
+        naoAchado:'Estande não encontrado. Confira o QR code ou procure a equipe da feira.', indisponivel:'A interatividade ao vivo funciona no site oficial da plataforma.', carregando:'Carregando…'},
+    en:{entrar:'Before you interact, tell us a little about yourself', entrarSub:'It takes about 40 seconds and covers the whole fair. We do not ask for your name or ID.',
+        idioma:'Language', origem:'Where did you come from?', cidade:'Type your city', pais:'Type your country', perfil:'Which best describes you?', idade:'Age group',
+        culturas:'Crops and activities of interest', prim:'Is this your first time at the fair?', dias:'How many days are you attending?', pern:'Are you staying overnight because of the fair?',
+        whats:'Your WhatsApp (with country code)', whatsAj:'Used only to send you the fair evaluation and, if you ask, for an exhibitor to contact you. Never shown to anyone without your request.',
+        aceito:'I have read and agree to take part.', continuar:'Continue', falta:'Please answer all questions and accept the terms.', whatsInv:'Enter a valid WhatsApp number with country code.',
+        lote:'Lot', curti:'Like', amei:'Love', seguir:'Follow', seguindo:'Following', salvar:'Save', salvo:'Saved', vitrine:'Products', semProd:'This exhibitor has not published products yet.',
+        valida:'Offer valid until', atend:'How was the service?', bom:'Good', neutro:'Neutral', ruim:'Poor', porque:'What happened?',
+        motivos:{fila:'Queue', demora:'Slow', preco:'Price', falta_produto:'Out of stock', atendimento:'Service', outro:'Other'},
+        coment:'Leave a comment', soLoja:'Only for the exhibitor', publico:'Public (moderated)', enviar:'Send', enviado:'Comment sent. Thank you!',
+        contato:'Contact me', contatoAj:'The exhibitor receives your WhatsApp to contact you.', contatoOk:'Request sent. The exhibitor will contact you.',
+        compartilhar:'Share', copiado:'Link copied.', obrigado:'Saved!', erro:'Could not save right now. Check your connection and try again.',
+        naoAchado:'Exhibitor not found. Check the QR code or ask the fair staff.', indisponivel:'Live interaction works on the platform website.', carregando:'Loading…'},
+    es:{entrar:'Antes de interactuar, cuéntenos un poco sobre usted', entrarSub:'Toma unos 40 segundos y vale para toda la feria. No pedimos nombre ni documento.',
+        idioma:'Idioma', origem:'¿De dónde viene?', cidade:'Escriba su ciudad', pais:'Escriba su país', perfil:'¿Cuál es su perfil?', idade:'Rango de edad',
+        culturas:'Cultivos y actividades de interés', prim:'¿Es su primera vez en la feria?', dias:'¿Cuántos días viene?', pern:'¿Va a pasar la noche fuera de casa por la feria?',
+        whats:'Su WhatsApp (con código de país)', whatsAj:'Lo usamos solo para enviarle la evaluación de la feria y, si usted lo pide, para que el expositor lo contacte. Nunca se muestra sin su pedido.',
+        aceito:'Leí y acepto participar.', continuar:'Continuar', falta:'Responda todas las preguntas y acepte el término.', whatsInv:'Informe un WhatsApp válido con código de país.',
+        lote:'Lote', curti:'Me gusta', amei:'Me encanta', seguir:'Seguir', seguindo:'Siguiendo', salvar:'Guardar', salvo:'Guardado', vitrine:'Productos', semProd:'Este expositor aún no publicó productos.',
+        valida:'Condición válida hasta', atend:'¿Cómo fue la atención?', bom:'Buena', neutro:'Neutral', ruim:'Mala', porque:'¿Qué pasó?',
+        motivos:{fila:'Fila', demora:'Demora', preco:'Precio', falta_produto:'Faltó producto', atendimento:'Atención', outro:'Otro'},
+        coment:'Deje un comentario', soLoja:'Solo para el expositor', publico:'Público (con moderación)', enviar:'Enviar', enviado:'Comentario enviado. ¡Gracias!',
+        contato:'Quiero contacto', contatoAj:'El expositor recibe su WhatsApp para contactarlo.', contatoOk:'Pedido enviado. El expositor lo contactará.',
+        compartilhar:'Compartir', copiado:'Enlace copiado.', obrigado:'¡Registrado!', erro:'No fue posible registrar ahora. Revise su conexión e intente de nuevo.',
+        naoAchado:'Expositor no encontrado. Revise el código QR o busque al personal de la feria.', indisponivel:'La interacción en vivo funciona en el sitio de la plataforma.', carregando:'Cargando…'}
+  };
+  const CULT = {soja:['Soja','Soybean','Soja'], milho:['Milho','Corn','Maíz'], algodao:['Algodão','Cotton','Algodón'], cana:['Cana','Sugarcane','Caña'], cafe:['Café','Coffee','Café'],
+    feijao:['Feijão','Beans','Frijol'], sorgo:['Sorgo','Sorghum','Sorgo'], trigo:['Trigo','Wheat','Trigo'], pecuaria_corte:['Pecuária de corte','Beef cattle','Ganadería de carne'],
+    pecuaria_leite:['Pecuária de leite','Dairy','Lechería'], hortifruti:['Hortifrúti','Fruits and vegetables','Frutas y hortalizas'], outras:['Outras','Others','Otras']};
+  let lang = LS.get('tsa_vis_lang', null) || ((navigator.language||'pt').slice(0,2)==='es' ? 'es' : (navigator.language||'pt').slice(0,2)==='en' ? 'en' : 'pt');
+  if (!VT[lang]) lang = 'pt';
+  const L = () => VT[lang], li = () => ({pt:0,en:1,es:2})[lang];
+  const corpo = () => $('vis-corpo');
+  const topo = () => `<div class="vis-top"><span class="brand">TECNOSHOW <i>AO VIVO</i></span><span>${['pt','en','es'].map(k=>`<button class="vis-chip ${k===lang?'sel':''}" data-vl="${k}" style="padding:4px 10px;font-size:.75rem">${k.toUpperCase()}</button>`).join(' ')}</span></div>`;
+  const tokenDe = ed => LS.get('tsa_vis_'+ed, null);
+  let atual = null, est = null, estado = null, ruimSel = null;
+
+  function ligarIdioma(){ corpo().querySelectorAll('[data-vl]').forEach(b=>b.onclick=()=>{ lang=b.dataset.vl; LS.set('tsa_vis_lang', lang); atual && atual(); }); }
+  function aviso(t){ corpo().innerHTML = topo() + `<div class="vis-card"><p class="sub">${esc(t)}</p></div>`; ligarIdioma(); }
+
+  async function estande(id){
+    window.scrollTo(0,0);
+    if (!Base.vis.disponivel()){ aviso(L().indisponivel); return; }
+    corpo().innerHTML = topo() + `<p class="sub">${esc(L().carregando)}</p>`;
+    try{ est = await Base.vis.estande(id); }catch(e){ est = null; }
+    if (!est){ atual = () => aviso(L().naoAchado); atual(); return; }
+    const tok = tokenDe(est.ed);
+    if (!tok){ atual = () => entrada(est.ed, () => estande(id)); atual(); return; }
+    try{ estado = await Base.vis.estado(tok, est.id); Base.vis.agir(tok, est.id, 'checkin').catch(()=>{}); }
+    catch(e){ if (e.code==='visitante_invalido'){ LS.set('tsa_vis_'+est.ed, null); atual = () => entrada(est.ed, () => estande(id)); atual(); return; } estado = {produtos:{}}; }
+    atual = pagina; pagina();
+  }
+
+  /* ---------- porta de entrada ---------- */
+  function entrada(ed, depois){
+    const t = L(), o = T[lang].o, r = entrada.r = entrada.r || {br:1, culturas:[]};
+    const chips = (campo, ops, multi) => `<div class="vis-chips" data-campo="${campo}">${ops.map(([k,txt])=>`<button class="vis-chip ${(multi ? (r[campo]||[]).includes(k) : r[campo]===k)?'sel':''}" data-v="${esc(k)}">${esc(txt)}</button>`).join('')}</div>`;
+    corpo().innerHTML = topo() + `<h1>${esc(t.entrar)}</h1><p class="sub">${esc(t.entrarSub)}</p>
+      <div class="vis-card">
+        <span class="vis-lbl">${esc(t.origem)}</span>
+        ${chips('br', [[1, T[lang].br], [0, T[lang].abroad]])}
+        <input class="vis-in" id="ve-busca" autocomplete="off" placeholder="${esc(r.br ? t.cidade : t.pais)}" aria-label="${esc(r.br ? t.cidade : t.pais)}" value="${esc(r.origemTxt||'')}">
+        <div class="results" id="ve-res"></div>
+      </div>
+      <div class="vis-card"><span class="vis-lbl">${esc(t.perfil)}</span>${chips('perfil', OP('perfil').map(k=>[k,o[k]]))}</div>
+      <div class="vis-card"><span class="vis-lbl">${esc(t.idade)}</span>${chips('idade', OP('idade').map(k=>[k,o[k]]))}</div>
+      <div class="vis-card"><span class="vis-lbl">${esc(t.culturas)}</span>${chips('culturas', Object.entries(CULT).map(([k,v])=>[k,v[li()]]), true)}</div>
+      <div class="vis-card"><span class="vis-lbl">${esc(t.prim)}</span>${chips('prim', OP('prim').map(k=>[k,o[k]]))}
+        <span class="vis-lbl">${esc(t.dias)}</span>${chips('dias', OP('dias').map(k=>[k,o[k]]))}
+        <span class="vis-lbl">${esc(t.pern)}</span>${chips('pern', OP('pern').map(k=>[k,o[k]]))}</div>
+      <div class="vis-card"><label class="vis-lbl" for="ve-whats">${esc(t.whats)}</label><input class="vis-in" id="ve-whats" type="tel" inputmode="tel" autocomplete="tel" placeholder="${lang==='pt'?'(64) 99999-0000':'+595 981 000000'}" value="${esc(r.whats||'')}"><p class="sub" style="font-size:.85rem">${esc(t.whatsAj)}</p>
+        <label class="vis-consent"><input type="checkbox" id="ve-aceito" ${r.aceito?'checked':''}><span>${esc(T[lang].consent)} ${esc(t.aceito)}</span></label></div>
+      <p class="vis-msg erro" id="ve-msg" hidden></p>
+      <button class="btn" id="ve-ok">${esc(t.continuar)}</button>`;
+    ligarIdioma();
+    corpo().querySelectorAll('[data-campo]').forEach(g=>{
+      const campo = g.dataset.campo;
+      g.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{
+        let v = b.dataset.v; if (campo==='br'){ v=+v; if (r.br!==v){ r.br=v; r.mun=null; r.pais=null; r.origemTxt=''; entrada(ed, depois); } return; }
+        if (campo==='culturas'){ const a=r.culturas, i=a.indexOf(v); i>=0?a.splice(i,1):a.push(v); b.classList.toggle('sel'); return; }
+        r[campo]=v; g.querySelectorAll('.vis-chip').forEach(x=>x.classList.toggle('sel', x===b));
+      });
+    });
+    const inp=$('ve-busca'), res=$('ve-res');
+    inp.oninput = () => {
+      const q = norm(inp.value.trim()); r.origemTxt = inp.value; r.mun=null; r.pais=null; let itens=[];
+      if (r.br && q.length>=2) itens = MUN_IDX.filter(x=>x.k.includes(q)).sort((a,b)=>(b.k.startsWith(q)-a.k.startsWith(q))||(b.go-a.go)||a.k.localeCompare(b.k)).slice(0,6).map(x=>({id:x.m[4], lbl:x.m[0], sub:x.m[1]}));
+      if (!r.br && q.length>=1){ const i = lang==='es'?3:lang==='en'?4:2; itens = PAIS_IDX.filter(x=>x.k.includes(q)).slice(0,6).map(x=>({id:x.c[0], lbl:x.c[i], sub:x.c[0]})); }
+      res.innerHTML = itens.map(x=>`<button class="res" data-id="${esc(x.id)}" data-lbl="${esc(x.lbl+' · '+x.sub)}">${esc(x.lbl)}<em>${esc(x.sub)}</em></button>`).join('');
+      res.querySelectorAll('.res').forEach(b=>b.onclick=()=>{ if (r.br) r.mun=+b.dataset.id; else r.pais=b.dataset.id; r.origemTxt=b.dataset.lbl; inp.value=r.origemTxt; res.innerHTML=''; });
+    };
+    $('ve-whats').oninput = e => { r.whats = e.target.value; };
+    $('ve-aceito').onchange = e => { r.aceito = e.target.checked; };
+    $('ve-ok').onclick = async () => {
+      const m=$('ve-msg'); m.hidden=true;
+      const dig = String(r.whats||'').replace(/\D/g,''), num = (!String(r.whats||'').trim().startsWith('+') && (dig.length===10 || dig.length===11)) ? '55'+dig : dig;   // sem + e com DDD: número brasileiro
+      if (!(r.br ? r.mun : r.pais) || !r.perfil || !r.idade || !r.aceito){ m.textContent=L().falta; m.hidden=false; return; }
+      if (!/^\d{10,15}$/.test(num)){ m.textContent=L().whatsInv; m.hidden=false; return; }
+      const perfil = {br:r.br?1:0, perfil:r.perfil, idade:r.idade, culturas:r.culturas.slice(0,12)};
+      if (r.br) perfil.mun = r.mun; else perfil.pais = r.pais;
+      ['prim','dias','pern'].forEach(k=>{ if (r[k]) perfil[k]=r[k]; });
+      const bt=$('ve-ok'); bt.disabled=true;
+      try{ const x = await Base.vis.criar(ed, perfil, num, lang); LS.set('tsa_vis_'+ed, x.token); entrada.r = null; depois(); }
+      catch(e){ m.textContent = e.code==='whatsapp_invalido' ? L().whatsInv : e.code==='muitas_tentativas' ? L().erro : L().erro; m.hidden=false; }
+      finally{ if ($('ve-ok')) $('ve-ok').disabled=false; }
+    };
+  }
+
+  /* ---------- página do estande ---------- */
+  function pagina(){
+    const t = L(), e = est, s = estado || {produtos:{}}, lotes = (e.lotes||[]).join(' · ');
+    const pr = id => (s.produtos||{})[id] || {};
+    const prods = (e.produtos||[]).map(p=>`<div class="vis-prod">
+        ${p.foto_url ? `<img src="${esc(p.foto_url)}" alt="${esc(p.nome)}" loading="lazy">` : ''}
+        <h3>${esc(p.nome)}</h3>
+        ${p.preco_texto ? `<span class="preco">${esc(p.preco_texto)}</span>` : ''}
+        ${p.descricao ? `<p class="sub">${esc(p.descricao)}</p>` : ''}
+        ${p.condicoes ? `<p class="sub" style="font-size:.88rem">${esc(p.condicoes)}</p>` : ''}
+        ${p.validade ? `<span class="vis-lbl">${esc(t.valida)} ${esc(new Date(p.validade+'T12:00').toLocaleDateString(lang==='en'?'en-US':'pt-BR'))}</span>` : ''}
+        <div class="acts"><button class="vis-bt ${pr(p.id).curti?'on':''}" data-acao="curti" data-prod="${esc(p.id)}"><b>👍</b>${esc(t.curti)}</button><button class="vis-bt ${pr(p.id).amei?'on':''}" data-acao="amei" data-prod="${esc(p.id)}"><b>❤️</b>${esc(t.amei)}</button><button class="vis-bt ${pr(p.id).salvo?'on':''}" data-acao="salvar" data-prod="${esc(p.id)}"><b>🔖</b>${esc(pr(p.id).salvo?t.salvo:t.salvar)}</button></div>
+      </div>`).join('') || `<p class="sub">${esc(t.semProd)}</p>`;
+    const car = s.carinha && s.carinha.carinha;
+    corpo().innerHTML = topo() + `
+      ${e.categoria ? `<div><span class="vis-tag" style="color:${esc(e.cor||'#5fd0ff')}">${esc(e.categoria)}</span></div>` : ''}
+      <h1>${esc(e.expositor)}</h1>
+      ${lotes ? `<p class="sub">${esc(t.lote)} ${esc(lotes)}</p>` : ''}
+      <div class="vis-acts">
+        <button class="vis-bt ${s.curti?'on':''}" data-acao="curti"><b>👍</b>${esc(t.curti)}</button>
+        <button class="vis-bt ${s.amei?'on':''}" data-acao="amei"><b>❤️</b>${esc(t.amei)}</button>
+        <button class="vis-bt ${s.seguindo?'on':''}" data-acao="seguir"><b>➕</b>${esc(s.seguindo?t.seguindo:t.seguir)}</button>
+      </div>
+      <div class="vis-card"><h2>${esc(t.vitrine)}</h2>${prods}</div>
+      <div class="vis-card"><h2>${esc(t.atend)}</h2>
+        <div class="vis-acts"><button class="vis-bt ${car==='bom'?'on':''}" data-car="bom"><b>😀</b>${esc(t.bom)}</button><button class="vis-bt ${car==='neutro'?'on':''}" data-car="neutro"><b>😐</b>${esc(t.neutro)}</button><button class="vis-bt ${car==='ruim'||ruimSel?'on':''}" data-car="ruim"><b>☹️</b>${esc(t.ruim)}</button></div>
+        <div id="vp-motivo" ${ruimSel?'':'hidden'}><span class="vis-lbl">${esc(t.porque)}</span><div class="vis-chips">${Object.entries(t.motivos).map(([k,v])=>`<button class="vis-chip ${s.carinha&&s.carinha.motivo===k?'sel':''}" data-motivo="${k}">${esc(v)}</button>`).join('')}</div></div>
+      </div>
+      <div class="vis-card"><h2>${esc(t.coment)}</h2>
+        <textarea class="vis-in" id="vp-coment" rows="3" maxlength="400" aria-label="${esc(t.coment)}"></textarea>
+        <div class="vis-chips"><button class="vis-chip sel" data-pub="0">${esc(t.soLoja)}</button>${s.menor?'':`<button class="vis-chip" data-pub="1">${esc(t.publico)}</button>`}</div>
+        <button class="btn sec" id="vp-enviar">${esc(t.enviar)}</button>
+      </div>
+      ${s.menor ? '' : `<div class="vis-card"><button class="btn" id="vp-contato" ${s.contato?'disabled':''}>${esc(s.contato?t.contatoOk:t.contato)}</button><p class="sub" style="font-size:.85rem">${esc(t.contatoAj)}</p></div>`}
+      <button class="ghost" id="vp-share">${esc(t.compartilhar)}</button>
+      <p class="vis-msg" id="vp-msg" hidden></p>`;
+    ligarIdioma();
+    const tok = tokenDe(e.ed), msgv = (txt, tipo) => { const m=$('vp-msg'); m.hidden=!txt; m.textContent=txt||''; m.className='vis-msg'+(tipo?' '+tipo:''); };
+    const agir = async (acao, extra) => {
+      try{ estado = await Base.vis.agir(tok, e.id, acao, extra); return true; }
+      catch(err){ msgv(L().erro, 'erro'); return false; }
+    };
+    corpo().querySelectorAll('[data-acao]').forEach(b=>b.onclick=async()=>{ b.disabled=true; if (await agir(b.dataset.acao, {produto:b.dataset.prod})) pagina(); else b.disabled=false; });
+    corpo().querySelectorAll('[data-car]').forEach(b=>b.onclick=async()=>{
+      const v=b.dataset.car;
+      if (v==='ruim'){ ruimSel = true; pagina(); return; }
+      ruimSel = false; if (await agir('carinha', {valor:v})){ pagina(); msgv(L().obrigado,'ok'); }
+    });
+    corpo().querySelectorAll('[data-motivo]').forEach(b=>b.onclick=async()=>{ if (await agir('carinha', {valor:'ruim', texto:b.dataset.motivo})){ ruimSel=false; pagina(); msgv(L().obrigado,'ok'); } });
+    let pub = false;
+    corpo().querySelectorAll('[data-pub]').forEach(b=>b.onclick=()=>{ pub = b.dataset.pub==='1'; corpo().querySelectorAll('[data-pub]').forEach(x=>x.classList.toggle('sel', x===b)); });
+    $('vp-enviar').onclick = async () => { const tx=$('vp-coment').value.trim(); if (!tx) return; if (await agir('comentario', {texto:tx, publico:pub})){ $('vp-coment').value=''; msgv(L().enviado,'ok'); } };
+    if ($('vp-contato')) $('vp-contato').onclick = async () => { if (await agir('contato')){ pagina(); msgv(L().contatoOk,'ok'); } };
+    $('vp-share').onclick = async () => {
+      const url = location.origin + location.pathname + '#e-' + e.id;
+      try{ if (navigator.share){ await navigator.share({title:e.expositor, text:e.expositor+' · Tecnoshow', url}); return; } }catch(err){ return; }
+      navigator.clipboard.writeText(url).then(()=>msgv(L().copiado,'ok')).catch(()=>msgv(url));
+    };
+  }
+  return {estande};
 })();
 
 /* ================== CONVITE (cadastro na equipe por link) ================== */

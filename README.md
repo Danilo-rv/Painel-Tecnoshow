@@ -25,7 +25,7 @@ As respostas ficam num banco **Supabase** do próprio projeto. Uma versão alter
 ## 1. Configurar o Supabase (uma vez)
 
 1. Crie um projeto em <https://supabase.com> (região São Paulo, `sa-east-1`).
-2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
+2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql` e `003_visitante_estande.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
 3. Em **Authentication → Sign In / Providers**, deixe **ligado** "Allow new users to sign up" (a equipe se cadastra pelo link de convite; uma conta criada sem convite não acessa nada) e mantenha "Confirm email" ligado.
    Em **Authentication → URL Configuration**, coloque o endereço do site em **Site URL** e em **Redirect URLs** (ex.: `https://danilo-rv.github.io/Painel-Tecnoshow/**`), para o e-mail de confirmação voltar ao app.
 4. Gere a chave da coleta: no SQL Editor, rode `select replace(gen_random_uuid()::text, '-', '') as chave_da_coleta;` e guarde o resultado.
@@ -120,6 +120,26 @@ Na **Administração**, as abas **Cadastros**, **Mapa** e **Pendências** aparec
 - **Clonar edição** (administrador geral e coordenação): cria a próxima edição com planta, lotes, locais e estandes, e mostra uma única vez a chave da coleta nova.
 
 Papéis: `admin_geral` (tudo, inclusive apagar de vez e criar feiras), `coordenador` (questionário, equipe, cadastros, clonar edição), `organizacao` (cadastros e mapa) e `equipe` (painel e relatório). Toda alteração fica na tabela `auditoria`.
+
+## 7. Visitante: porta de entrada e página do estande
+
+Cada estande tem um QR (em **Administração → Cadastros → Expositores**, abra o expositor: o QR aparece com os botões para copiar o link e baixar a imagem). O QR abre `…/#e-<id do estande>` no celular do visitante, sem instalar nada.
+
+- **Porta de entrada:**
+  - na primeira leitura de QR da edição, o visitante responde o perfil curto (origem, perfil, faixa etária, culturas, primeira vez, dias, pernoite, WhatsApp e aceite do termo), em português, inglês ou espanhol;
+  - recebe uma credencial guardada só no aparelho e não precisa responder de novo.
+- **Página do estande:**
+  - vitrine de produtos (preço ou condição, pagamento e financiamento, validade);
+  - 👍 ❤️ na loja e em cada produto, salvar produto, seguir o estande;
+  - carinhas de atendimento (☹️ pede o motivo);
+  - comentário só para a loja ou público (fica pendente de moderação);
+  - "quero contato" e compartilhar.
+- **Menores de 18 anos:** não pedem contato nem publicam comentários.
+- **WhatsApp:**
+  - guardado cifrado, com uma versão irreversível (HMAC) para busca;
+  - só sai do banco quando o visitante pede contato a um estande;
+  - a confirmação por código depende de um provedor da API do WhatsApp Business (ainda não contratado), e até lá o número fica como "não confirmado".
+- **Produtos:** cadastrados em **Administração → Cadastros → Produtos** ou importados por planilha.
 
 ## Proteção de dados (LGPD)
 
