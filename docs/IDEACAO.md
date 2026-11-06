@@ -583,6 +583,14 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 | 10 | **Multifeira desde já:** cada feira com seus dados separados, mesmo usando só a Tecnoshow no começo | 06/11/2026 | Todas as tabelas levam a feira e a edição. Permite licenciar sem refazer o sistema |
 | 11 | **Canal do visitante: link web (QR, sem baixar) + assistente oficial no WhatsApp** | 06/11/2026 | Prever custo da API do WhatsApp Business no orçamento |
 | 12 | **Simulação de crédito e consórcio na 2ª fase.** Na 1ª, só um link para os estandes dos bancos e da cooperativa | 06/11/2026 | Acordo com bancos e Comigo antes da 2ª fase |
+| 15 | **Todos os parceiros da cidade formais desde o início:** Prefeitura (Turismo e Desenvolvimento), ACIRV/CDL, Sebrae e sindicatos de hotéis e de bares | 06/11/2026 | Um acordo multilateral entra no cronograma de 6 meses antes. Mais negociação, e também mais força e cofinanciamento |
+| 16 | **Ocupação dos hotéis informada de forma voluntária e sigilosa** por formulário, publicada só em agregados de 3 ou mais hotéis; em troca, o hotel recebe um relatório de demanda | 06/11/2026 | Formulário do parceiro hoteleiro e termo de sigilo entram no módulo da cidade |
+| 17 | **Alcance: Rio Verde e as cidades vizinhas que recebem hóspedes** (Jataí, Santa Helena de Goiás, Montividiu…) | 06/11/2026 | Parceiros e QR codes também nessas cidades. Base para medir o transbordamento regional |
+| 18 | **Comitê gestor misto** (ITA, organização, um representante dos expositores e um do comércio); **encarregado de dados do IF Goiano** | 06/11/2026 | Regimento do comitê e indicação formal do encarregado entram nos acordos |
+| 19 | **Métrica norte: interações qualificadas por visitante** | 06/11/2026 | O painel da organização e o do ITA abrem com esse número |
+| 21 | **De 6 a 10 mestrandos**, cada um com um eixo de pesquisa, **mais bolsistas** de extensão (graduação e técnico) | 06/11/2026 | Prever bolsas e certificação de horas. Cada eixo vira capítulo ou dissertação |
+| 22 | **Transporte oficial e caravanas institucionais primeiro;** carona só depois, em grupos verificados | 06/11/2026 | O módulo de transporte da fase 1 cadastra rotas oficiais e caravanas, sem carona entre desconhecidos |
+| 24 | **Saída da coleta: tocar e segurar o logotipo por 3 segundos + código de 4 a 6 dígitos**, definido pelo administrador e trocado a cada edição | 06/11/2026 | O código fica na Administração, com registro de uso na auditoria |
 
 ---
 
@@ -598,3 +606,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 05/11/2026: decisão 25 tomada (negativos só para loja e organização); decisão 26 em parte (logo do app em toda postagem e moldura).
 - 06/11/2026: administração geral, hierarquia de papéis, habilitação de aparelhos pela equipe treinada, decisões 27 a 30.
 - 06/11/2026: decisões 1 a 14, 20 e 27 tomadas.
+- 06/11/2026: decisões 15 a 19, 21, 22 e 24 tomadas.
