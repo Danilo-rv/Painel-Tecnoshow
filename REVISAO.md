@@ -265,3 +265,29 @@ Testes:
   - o parceiro dá baixa no cupom;
   - "Acontecendo agora" e assuntos no telão social.
 - Os testes anteriores continuam passando.
+
+## Tablets por código, trilha proposta e dados abertos (décima primeira etapa)
+
+| Item | Como funciona | Proteção |
+|---|---|---|
+| Código de habilitação | 6 dígitos, 15 minutos, uso único; o banco guarda só o sha256 de "edição:código" | Só contas da equipe geram; 30 códigos errados por edição a cada 10 minutos bloqueiam novas tentativas (e cada erro fica registrado) |
+| Credencial do tablet | 32 bytes aleatórios; o banco guarda só o sha256 | Vale para envio de respostas, código de saída e registro de saída; desligar um tablet não afeta os outros |
+| Chave única | Continua aceita até a coordenação desligar | Só a coordenação liga ou desliga; a mudança é auditada |
+| Trilha proposta | `propor_trilha` grava com a situação "proposta" e o estande como doador | Só a conta do próprio estande (ou a organização); toda etapa precisa ser da edição; no máximo 3 propostas aguardando; o visitante não vê antes da aprovação |
+| Dados abertos | `dados_abertos` é pública e só devolve agregados | Grupos com menos de 5 pessoas omitidos ou somados em "outros"; ocupação hoteleira só com 3 ou mais hotéis; sem avaliações de estandes |
+
+Testes:
+- **Banco local:**
+  - usuário anônimo gerando código;
+  - código errado e código usado duas vezes;
+  - chave única desligada recusada, com tablet habilitado ainda aceito;
+  - moderador tentando desligar um tablet;
+  - tablet desligado recusado;
+  - bloqueio por tentativa e erro;
+  - proposta para outro estande e com etapa inexistente.
+- **Navegador:**
+  - a equipe gera o código e o tablet se habilita e envia;
+  - a coordenação desliga a chave única e depois o tablet;
+  - o estande propõe e a organização aprova;
+  - dados abertos no celular, com CSV e JSON.
+- Os testes anteriores continuam passando.

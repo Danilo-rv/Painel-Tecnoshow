@@ -376,6 +376,10 @@ details.vis-card summary{cursor:pointer;font-weight:600}
 .tl-perg{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:baseline;font-size:clamp(1.05rem,1.6vw,1.4rem);line-height:1.3}
 .tl-perg b{font-family:var(--f-mono);color:var(--gold);font-size:1rem}
 .mu-assuntos{display:flex;flex-wrap:wrap;gap:8px} .mu-assuntos span{font-family:var(--f-display);font-size:1.15rem;padding:6px 12px;border-radius:999px;border:1px solid var(--line);color:var(--glow2)}
+.ap-cod{display:grid;gap:4px;justify-items:start;padding:14px;border:1px solid var(--glow);border-radius:12px}
+.ap-cod b{font-family:var(--f-mono);font-size:2.6rem;letter-spacing:.2em;color:var(--glow2)}
+.cfg-hab{display:grid;gap:6px;font-size:.8rem;color:var(--muted)} .cfg-hab .lin{display:flex;gap:8px;flex-wrap:wrap}
+.cfg-hab input{width:9ch;font-family:var(--f-mono);letter-spacing:.2em}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -396,7 +400,8 @@ details.vis-card summary{cursor:pointer;font-weight:600}
         <input id="cfg-edicao" value="Tecnoshow Comigo 2027" maxlength="60"></label>
       <label for="cfg-chave" id="cfg-chave-wrap" hidden>Chave da coleta (só nos tablets)
         <input id="cfg-chave" type="password" autocomplete="off" spellcheck="false" maxlength="200"></label>
-      <div class="demo-links"><button class="ghost" id="go-painel-demo">Ver painel com dados de demonstração</button><button class="ghost" id="go-relatorio-demo">Ver relatório de demonstração</button><button class="ghost" id="go-admin">Administração</button><button class="ghost" id="go-expositor">Área do expositor</button><button class="ghost" id="go-parceiro">Área do parceiro (cidade)</button><button class="ghost" id="cfg-sair" hidden>Sair da conta da equipe</button></div>
+      <div class="cfg-hab" id="cfg-hab" hidden><label for="cfg-hab-cod">Habilitar este tablet (código da equipe)</label><div class="lin"><input id="cfg-hab-cod" inputmode="numeric" maxlength="7" autocomplete="off" placeholder="000 000"><button class="ghost" id="cfg-hab-ok">Habilitar</button></div><span id="cfg-hab-st"></span></div>
+      <div class="demo-links"><button class="ghost" id="go-painel-demo">Ver painel com dados de demonstração</button><button class="ghost" id="go-relatorio-demo">Ver relatório de demonstração</button><button class="ghost" id="go-admin">Administração</button><button class="ghost" id="go-expositor">Área do expositor</button><button class="ghost" id="go-parceiro">Área do parceiro (cidade)</button><button class="ghost" id="go-aparelhos">Habilitar tablets (equipe)</button><button class="ghost" id="go-dados">Dados abertos</button><button class="ghost" id="cfg-sair" hidden>Sair da conta da equipe</button></div>
       <p class="cfg-aviso" id="cfg-aviso" hidden></p>
     </div>
   </div>
@@ -537,6 +542,10 @@ details.vis-card summary{cursor:pointer;font-weight:600}
 <div id="v-parceiro" class="view" hidden><div class="loja" id="pc-corpo"></div></div>
 
 <div id="v-mediar" class="view" hidden><div class="loja" id="md-corpo"></div></div>
+
+<div id="v-aparelhos" class="view" hidden><div class="loja" id="ap-corpo"></div></div>
+
+<div id="v-dados" class="view" hidden><div class="loja" id="da-corpo"></div></div>
 
 <div id="v-convite" class="view" hidden>
   <div class="conv"><form class="login-box" id="c-form" autocomplete="on">
@@ -1051,6 +1060,15 @@ const Base = (() => {
         negado:'Esta conta não está ligada a nenhum estabelecimento parceiro. Peça o link de convite à organização da feira.'});
     }
   };
+  const aparelhos = {
+    criarCodigo: (ed, nome) => rpc('criar_codigo_aparelho', {p_ed:ed, p_nome:nome}),
+    habilitar: (ed, cod) => rpc('habilitar_aparelho', {p_ed:ed, p_codigo:cod}),
+    listar: ed => rpc('listar_aparelhos', {p_ed:ed}),
+    revogar: id => rpc('revogar_aparelho', {p_id:id}),
+    unica: (ed, v) => rpc('definir_chave_unica', {p_ed:ed, p_aceita:v}),
+    infoUnica: ed => rpc('info_chave_unica', {p_ed:ed})
+  };
+  const dadosAbertos = ed => rpc('dados_abertos', {p_ed:ed});
   /* Moderação dos comentários públicos */
   const mod = {
     listar: (ed, st) => rpc('listar_moderacao', {p_ed:ed, p_status:st||'pendente'}),
@@ -1068,6 +1086,8 @@ const Base = (() => {
     contas: expo => rpc('listar_contas_expositor', {p_expositor:expo}),
     remover: (u, expo) => rpc('remover_conta_expositor', {p_user:u, p_expositor:expo}),
     trilhas: est => rpc('trilhas_do_estande', {p_estande:est}),
+    opcoesTrilha: est => rpc('opcoes_trilha', {p_estande:est}),
+    propor: (est, o) => rpc('propor_trilha', {p_estande:est, p_titulo:o.titulo, p_premio:o.premio, p_estoque:o.estoque, p_prazo:o.prazo, p_descricao:o.descricao, p_regulamento:o.regulamento, p_etapas:o.etapas}),
     resgatar: cod => rpc('resgatar_cupom', {p_codigo:cod}),
     async entrar(){
       const serve = async () => { if (EDITORES.includes(await meuPapel())) return true; try{ return (await rpc('minhas_lojas')).length>0; }catch(e){ return false; } };
@@ -1079,7 +1099,7 @@ const Base = (() => {
   const rpcPublica = (nome, args) => kind==='supabase' ? rpc(nome, args) : Promise.reject(erro('sem_base'));
   const saida = { definir: (ed, cod) => rpc('definir_codigo_saida', {p_ed:ed, p_codigo:cod}), info: ed => rpc('info_codigo_saida', {p_ed:ed}) };
   return {kind, rpcPublica, saida, enviar, ler, acompanhar, precisaLogin, garantirAcesso, sair, entrar, cadastrar, temSessao, souCoordenador, meuPapel,
-          instrumentoAtual, publicarInstrumento, historico, equipe, cad, vis, mod, mural, loja, agenda, parceiro, EDITORES, MODERADORES};
+          instrumentoAtual, publicarInstrumento, historico, equipe, cad, vis, mod, mural, loja, agenda, parceiro, aparelhos, dadosAbertos, EDITORES, MODERADORES};
 })();
 
 /* Questionário em uso neste aparelho: a última versão publicada da edição, guardada para uso offline. */
@@ -1109,12 +1129,25 @@ const Inst = (() => {
   const aviso = document.getElementById('cfg-aviso');
   if (Base.kind==='supabase'){
     const w=document.getElementById('cfg-chave-wrap'), ch=document.getElementById('cfg-chave'); w.hidden=false;
-    ch.value = LS.get('tsa_chave',''); ch.onchange = () => LS.set('tsa_chave', ch.value.trim());
+    ch.value = LS.get('tsa_chave',''); ch.onchange = () => { LS.set('tsa_chave', ch.value.trim()); LS.set('tsa_disp_nome', null); stHab(); };
+    /* Habilitar com o código da equipe: o tablet recebe uma credencial só dele e a guarda no lugar da chave. */
+    const hb = document.getElementById('cfg-hab'), hc = document.getElementById('cfg-hab-cod'), hs = document.getElementById('cfg-hab-st'); hb.hidden = false;
+    function stHab(t){ const nm = LS.get('tsa_disp_nome', null); hs.textContent = t || (nm ? 'Tablet habilitado: '+nm : 'Peça o código de 6 dígitos à equipe (tela "Habilitar tablets").'); hs.style.color = t ? 'var(--bad)' : nm ? 'var(--good)' : ''; }
+    stHab();
+    document.getElementById('cfg-hab-ok').onclick = async () => {
+      const cod = hc.value.replace(/\D/g,''); if (cod.length!==6){ stHab('Digite os 6 dígitos do código.'); return; }
+      try{ const r = await Base.aparelhos.habilitar(edSlug(), cod);
+        if (!r.ok){ stHab(r.motivo==='limite' ? 'Muitas tentativas. Aguarde 10 minutos.' : 'Código inválido ou vencido. Peça um novo à equipe.'); return; }
+        LS.set('tsa_chave', r.token); LS.set('tsa_disp_nome', r.nome); ch.value = r.token; hc.value=''; stHab();
+      }catch(e){ stHab('Sem internet: habilite quando a conexão voltar.'); }
+    };
     const sair=document.getElementById('cfg-sair'); sair.hidden=false; sair.onclick = async () => { await Base.sair(); aviso.hidden=false; aviso.textContent='Conta da equipe desconectada deste aparelho.'; };
   }
   document.getElementById('go-admin').onclick = () => go('admin');
   document.getElementById('go-expositor').onclick = () => go('expositor');
   document.getElementById('go-parceiro').onclick = () => go('parceiro');
+  document.getElementById('go-aparelhos').onclick = () => go('aparelhos');
+  document.getElementById('go-dados').onclick = () => go('dados');
   if (!Base.kind){
     aviso.hidden=false; aviso.textContent='Nenhuma base de respostas configurada: só os modos de demonstração funcionam. Veja o LEIAME para ligar o Supabase.';
   }
@@ -1176,7 +1209,7 @@ const Saida = (() => {
 })();
 
 /* ================== ROTEAMENTO ================== */
-const VIEWS = ['inicio','coleta','painel','relatorio','admin','convite','visitante','expositor','telao','mural','parceiro','mediar'];
+const VIEWS = ['inicio','coleta','painel','relatorio','admin','convite','visitante','expositor','telao','mural','parceiro','mediar','aparelhos','dados'];
 let current = null;
 function route(){
   let h = (location.hash||'').replace('#','');
@@ -1211,6 +1244,8 @@ function route(){
   if (v==='mural') Mural.start();
   if (v==='parceiro') Parceiro.start();
   if (v==='mediar') Mediar.start(h.slice(7));
+  if (v==='aparelhos') Aparelhos.start();
+  if (v==='dados') Dados.start();
   if (v==='expositor') Loja.start(h.slice(10));
 }
 /* Seta de voltar: volta para a tela anterior do app; se a pessoa chegou direto (link ou QR), vai para o início. */
@@ -2093,8 +2128,8 @@ const distC = (obj, rot) => { const e = Object.entries(obj||{}); const t = e.red
 const MUN_CIDADE = (GEO.mun.filter(m=>hav(FAIR.lat,FAIR.lon,m[2],m[3])<250).sort((a,b)=>hav(FAIR.lat,FAIR.lon,a[2],a[3])-hav(FAIR.lat,FAIR.lon,b[2],b[3])).map(m=>[String(m[4]), m[0]+' ('+m[1]+')']));    // lista de pares: mantém a ordem por distância
 const Cad = (() => {
   const $ = id => document.getElementById(id);
-  const ST = {a_confirmar:'A confirmar', confirmado:'Confirmado', rascunho:'Rascunho', aprovada:'Aprovada', encerrada:'Encerrada'};
-  const TS = {rascunho:'Rascunho (não aparece para o visitante)', aprovada:'Aprovada (visível para o visitante)', encerrada:'Encerrada'};
+  const ST = {a_confirmar:'A confirmar', confirmado:'Confirmado', rascunho:'Rascunho', proposta:'Proposta do estande', aprovada:'Aprovada', encerrada:'Encerrada'};
+  const TS = {rascunho:'Rascunho (não aparece para o visitante)', proposta:'Proposta pelo estande (aguarda aprovação)', aprovada:'Aprovada (visível para o visitante)', encerrada:'Encerrada'};
   const TL = {expositores:'Expositores', auditorio:'Auditório', pavilhao:'Pavilhão', pecuaria:'Pecuária', alimentacao:'Alimentação', praca:'Praça', descanso:'Descanso', bosque:'Bosque', administracao:'Administração', imprensa:'Imprensa', servico:'Serviço', outro:'Outro'};
   const TC = {palco:'Palco', banheiro:'Banheiro', portaria:'Portaria', ambulatorio:'Ambulatório', estacionamento:'Estacionamento', alimentacao:'Alimentação', test_drive:'Test drive', heliponto:'Heliponto', acessibilidade:'Acessibilidade', servico:'Serviço', outro:'Outro'};
   const TA = {palestra:'Palestra', demonstracao:'Demonstração', lancamento:'Lançamento', dinamica:'Dinâmica', test_drive:'Test drive', cerimonia:'Cerimônia', outro:'Outro'};
@@ -2195,6 +2230,8 @@ const Cad = (() => {
     $('cd-cont').textContent = `${L.length} na lista · ${total} no total · ${pend} a confirmar · edição ${edi.nome}`;
     document.querySelectorAll('#cd-ents .chip').forEach(b=>b.classList.toggle('on', b.dataset.ent===ent));
     const semCSV = !!ENT[ent].semCSV; $('cd-modelo').hidden = semCSV; $('cd-imp-lbl').hidden = semCSV;
+    const props = (d.trilhas||[]).filter(t=>t.status==='proposta' && !t.excluido_em).length;
+    const chipT = document.querySelector('#cd-ents [data-ent="trilhas"]'); if (chipT) chipT.textContent = 'Trilhas' + (props ? ` (${props} proposta${props>1?'s':''})` : '');
   }
 
   /* ---------- formulário ---------- */
@@ -3256,6 +3293,110 @@ const Mediar = (() => {
   return {start};
 })();
 
+/* ================== APARELHOS (#aparelhos) ==================
+   A equipe treinada gera um código de 6 dígitos; o tablet digita o código na tela inicial e
+   recebe uma credencial só dele. A organização desliga um tablet perdido sem trocar a chave dos outros. */
+const Aparelhos = (() => {
+  const $ = id => document.getElementById(id);
+  let run = 0, papel = null, timer = null;
+  const quando = iso => iso ? new Date(iso).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}) : '–';
+  async function start(){
+    const meu = ++run; clearInterval(timer);
+    const box = $('ap-corpo'), topo = `<div class="adm-top"><div class="com-voltar"><button class="voltar" data-voltar aria-label="Voltar">←</button><div><div class="k">Equipe · ${esc(cfg.edicao)}</div><h1>Tablets da coleta</h1></div></div></div>`;
+    if (Base.kind!=='supabase'){ box.innerHTML = topo + '<p class="adm-p">Funciona no site oficial da plataforma.</p>'; return; }
+    box.innerHTML = topo + '<p class="adm-p">Carregando…</p>';
+    if (!(await Base.garantirAcesso('equipe'))){ if (meu===run) box.innerHTML = topo + '<p class="adm-p">É preciso uma conta da equipe.</p>'; return; }
+    papel = await Base.meuPapel(); if (meu!==run) return;
+    const coord = papel==='admin_geral' || papel==='coordenador', editor = Base.EDITORES.includes(papel);
+    box.innerHTML = topo + `<section class="adm-sec"><h3>Habilitar um tablet</h3><p class="adm-p">Dê um nome ao tablet e gere o código. No tablet, abra a tela inicial do app e digite o código em "Habilitar este tablet". O código vale 15 minutos e funciona uma vez.</p>
+        <form class="adm-acts" id="ap-f"><label class="fld" for="ap-nome">Nome do tablet<input id="ap-nome" maxlength="60" placeholder="Ex.: Tablet 3 · Portaria norte"></label><button class="btn sm" style="align-self:end">Gerar código</button></form>
+        <div id="ap-cod" hidden class="ap-cod"></div><p class="adm-msg" id="ap-msg" hidden></p></section>
+      <section class="adm-sec"><h3>Tablets</h3><div id="ap-lista"><p class="nota">Carregando…</p></div>${editor?'':'<p class="nota">Para desligar um tablet, fale com a coordenação ou a organização.</p>'}</section>
+      ${coord ? `<section class="adm-sec"><h3>Chave única da edição</h3><p class="adm-p">Enquanto ligada, a chave única digitada nos tablets antigos continua aceita. Quando todos os tablets estiverem habilitados com código, desligue para que só eles enviem respostas.</p><label class="tg"><input type="checkbox" id="ap-unica"> Aceitar a chave única</label></section>` : ''}`;
+    const msg = (t, k) => { const m=$('ap-msg'); m.hidden=!t; m.textContent=t||''; m.className='adm-msg'+(k?' '+k:''); };
+    const lista = async () => {
+      let l; try{ l = await Base.aparelhos.listar(edSlug()); }catch(e){ $('ap-lista').innerHTML = '<p class="adm-msg erro">Não foi possível carregar os tablets.</p>'; return; }
+      $('ap-lista').innerHTML = l.length ? `<div class="tw"><table class="adm-tab"><thead><tr><th>Tablet</th><th>Situação</th><th>Habilitado em</th><th>Último envio</th><th></th></tr></thead><tbody>${l.map(x=>`<tr><td>${esc(x.nome)}</td><td>${x.revogado_em?'<span class="pill mut">desligado</span>':x.aguardando?'<span class="pill warn">aguardando o código</span>':'<span class="pill ok">ativo</span>'}</td><td>${esc(quando(x.habilitado_em))}</td><td>${esc(quando(x.ultimo_uso))}</td><td>${editor && !x.revogado_em ? `<button class="ghost sm" data-rv="${esc(x.id)}">Desligar</button>` : ''}</td></tr>`).join('')}</tbody></table></div>` : '<p class="nota">Nenhum tablet habilitado ainda.</p>';
+      $('ap-lista').querySelectorAll('[data-rv]').forEach(b=>b.onclick=async()=>{ if (b.dataset.conf!=='1'){ b.dataset.conf='1'; b.textContent='Confirmar: desligar'; return; }
+        try{ await Base.aparelhos.revogar(b.dataset.rv); msg('Tablet desligado. Ele não envia mais respostas; para voltar, gere um novo código.','ok'); lista(); }catch(e){ msg('Não foi possível desligar agora.','erro'); } });
+    };
+    lista();
+    $('ap-f').onsubmit = async ev => {
+      ev.preventDefault(); const nome = $('ap-nome').value.trim(); if (!nome){ msg('Dê um nome ao tablet.','erro'); return; }
+      try{ const r = await Base.aparelhos.criarCodigo(edSlug(), nome); const fim = new Date(r.expira_em).getTime();
+        const c = $('ap-cod'); c.hidden=false; msg('');
+        const tick = () => { const s = Math.max(0, Math.round((fim-Date.now())/1000)); c.innerHTML = `<span class="k">Código para "${esc(nome)}"</span><b>${esc(r.codigo.slice(0,3))} ${esc(r.codigo.slice(3))}</b><span class="nota">${s ? `vale por mais ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}` : 'expirado: gere outro'}</span>`; if (!s) clearInterval(timer); };
+        clearInterval(timer); tick(); timer = setInterval(()=>{ if (location.hash!=='#aparelhos'){ clearInterval(timer); return; } tick(); }, 1000);
+        $('ap-nome').value=''; lista();
+      }catch(e){ msg('Não foi possível gerar o código agora.','erro'); }
+    };
+    if ($('ap-unica')){
+      Base.aparelhos.infoUnica(edSlug()).then(v=>{ $('ap-unica').checked = v!==false; }).catch(()=>{});
+      $('ap-unica').onchange = async () => { const v = $('ap-unica').checked;
+        try{ await Base.aparelhos.unica(edSlug(), v); msg(v ? 'Chave única ligada: tablets antigos voltam a enviar com ela.' : 'Chave única desligada: só tablets habilitados com código enviam respostas.','ok'); }
+        catch(e){ $('ap-unica').checked = !v; msg('Não foi possível alterar agora.','erro'); } };
+    }
+  }
+  return {start};
+})();
+
+/* ================== DADOS ABERTOS (#dados) ==================
+   Agregados públicos da edição (decisão 9): grupos com menos de 5 pessoas não aparecem ou entram em "outros". */
+const Dados = (() => {
+  const $ = id => document.getElementById(id);
+  const UF = {}; GEO.mun.forEach(m=>{ UF[Math.floor(m[4]/100000)] = m[1]; });
+  let d = null;
+  const n = v => (v||0).toLocaleString('pt-BR');
+  const nomeIdade = k => k==='outros' ? 'Outros' : ((T.pt.o||{})[k] || k);
+  const nomeCult = k => (Visit.CULT[k]||[k])[0];
+  function baixar(nome, txt, tipo){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([txt],{type:tipo})); a.download=nome; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),5000); }
+  function csv(){
+    const L = [['secao','item','valor']], q = v => { let s=String(v??''); if (/^[=+\-@]/.test(s)) s="'"+s; return /[;"\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+    Object.entries(d.totais).forEach(([k,v])=>L.push(['totais',k,v]));
+    (d.visitantes_por_dia||[]).forEach(x=>L.push(['visitantes_por_dia',x.dia,x.visitantes]));
+    Object.entries(d.perfil||{}).forEach(([k,v])=>L.push(['perfil',CID.perfil[k]||k,v]));
+    Object.entries(d.faixa_etaria||{}).forEach(([k,v])=>L.push(['faixa_etaria',nomeIdade(k),v]));
+    (d.origem_uf||[]).forEach(x=>L.push(['origem_uf',UF[x.uf]||x.uf,x.visitantes]));
+    (d.origem_municipio||[]).forEach(x=>L.push(['origem_municipio',CID.mun(x.ibge)+' · '+x.ibge,x.visitantes]));
+    (d.origem_pais||[]).forEach(x=>L.push(['origem_pais',x.pais,x.visitantes]));
+    (d.interesses||[]).forEach(x=>L.push(['interesses',nomeCult(x.cultura),x.visitantes]));
+    (d.visitas_por_categoria||[]).forEach(x=>L.push(['visitas_por_categoria',x.categoria,x.visitantes]));
+    (d.publico_por_palestra||[]).forEach(x=>L.push(['publico_por_palestra',x.palestra,x.presencas]));
+    if (d.hospedagem) Object.entries(d.hospedagem).forEach(([k,v])=>L.push(['hospedagem',k,v]));
+    (d.ocupacao_hoteleira||[]).forEach(x=>L.push(['ocupacao_hoteleira',x.dia,x.ocupacao]));
+    return '﻿'+L.map(r=>r.map(q).join(';')).join('\n');
+  }
+  async function start(){
+    const box = $('da-corpo');
+    const topo = `<div class="adm-top"><div class="com-voltar"><button class="voltar" data-voltar aria-label="Voltar">←</button><div><div class="k">Dados abertos · IF Goiano · Observatório ITA</div><h1>${esc(cfg.edicao)}</h1></div></div><div class="adm-acts"><button class="ghost sm" id="da-csv" disabled>Baixar CSV</button><button class="ghost sm" id="da-json" disabled>Baixar JSON</button></div></div>`;
+    if (Base.kind!=='supabase'){ box.innerHTML = topo + '<p class="adm-p">Os dados abertos são publicados no site oficial da plataforma.</p>'; return; }
+    box.innerHTML = topo + '<p class="adm-p">Carregando…</p>';
+    try{ d = await Base.dadosAbertos(edSlug()); }catch(e){ box.innerHTML = topo + '<p class="adm-msg erro">Não foi possível carregar os dados agora.</p>'; return; }
+    const t = d.totais, soma = a => a.reduce((s,x)=>s+x,0);
+    const sec = (titulo, corpo) => `<section class="adm-sec"><h3>${titulo}</h3>${corpo}</section>`, vazio = '<p class="nota">Ainda sem grupos com 5 ou mais pessoas.</p>';
+    const perf = Object.entries(d.perfil||{}).sort((a,b)=>b[1]-a[1]), ida = Object.entries(d.faixa_etaria||{}).sort((a,b)=>b[1]-a[1]);
+    box.innerHTML = topo + `<p class="adm-msg">${esc(d.regra)} Nenhum dado pessoal, nenhuma avaliação de estande e nenhum dado de um hotel em particular é publicado. Atualizado em ${esc(new Date(d.gerado_em).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}))}.</p>
+      <div class="loja-kpis">${[['respostas_pesquisa','respostas da pesquisa'],['visitantes_com_perfil','visitantes com perfil'],['visitas_a_estandes','visitas a estandes'],['presencas_em_palestras','presenças em palestras'],['checkins_na_cidade','check-ins na cidade'],['trilhas_completadas','trilhas completadas']].map(([k,r])=>`<div class="loja-kpi"><b>${n(t[k])}</b><span>${r}</span></div>`).join('')}</div>
+      <div class="loja-duo">
+        ${sec('Perfil dos visitantes', perf.length ? hbarsC(perf.map(([k,v])=>[k==='outros'?'Outros':(CID.perfil[k]||k), v]), soma(perf.map(x=>x[1]))) : vazio)}
+        ${sec('Faixa etária', ida.length ? hbarsC(ida.map(([k,v])=>[nomeIdade(k), v]), soma(ida.map(x=>x[1]))) : vazio)}
+        ${sec('Origem por estado', (d.origem_uf||[]).length ? hbarsC(d.origem_uf.map(x=>[UF[x.uf]||String(x.uf), x.visitantes]), soma(d.origem_uf.map(x=>x.visitantes))) : vazio)}
+        ${sec('Principais municípios', (d.origem_municipio||[]).length ? hbarsC(d.origem_municipio.slice(0,10).map(x=>[CID.mun(x.ibge), x.visitantes]), soma(d.origem_municipio.map(x=>x.visitantes))) : vazio)}
+        ${sec('Interesses', (d.interesses||[]).length ? hbarsC(d.interesses.map(x=>[nomeCult(x.cultura), x.visitantes]), t.visitantes_com_perfil) + '<p class="nota">Percentual sobre os visitantes com perfil; uma pessoa pode citar mais de um.</p>' : vazio)}
+        ${sec('Visitas por segmento', (d.visitas_por_categoria||[]).length ? hbarsC(d.visitas_por_categoria.map(x=>[x.categoria, x.visitantes]), t.visitantes_com_perfil) : vazio)}
+      </div>
+      ${sec('Visitantes por dia', (d.visitantes_por_dia||[]).length ? `<div class="tw"><table class="adm-tab"><thead><tr><th>Dia</th><th>Visitantes</th></tr></thead><tbody>${d.visitantes_por_dia.map(x=>`<tr><td>${esc(new Date(x.dia+'T12:00').toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'}))}</td><td class="tabnum">${n(x.visitantes)}</td></tr>`).join('')}</tbody></table></div>` : vazio)}
+      ${sec('Público por palestra', (d.publico_por_palestra||[]).length ? `<div class="tw"><table class="adm-tab"><thead><tr><th>Palestra</th><th>Início</th><th>Presenças</th></tr></thead><tbody>${d.publico_por_palestra.map(x=>`<tr><td>${esc(x.palestra)}</td><td>${esc(x.inicio?new Date(x.inicio).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}):'–')}</td><td class="tabnum">${n(x.presencas)}</td></tr>`).join('')}</tbody></table></div>` : vazio)}
+      ${sec('Hospedagem', (d.hospedagem ? `<p class="adm-p">${n(d.hospedagem.respostas)} hóspedes responderam · ${String(d.hospedagem.noites_media).replace('.',',')} noites e ${String(d.hospedagem.pessoas_media).replace('.',',')} pessoas por quarto, em média.</p>` : '<p class="nota">Aparece a partir de 5 respostas.</p>')
+          + ((d.ocupacao_hoteleira||[]).length ? `<div class="tw"><table class="adm-tab"><thead><tr><th>Dia</th><th>Hotéis</th><th>Ocupação média</th></tr></thead><tbody>${d.ocupacao_hoteleira.map(x=>`<tr><td>${esc(new Date(x.dia+'T12:00').toLocaleDateString('pt-BR'))}</td><td class="tabnum">${x.hoteis}</td><td class="tabnum">${String(x.ocupacao).replace('.',',')}%</td></tr>`).join('')}</tbody></table></div>` : '<p class="nota">Ocupação média aparece nos dias com 3 ou mais hotéis informantes.</p>'))}
+      <p class="nota">Cite como "Observatório ITA – IF Goiano". A licença de uso destes dados será definida pelo comitê de dados (decisão 18).</p>`;
+    $('da-csv').disabled = false; $('da-json').disabled = false;
+    $('da-csv').onclick = () => baixar(`dados_abertos_${edSlug()}.csv`, csv(), 'text/csv;charset=utf-8');
+    $('da-json').onclick = () => baixar(`dados_abertos_${edSlug()}.json`, JSON.stringify(d, null, 2), 'application/json');
+  }
+  return {start};
+})();
+
 const Telao = (() => {
   const $ = id => document.getElementById(id);
   let run = 0, timer = null, ultimo = '';
@@ -3302,7 +3443,8 @@ const Telao = (() => {
 const Loja = (() => {
   const $ = id => document.getElementById(id);
   const corpo = () => $('lj-corpo');
-  let run = 0, dados = null, lojas = [], estId = null, hora = null, trilhasLoja = [];
+  let run = 0, dados = null, lojas = [], estId = null, hora = null, trilhasLoja = [], etapasProp = [];
+  const SIT = {proposta:'aguardando aprovação', aprovada:'no ar', encerrada:'encerrada'};
   const n = v => (v||0).toLocaleString('pt-BR');
   const pct = (a,b) => b ? Math.round(100*a/b) : 0;
   const quando = iso => { try{ return new Date(iso).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}); }catch(e){ return ''; } };
@@ -3406,7 +3548,7 @@ const Loja = (() => {
         <p class="adm-p">O visitante que completa a trilha mostra um código no celular. Digite o código para dar baixa e entregue o prêmio. Cada código vale uma vez.</p>
         <form class="adm-acts" id="lj-cupom-f"><label class="fld" for="lj-cupom">Código do cupom<input id="lj-cupom" class="cupom-in" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false"></label><button class="btn sm" style="align-self:end">Dar baixa</button></form>
         <p class="adm-msg" id="lj-cupom-msg" hidden></p>
-        <div class="tw"><table class="adm-tab"><thead><tr><th>Trilha</th><th>Prêmio</th><th>Começaram</th><th>Completaram</th><th>Retiraram</th><th>Restam</th></tr></thead><tbody>${trilhasLoja.map(m=>`<tr><td>${esc(m.titulo)}</td><td>${esc(m.premio)}</td><td class="tabnum">${n(m.comecaram)}</td><td class="tabnum">${n(m.cupons)}</td><td class="tabnum">${n(m.resgatados)}</td><td class="tabnum">${n(Math.max(0,m.estoque-m.cupons))}</td></tr>`).join('')}</tbody></table></div></section>` : ''}
+        <div class="tw"><table class="adm-tab"><thead><tr><th>Trilha</th><th>Prêmio</th><th>Começaram</th><th>Completaram</th><th>Retiraram</th><th>Restam</th></tr></thead><tbody>${trilhasLoja.map(m=>`<tr><td>${esc(m.titulo)} <span class="pill ${m.status==='aprovada'?'ok':m.status==='proposta'?'warn':'mut'}">${esc(SIT[m.status]||m.status)}</span></td><td>${esc(m.premio)}</td><td class="tabnum">${n(m.comecaram)}</td><td class="tabnum">${n(m.cupons)}</td><td class="tabnum">${n(m.resgatados)}</td><td class="tabnum">${n(Math.max(0,m.estoque-m.cupons))}</td></tr>`).join('')}</tbody></table></div></section>` : ''}
       <div class="loja-duo">
         <section class="adm-sec"><h3>Atendimento</h3>${satisfacao(d.satisfacao)}</section>
         <section class="adm-sec"><h3>Visitantes por hora</h3><div class="hora" id="lj-hora"></div><p class="nota">Pessoas diferentes que leram o QR do estande, nas horas com movimento.</p>
@@ -3424,11 +3566,40 @@ const Loja = (() => {
             <p class="nota">Percentuais sobre ${n(t.visitantes)} visitantes; uma pessoa pode citar mais de um interesse.</p>`
           : `<p class="adm-p">O perfil dos visitantes aparece quando pelo menos 5 pessoas tiverem lido o QR do estande. Antes disso ele não é mostrado, para proteger a privacidade de quem visitou.</p>`}</section>
       </div>
+      <details class="adm-sec" id="lj-prop"><summary><b>Propor uma trilha</b> <span class="nota">o seu estande oferece o prêmio; a organização aprova antes de ir ao ar</span></summary>
+        <div class="cad-form" style="margin-top:12px"><label class="fld" for="lp-tit">Nome da trilha *<input id="lp-tit" maxlength="120"></label><label class="fld" for="lp-prem">Prêmio *<input id="lp-prem" maxlength="200"></label>
+          <label class="fld" for="lp-est">Quantidade de prêmios<input id="lp-est" type="number" min="1" max="100000" value="20"></label><label class="fld" for="lp-prazo">Prazo (opcional)<input id="lp-prazo" type="datetime-local"></label>
+          <div class="fld larga"><span>Etapas · o visitante cumpre todas</span><div id="lp-etapas" class="adm-lista"></div><div class="adm-acts"><select id="lp-nova" aria-label="Nova etapa"><option value="">Carregando…</option></select><button type="button" class="ghost sm" id="lp-add">Adicionar etapa</button></div></div>
+          <label class="fld larga" for="lp-desc">Descrição para o visitante<textarea id="lp-desc" rows="2" maxlength="1000"></textarea></label>
+          <label class="fld larga" for="lp-reg">Regulamento (prêmio por ordem de chegada, sem sorteio)<textarea id="lp-reg" rows="2" maxlength="3000"></textarea></label>
+          <div class="acts"><button class="btn sm" id="lp-enviar">Enviar proposta</button></div><p class="adm-msg larga" id="lp-msg" hidden></p></div></details>
       <section class="adm-sec"><h3>Comentários (${n(d.comentarios.length)})</h3>${d.comentarios.length ? `<div class="coments">${d.comentarios.map(c=>`<div class="coment"><div class="meta">${c.publico ? `<span class="pill ${c.status==='aprovado'?'ok':c.status==='recusado'?'mut':'warn'}">público · ${c.status==='aprovado'?'publicado':c.status==='recusado'?'recusado na moderação':'em moderação'}</span>` : '<span class="pill mut">só para a loja</span>'}${c.produto?`<span>sobre ${esc(c.produto)}</span>`:''}<span>${esc(quando(c.quando))}</span></div><p>${esc(c.texto)}</p></div>`).join('')}</div>` : '<p class="adm-p">Nenhum comentário ainda.</p>'}</section>`;
     ligarTopo();
     $('lj-atualizar').onclick = () => carregar(run);
     if ($('lj-trocar')) $('lj-trocar').onclick = () => { estId=null; escolher(); };
     if ($('lj-csv')) $('lj-csv').onclick = csvContatos;
+    if ($('lj-prop')) $('lj-prop').addEventListener('toggle', async () => {
+      if (!$('lj-prop').open || $('lj-prop').dataset.ok) return; $('lj-prop').dataset.ok = '1';
+      const nomes = {}, pm = (t, k) => { const m=$('lp-msg'); m.hidden=!t; m.textContent=t||''; m.className='adm-msg larga'+(k?' '+k:''); };
+      etapasProp = [{tipo:'estande', id:estId}];
+      try{ const o = await Base.loja.opcoesTrilha(estId);
+        const grp = (rot, tipo, l) => `<optgroup label="${rot}">${l.map(x=>{ nomes[tipo+':'+x.id] = x.nome; return `<option value="${tipo}:${esc(x.id)}">${esc(x.nome)}</option>`; }).join('')}</optgroup>`;
+        $('lp-nova').innerHTML = '<option value="">Escolha uma palestra, um estande ou um parceiro da cidade…</option>' + grp('Palestras','palestra',o.palestras) + grp('Estandes','estande',o.estandes) + grp('Cidade','cidade',o.cidade);
+      }catch(e){ $('lp-nova').innerHTML = '<option value="">Não foi possível carregar</option>'; }
+      const rot = {palestra:'Palestra', estande:'Estande', cidade:'Cidade'};
+      const des = () => { $('lp-etapas').innerHTML = etapasProp.map((e,i)=>`<div class="orow"><span>${i+1}. ${rot[e.tipo]}: ${esc(nomes[e.tipo+':'+e.id] || (e.id===estId ? dados.estande.expositor : '–'))}</span><button type="button" class="ib" data-rme="${i}" aria-label="Remover etapa ${i+1}">✕</button></div>`).join('') || '<p class="nota">Nenhuma etapa.</p>';
+        $('lp-etapas').querySelectorAll('[data-rme]').forEach(b=>b.onclick=()=>{ etapasProp.splice(+b.dataset.rme,1); des(); }); };
+      des();
+      $('lp-add').onclick = () => { const v = $('lp-nova').value; if (!v) return; const [tipo, id] = v.split(':'); if (etapasProp.some(e=>e.id===id) || etapasProp.length>=10) return; etapasProp.push({tipo, id}); des(); };
+      $('lp-enviar').onclick = async () => {
+        const tit = $('lp-tit').value.trim(), prem = $('lp-prem').value.trim();
+        if (!tit || !prem || !etapasProp.length){ pm('Preencha o nome, o prêmio e pelo menos uma etapa.','erro'); return; }
+        try{ await Base.loja.propor(estId, {titulo:tit, premio:prem, estoque:parseInt($('lp-est').value,10)||0, prazo:$('lp-prazo').value ? new Date($('lp-prazo').value).toISOString() : null,
+              descricao:$('lp-desc').value, regulamento:$('lp-reg').value, etapas:etapasProp});
+          pm('Proposta enviada. A organização avalia e, quando aprovar, a trilha aparece para os visitantes.','ok'); setTimeout(()=>carregar(run), 1200); }
+        catch(e){ pm(e.code==='limite' ? 'Seu estande já tem 3 propostas aguardando aprovação.' : e.code==='etapas_invalidas' ? 'Alguma etapa não é desta edição.' : 'Não foi possível enviar agora.','erro'); }
+      };
+    });
     if ($('lj-cupom-f')) $('lj-cupom-f').onsubmit = async ev => {
       ev.preventDefault(); const m = $('lj-cupom-msg'), cod = $('lj-cupom').value.trim(); if (!cod) return;
       const dizer = (t, tipo) => { m.hidden=false; m.textContent=t; m.className='adm-msg '+tipo; };

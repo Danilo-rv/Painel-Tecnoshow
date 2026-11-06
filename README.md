@@ -25,7 +25,7 @@ As respostas ficam num banco **Supabase** do próprio projeto. Uma versão alter
 ## 1. Configurar o Supabase (uma vez)
 
 1. Crie um projeto em <https://supabase.com> (região São Paulo, `sa-east-1`).
-2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`, `003_visitante_estande.sql`, `004_moderacao_painel_expositor.sql`, `005_saida_tablets.sql`, `006_presenca_trilhas.sql`, `007_mural.sql`, `008_cidade.sql` e `009_passaporte_ao_vivo.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
+2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`, `003_visitante_estande.sql`, `004_moderacao_painel_expositor.sql`, `005_saida_tablets.sql`, `006_presenca_trilhas.sql`, `007_mural.sql`, `008_cidade.sql`, `009_passaporte_ao_vivo.sql` e `010_aparelhos_propostas_dados.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
 3. Em **Authentication → Sign In / Providers**, deixe **ligado** "Allow new users to sign up" (a equipe se cadastra pelo link de convite; uma conta criada sem convite não acessa nada) e mantenha "Confirm email" ligado.
    Em **Authentication → URL Configuration**, coloque o endereço do site em **Site URL** e em **Redirect URLs** (ex.: `https://danilo-rv.github.io/Painel-Tecnoshow/**`), para o e-mail de confirmação voltar ao app.
 4. Gere a chave da coleta: no SQL Editor, rode `select replace(gen_random_uuid()::text, '-', '') as chave_da_coleta;` e guarde o resultado.
@@ -77,6 +77,13 @@ Para testar no computador, sirva a pasta `dist/` com `python3 -m http.server -d 
 4. **Não faça login da equipe nos tablets.** O login dá acesso a todas as respostas.
 
 Se a internet cair, a barra mostra `sem internet · guardando aqui` e o número de respostas na fila. Elas são enviadas sozinhas quando a conexão volta (a cada 20 s, e logo que o aparelho fica online). Não limpe os dados do navegador enquanto houver respostas na fila.
+
+### Habilitar cada tablet com código (recomendado)
+
+1. Uma pessoa da equipe abre **Habilitar tablets (equipe)** na tela inicial (`…/#aparelhos`), dá um nome ao tablet (ex.: "Tablet 3 · Portaria norte") e toca em **Gerar código**. O código tem 6 dígitos, vale 15 minutos e funciona uma vez.
+2. No tablet, na tela inicial, digite o código em **Habilitar este tablet**. O tablet recebe uma credencial só dele, no lugar da chave da coleta.
+3. Se um tablet for perdido, a coordenação ou a organização toca em **Desligar** na mesma tela. Só aquele tablet para de enviar, e os outros seguem normalmente.
+4. Quando todos os tablets estiverem habilitados com código, a coordenação desmarca **Aceitar a chave única**. A partir daí, a chave única da edição deixa de valer.
 
 ### Tablet travado na coleta
 
@@ -268,6 +275,31 @@ Cada estande tem um QR (em **Administração → Cadastros → Expositores**, ab
 - Em **Cadastros → Trilhas**, as etapas podem incluir estabelecimentos da cidade (grupo "Cidade (Passaporte)"), e o prêmio pode ser entregue por um parceiro da cidade (campo "Ou: parceiro da cidade que entrega o prêmio").
 - O visitante cumpre a etapa da cidade fazendo check-in pelo QR do balcão, e vê as trilhas que passam por ali na própria página do estabelecimento.
 - O parceiro doador dá baixa no cupom em **Área do parceiro → Prêmios do Passaporte**, onde também vê quantos começaram, completaram e retiraram o prêmio.
+
+## 15. Trilha proposta pelo estande
+
+- Na **Área do expositor**, o estande abre **Propor uma trilha**. Ele informa:
+  - nome, prêmio, quantidade e prazo;
+  - as etapas (o próprio estande já vem como etapa; dá para juntar palestras, outros estandes e parceiros da cidade);
+  - a descrição e o regulamento.
+- A proposta chega em **Cadastros → Trilhas** com a situação "Proposta pelo estande", e o botão Trilhas mostra quantas aguardam.
+- A organização revisa e muda para **Aprovada**; só então a trilha aparece para o visitante.
+- O estande acompanha a situação e os números na própria área. Cada estande tem no máximo 3 propostas aguardando aprovação.
+
+## 16. Dados abertos
+
+- Página pública `…/#dados` (botão **Dados abertos** na tela inicial), com download em CSV e JSON (decisão 9). Ela traz:
+  - totais da edição;
+  - visitantes por dia;
+  - perfil e faixa etária;
+  - origem por estado, município e país;
+  - interesses;
+  - visitas por segmento;
+  - público por palestra;
+  - hospedagem e ocupação média da cidade.
+- **Regra:** só agregados. Grupos com menos de 5 pessoas não aparecem ou entram em "outros". A ocupação hoteleira só aparece com 3 ou mais hotéis.
+- **Fica de fora:** dados pessoais, avaliações de estandes (decisão 25) e dados de um hotel em particular.
+- A licença de uso será definida pelo comitê de dados (decisão 18).
 
 ## Proteção de dados (LGPD)
 
