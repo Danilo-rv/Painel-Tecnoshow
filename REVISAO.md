@@ -98,6 +98,33 @@ Testes: as regras de cada papel foram testadas num Postgres local que imita o Su
 | Interações | Reação, salvar e seguir alternam (fazer/desfazer); uma carinha por estande; check-in a cada 30 minutos | Produto precisa ser do expositor do estande; estande precisa ser da edição do visitante |
 | Abuso | No máximo 5 perfis por número por hora, 300 ações e 20 comentários por visitante por hora | Ações acima do limite são recusadas |
 | Menores | Perfil "até 17 anos" marca o visitante como menor | Sem pedido de contato e sem comentário público |
-| Comentário público | Entra como "pendente" | Só vai a público depois da moderação (tela de moderação: próxima etapa) |
+| Comentário público | Entra como "pendente" | Só vai a público depois da moderação (aba Moderação, quinta etapa) |
 
 Testes: as funções foram testadas no Postgres local, inclusive com ataques (credencial falsa, produto de outro estande, ação inventada, valor inválido). A tela do visitante foi testada no navegador chamando as funções reais do banco local. O teste pegou um defeito, corrigido antes da publicação: um número brasileiro digitado sem +55 perdia o código do país quando o celular estava em outro idioma.
+
+## Moderação e painel do expositor (quinta etapa)
+
+| Item | Como funciona | Proteção |
+|---|---|---|
+| Papel de moderação | Novo papel `moderador` na equipe; convite escolhe o papel | Só o administrador geral convida coordenadores; o moderador vê só a aba Moderação |
+| Moderação | `listar_moderacao` e `moderar_comentario` | Só administrador, coordenação, organização e moderação; cada decisão é auditada |
+| Contas de estande | Tabela `expositor_equipe`, preenchida pelo convite de estande | Não entram em `equipe`, portanto não leem respostas, visitantes nem outros estandes |
+| Painel do estande | `painel_expositor` devolve só números do próprio estande | Perfil só com 5 ou mais visitantes; média do segmento só com 5 ou mais estandes |
+| WhatsApp no painel | Decifrado só para quem pediu contato àquele estande | Cada consulta à lista de contatos fica registrada na auditoria |
+| Revogação | `listar_contas_expositor` e `remover_conta_expositor` | Só a organização |
+
+Testes:
+- **Funções no Postgres local:** testadas com cada papel (visitante anônimo, equipe, moderação, coordenação, administrador e conta de estande). Os ataques testados foram:
+  - papel inventado;
+  - coordenador convidando coordenador;
+  - convite usado duas vezes;
+  - estande de outra empresa;
+  - leitura direta das tabelas.
+- **Navegador contra o banco local:**
+  - moderação, incluindo um comentário com código, que aparece como texto;
+  - convite com papel;
+  - painel no computador e no celular;
+  - planilha de contatos;
+  - convite de estande de ponta a ponta;
+  - os testes anteriores do visitante e dos cadastros continuam passando.
+- **Pendente:** gestor e atendente têm hoje o mesmo acesso; diferenciar fica para a próxima etapa.

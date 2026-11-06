@@ -25,7 +25,7 @@ As respostas ficam num banco **Supabase** do próprio projeto. Uma versão alter
 ## 1. Configurar o Supabase (uma vez)
 
 1. Crie um projeto em <https://supabase.com> (região São Paulo, `sa-east-1`).
-2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql` e `003_visitante_estande.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
+2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`, `003_visitante_estande.sql` e `004_moderacao_painel_expositor.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
 3. Em **Authentication → Sign In / Providers**, deixe **ligado** "Allow new users to sign up" (a equipe se cadastra pelo link de convite; uma conta criada sem convite não acessa nada) e mantenha "Confirm email" ligado.
    Em **Authentication → URL Configuration**, coloque o endereço do site em **Site URL** e em **Redirect URLs** (ex.: `https://danilo-rv.github.io/Painel-Tecnoshow/**`), para o e-mail de confirmação voltar ao app.
 4. Gere a chave da coleta: no SQL Editor, rode `select replace(gen_random_uuid()::text, '-', '') as chave_da_coleta;` e guarde o resultado.
@@ -140,6 +140,30 @@ Cada estande tem um QR (em **Administração → Cadastros → Expositores**, ab
   - só sai do banco quando o visitante pede contato a um estande;
   - a confirmação por código depende de um provedor da API do WhatsApp Business (ainda não contratado), e até lá o número fica como "não confirmado".
 - **Produtos:** cadastrados em **Administração → Cadastros → Produtos** ou importados por planilha.
+
+## 8. Moderação e área do expositor
+
+- **Papéis da equipe** (convite em **Administração → Equipe**, escolhendo o papel):
+  - **Equipe:** painel e relatório.
+  - **Moderação:** só a aba Moderação.
+  - **Organização da feira:** cadastros, mapa, pendências e moderação.
+  - **Coordenação:** tudo isso mais questionário e equipe. Só o administrador geral convida coordenadores.
+- **Moderação** (aba **Moderação**):
+  - comentários que o visitante marcou como públicos ficam pendentes até alguém aprovar ou recusar;
+  - um comentário recusado continua visível para o estande, como comentário privado;
+  - cada decisão fica na auditoria.
+- **Área do expositor** (botão **Área do expositor** na tela inicial, ou `…/#expositor`):
+  - em **Cadastros → Expositores**, abra o expositor e toque em **Gerar convite para o estande**; envie o link ao responsável, que cria a conta (o link vale 14 dias e funciona uma vez);
+  - a conta do estande não entra na equipe da pesquisa: ela só vê o painel do próprio estande;
+  - o painel mostra:
+    - visitantes, curtidas, amei, seguidores, produtos salvos e pedidos de contato;
+    - avaliação do atendimento, inclusive as negativas e os motivos;
+    - visitantes por hora e reações por produto;
+    - comentários;
+    - os pedidos de contato com WhatsApp, com planilha para baixar;
+  - o perfil de quem visitou só aparece com 5 ou mais visitantes; a média do segmento, com 5 ou mais estandes da mesma categoria;
+  - na mesma tela do expositor, a organização vê quem tem acesso e pode remover uma conta (quando a pessoa sai da empresa);
+  - a organização também abre o painel de qualquer estande por **Ver painel do estande**.
 
 ## Proteção de dados (LGPD)
 

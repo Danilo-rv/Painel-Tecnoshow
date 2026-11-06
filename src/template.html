@@ -286,6 +286,33 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
 .vis-consent input{width:22px;height:22px;flex:none;accent-color:var(--glow);margin-top:2px}
 .qr-box{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center}
 .qr-box img{width:132px;height:132px;background:#fff;border-radius:8px;padding:6px;image-rendering:pixelated}
+.loja{max-width:1040px;margin:0 auto;padding-block:24px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:16px}
+.loja .k{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--glow)}
+.loja-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.loja-kpi{background:var(--deep);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:2px}
+.loja-kpi b{font-family:var(--f-display);font-size:1.9rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
+.loja-kpi span{color:var(--muted);font-size:.8rem;line-height:1.35}
+.loja-duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:16px;align-items:start}
+.loja-idx{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.loja-idx b{font-family:var(--f-display);font-size:2.2rem;font-variant-numeric:tabular-nums}
+.loja-idx span{color:var(--muted);font-size:.85rem}
+.hbars{display:grid;gap:8px}
+.hbar{display:grid;grid-template-columns:minmax(0,15ch) minmax(0,1fr) 8ch;gap:10px;align-items:center;font-size:.85rem}
+.hbar .tr{height:10px;background:rgba(29,59,122,.55);border-radius:4px;overflow:hidden}
+.hbar .tr i{display:block;height:100%;border-radius:0 4px 4px 0;background:var(--glow);min-width:2px}
+.hbar .v{font-family:var(--f-mono);text-align:right;color:var(--ink);font-size:.8rem}
+.hbar .l{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hora{position:relative}
+.hora svg{width:100%;height:auto;display:block}
+.hora .eixo{fill:var(--muted);font-family:var(--f-mono);font-size:11px}
+.tip{position:absolute;z-index:5;pointer-events:none;background:var(--night);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:.8rem;white-space:nowrap;transform:translate(-50%,calc(-100% - 8px))}
+.mod-item{display:grid;gap:8px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--deep)}
+.mod-item p{margin:0;line-height:1.5;overflow-wrap:anywhere}
+.mod-item .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;color:var(--muted);font-size:.8rem}
+.coments{display:grid;gap:10px}
+.coment{border-left:3px solid var(--line);padding:2px 0 2px 12px;display:grid;gap:4px}
+.coment p{margin:0;line-height:1.5;overflow-wrap:anywhere}
+.coment .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;color:var(--muted);font-size:.78rem}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -306,7 +333,7 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
         <input id="cfg-edicao" value="Tecnoshow Comigo 2027" maxlength="60"></label>
       <label for="cfg-chave" id="cfg-chave-wrap" hidden>Chave da coleta (só nos tablets)
         <input id="cfg-chave" type="password" autocomplete="off" spellcheck="false" maxlength="200"></label>
-      <div class="demo-links"><button class="ghost" id="go-painel-demo">Ver painel com dados de demonstração</button><button class="ghost" id="go-relatorio-demo">Ver relatório de demonstração</button><button class="ghost" id="go-admin">Administração</button><button class="ghost" id="cfg-sair" hidden>Sair da conta da equipe</button></div>
+      <div class="demo-links"><button class="ghost" id="go-painel-demo">Ver painel com dados de demonstração</button><button class="ghost" id="go-relatorio-demo">Ver relatório de demonstração</button><button class="ghost" id="go-admin">Administração</button><button class="ghost" id="go-expositor">Área do expositor</button><button class="ghost" id="cfg-sair" hidden>Sair da conta da equipe</button></div>
       <p class="cfg-aviso" id="cfg-aviso" hidden></p>
     </div>
   </div>
@@ -371,8 +398,8 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
 <div id="v-admin" class="view" hidden>
   <div class="adm">
     <div class="adm-top">
-      <div><div class="k">Administração · <span id="a-ed"></span></div><h1>Questionário e equipe</h1></div>
-      <div class="adm-tabs"><button class="chip on" data-aba="form">Questionário</button><button class="chip" data-aba="equipe">Equipe</button><button class="chip" data-aba="cadastros">Cadastros</button><button class="chip" data-aba="mapa">Mapa</button><button class="chip" data-aba="pendencias">Pendências</button><button class="ghost" id="a-voltar">Voltar ao início</button></div>
+      <div><div class="k">Administração · <span id="a-ed"></span></div><h1>Gestão da plataforma</h1></div>
+      <div class="adm-tabs"><button class="chip on" data-aba="form">Questionário</button><button class="chip" data-aba="equipe">Equipe</button><button class="chip" data-aba="cadastros">Cadastros</button><button class="chip" data-aba="mapa">Mapa</button><button class="chip" data-aba="pendencias">Pendências</button><button class="chip" data-aba="moderacao">Moderação</button><button class="ghost" id="a-voltar">Voltar ao início</button></div>
     </div>
     <p class="adm-msg erro" id="a-bloq" hidden></p>
     <div id="a-corpo" hidden>
@@ -419,6 +446,12 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
           </aside>
         </div>
       </section>
+      <section id="a-moderacao" class="adm" hidden>
+        <div class="adm-bar"><div class="seg-s" id="mo-filtro"><button class="chip on" data-st="pendente">Pendentes</button><button class="chip" data-st="aprovado">Aprovados</button><button class="chip" data-st="recusado">Recusados</button></div><button class="ghost sm" id="mo-atualizar">Atualizar</button></div>
+        <p class="adm-p">Aqui chegam só os comentários que o visitante marcou como públicos. Comentários "só para a loja" e avaliações negativas nunca são publicados: eles aparecem apenas no painel do estande e para a organização.</p>
+        <p class="adm-msg" id="mo-msg" hidden></p>
+        <div id="mo-lista" class="adm-lista"></div>
+      </section>
       <section id="a-pendencias" class="adm" hidden>
         <div class="adm-bar"><div><b>Pendências de dados</b> <span class="nota">recalculadas a cada consulta</span></div><button class="ghost sm" id="p-atualizar">Atualizar</button></div>
         <div class="pend-grupos" id="p-grupos"></div>
@@ -430,10 +463,12 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
 
 <div id="v-visitante" class="view" hidden><div class="vis" id="vis-corpo"></div></div>
 
+<div id="v-expositor" class="view" hidden><div class="loja" id="lj-corpo"></div></div>
+
 <div id="v-convite" class="view" hidden>
   <div class="conv"><form class="login-box" id="c-form" autocomplete="on">
-    <b>Convite para a equipe</b>
-    <p id="c-intro">Você foi convidado para a equipe de pesquisa do Tecnoshow Avalia. Crie sua conta ou entre com uma conta que já tem.</p>
+    <b>Convite</b>
+    <p id="c-intro">Você recebeu um convite para a plataforma Tecnoshow Avalia (equipe da pesquisa ou do seu estande). Crie sua conta ou entre com uma conta que já tem.</p>
     <div class="seg" id="c-modo"><button type="button" class="lang sel" data-m="novo">Criar conta</button><button type="button" class="lang" data-m="entrar">Já tenho conta</button></div>
     <label for="c-nome" id="c-nome-wrap">Seu nome<input id="c-nome" maxlength="80" autocomplete="name"></label>
     <label for="c-email" id="c-email-wrap">E-mail<input id="c-email" type="email" autocomplete="username"></label>
@@ -445,8 +480,8 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
 
 <div id="login" class="login" hidden>
   <form id="login-form" class="login-box" autocomplete="on">
-    <b>Acesso da equipe</b>
-    <p>O painel e o relatório mostram as respostas dos visitantes e exigem login. Os tablets de coleta não precisam de login.</p>
+    <b id="login-tit">Acesso da equipe</b>
+    <p id="login-txt">O painel e o relatório mostram as respostas dos visitantes e exigem login. Os tablets de coleta não precisam de login.</p>
     <label for="login-email">E-mail<input id="login-email" type="email" autocomplete="username" required></label>
     <label for="login-senha">Senha<input id="login-senha" type="password" autocomplete="current-password" required></label>
     <p class="login-msg" id="login-msg" role="alert"></p>
@@ -789,9 +824,14 @@ const Base = (() => {
     if (error) throw erro(/registered|already/i.test(error.message)?'ja_existe':/password/i.test(error.message)?'senha_fraca':'rede', error.message);
     return !!(data && data.session);
   }
-  function pedirLogin(){
+  const LOGIN_PADRAO = {titulo:'Acesso da equipe', texto:'O painel e o relatório mostram as respostas dos visitantes e exigem login. Os tablets de coleta não precisam de login.',
+    verificar: () => souEquipe(), negado:'Esta conta não está na equipe. Peça um link de convite ao coordenador da pesquisa.'};
+  /* op: {titulo, texto, verificar (async, true se a conta serve), negado (mensagem quando não serve)} */
+  function pedirLogin(op){
+    op = {...LOGIN_PADRAO, ...(op||{})};
     return new Promise(resolve=>{
       const box=document.getElementById('login'), f=document.getElementById('login-form'), m=document.getElementById('login-msg'), bt=document.getElementById('login-ok');
+      document.getElementById('login-tit').textContent = op.titulo; document.getElementById('login-txt').textContent = op.texto;
       box.hidden=false; m.textContent=''; setTimeout(()=>document.getElementById('login-email').focus(),30);
       const fim = v => { box.hidden=true; f.onsubmit=null; document.getElementById('login-cancel').onclick=null; document.getElementById('login-senha').value=''; resolve(v); };
       document.getElementById('login-cancel').onclick = () => fim(false);
@@ -799,28 +839,31 @@ const Base = (() => {
         ev.preventDefault(); bt.disabled=true; m.textContent='';
         try{
           await entrar(document.getElementById('login-email').value.trim(), document.getElementById('login-senha').value);
-          if (!(await souEquipe())){ await sair(); m.textContent='Esta conta não está na equipe. Peça um link de convite ao coordenador da pesquisa.'; return; }
+          if (!(await op.verificar())){ await sair(); m.textContent=op.negado; return; }
           fim(true);
         }catch(e){ m.textContent = e.code==='credenciais' ? 'E-mail ou senha incorretos.' : e.code==='nao_confirmado' ? 'Confirme o e-mail de cadastro antes de entrar.' : 'Não foi possível entrar agora. Confira a internet e tente de novo.'; }
         finally { bt.disabled=false; }
       };
     });
   }
-  /* Papel de quem está logado: admin_geral, coordenador, organizacao, equipe (ou null). */
+  /* Papel de quem está logado: admin_geral, coordenador, organizacao, moderador, equipe (ou null). */
   async function meuPapel(){
     if (kind==='claude') return (await souCoordenador()) ? 'coordenador' : null;
     if (kind!=='supabase') return null;
     try{ return await rpc('meu_papel'); }catch(e){ return null; }
   }
   const EDITORES = ['admin_geral','coordenador','organizacao'];
-  /* papel pedido: 'equipe' (painel, relatório), 'coordenador' (questionário e equipe) ou 'editor' (cadastros e mapa) */
+  const MODERADORES = [...EDITORES, 'moderador'];
+  /* papel pedido: 'equipe' (painel, relatório), 'coordenador' (questionário e equipe), 'editor' (cadastros e mapa)
+     ou 'adm' (qualquer aba da Administração: editores e moderadores) */
   async function garantirAcesso(papel){
-    if (kind==='claude') return (papel==='coordenador' || papel==='editor') ? souCoordenador() : true;
+    if (kind==='claude') return (papel==='coordenador' || papel==='editor' || papel==='adm') ? souCoordenador() : true;
     if (!precisaLogin) return false;
     const ok = (await logado().catch(()=>false)) || await pedirLogin();
     if (!ok) return false;
     if (papel==='coordenador') return souCoordenador();
     if (papel==='editor') return EDITORES.includes(await meuPapel());
+    if (papel==='adm') return MODERADORES.includes(await meuPapel());
     return true;
   }
   /* Cadastros editáveis (só no modo Supabase). Tudo se liga por id; as regras de acesso estão no banco. */
@@ -873,7 +916,7 @@ const Base = (() => {
   };
   const equipe = {
     listar: () => rpc('listar_equipe'), convites: () => rpc('listar_convites'),
-    convidar: () => rpc('criar_convite', {p_dias:7}), revogar: id => rpc('revogar_convite', {p_id:id}),
+    convidar: papel => rpc('criar_convite', {p_dias:7, p_papel:papel||'equipe'}), revogar: id => rpc('revogar_convite', {p_id:id}),
     remover: id => rpc('remover_membro', {p_user:id}), aceitar: tok => rpc('aceitar_convite', {p_token:tok})
   };
   /* Visitante: sem login. A credencial vive no aparelho; o banco guarda só o hash. */
@@ -884,8 +927,28 @@ const Base = (() => {
     estado: (token, est) => rpc('estado_visitante', {p_token:token, p_estande:est}),
     agir: (token, est, acao, extra={}) => rpc('interagir', {p_token:token, p_estande:est, p_acao:acao, p_produto:extra.produto||null, p_valor:extra.valor||null, p_texto:extra.texto||null, p_publico:!!extra.publico})
   };
+  /* Moderação dos comentários públicos */
+  const mod = {
+    listar: (ed, st) => rpc('listar_moderacao', {p_ed:ed, p_status:st||'pendente'}),
+    decidir: (id, d) => rpc('moderar_comentario', {p_id:id, p_decisao:d})
+  };
+  /* Área do expositor: contas convidadas para UM estande. Elas não entram na equipe da pesquisa. */
+  const loja = {
+    disponivel: () => kind==='supabase',
+    minhas: () => rpc('minhas_lojas'),
+    painel: id => rpc('painel_expositor', {p_estande:id}),
+    convidar: (expo, papel) => rpc('criar_convite_expositor', {p_expositor:expo, p_papel:papel||'gestor'}),
+    contas: expo => rpc('listar_contas_expositor', {p_expositor:expo}),
+    remover: (u, expo) => rpc('remover_conta_expositor', {p_user:u, p_expositor:expo}),
+    async entrar(){
+      const serve = async () => { if (EDITORES.includes(await meuPapel())) return true; try{ return (await rpc('minhas_lojas')).length>0; }catch(e){ return false; } };
+      if ((await temSessao().catch(()=>false)) && await serve()) return true;
+      return pedirLogin({titulo:'Área do expositor', texto:'Entre com a conta que você criou pelo link de convite do seu estande.', verificar:serve,
+        negado:'Esta conta não está ligada a nenhum estande. Peça o link de convite à organização da feira.'});
+    }
+  };
   return {kind, enviar, ler, acompanhar, precisaLogin, garantirAcesso, sair, entrar, cadastrar, temSessao, souCoordenador, meuPapel,
-          instrumentoAtual, publicarInstrumento, historico, equipe, cad, vis};
+          instrumentoAtual, publicarInstrumento, historico, equipe, cad, vis, mod, loja, EDITORES, MODERADORES};
 })();
 
 /* Questionário em uso neste aparelho: a última versão publicada da edição, guardada para uso offline. */
@@ -919,13 +982,14 @@ const Inst = (() => {
     const sair=document.getElementById('cfg-sair'); sair.hidden=false; sair.onclick = async () => { await Base.sair(); aviso.hidden=false; aviso.textContent='Conta da equipe desconectada deste aparelho.'; };
   }
   document.getElementById('go-admin').onclick = () => go('admin');
+  document.getElementById('go-expositor').onclick = () => go('expositor');
   if (!Base.kind){
     aviso.hidden=false; aviso.textContent='Nenhuma base de respostas configurada: só os modos de demonstração funcionam. Veja o LEIAME para ligar o Supabase.';
   }
 })();
 
 /* ================== ROTEAMENTO ================== */
-const VIEWS = ['inicio','coleta','painel','relatorio','admin','convite','visitante'];
+const VIEWS = ['inicio','coleta','painel','relatorio','admin','convite','visitante','expositor'];
 let current = null;
 function route(){
   const h = (location.hash||'').replace('#','');
@@ -934,6 +998,7 @@ function route(){
   if (base==='previa') base='coleta';
   if (/^convite-/.test(base)) base='convite';
   if (/^e-[0-9a-f-]{36}$/.test(base)) base='visitante';
+  if (/^expositor(-[0-9a-f-]{36})?$/.test(base)) base='expositor';
   const v = VIEWS.includes(base) ? base : 'inicio';
   VIEWS.forEach(x => document.getElementById('v-'+x).hidden = x!==v);
   if (current === h) return; current = h;
@@ -944,6 +1009,7 @@ function route(){
   if (v==='admin') Admin.start();
   if (v==='convite') Convite.start(h.slice(8));
   if (v==='visitante') Visit.estande(h.slice(2));
+  if (v==='expositor') Loja.start(h.slice(10));
 }
 window.addEventListener('hashchange', route);
 const go = h => { location.hash = h; };
@@ -1682,21 +1748,48 @@ const Admin = (() => {
     box.innerHTML = hist.length ? hist.map((h,k)=>`<div><span><b>v${h.versao}</b> · ${esc(quando(h.publicado_em))} · ${((h.def&&h.def.perguntas)||[]).filter(p=>p.ativa!==false).length} perguntas</span><button class="ghost sm" data-h="${k}">Copiar para o rascunho</button></div>`).join('') : '<span class="nota">Nenhuma versão publicada ainda. Os tablets usam o questionário padrão.</span>';
     box.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{ const d=limparInstrumento(hist[+b.dataset.h].def); if(!d) return; rasc={...d, versao:pub.versao, publicado_em:pub.publicado_em}; salvar(); render(); msg(`A versão ${hist[+b.dataset.h].versao} foi copiada para o rascunho. Revise e publique para voltar a usá-la.`, 'ok'); aba('form'); window.scrollTo(0,0); });
   }
-  function aba(n){ document.querySelectorAll('.adm-tabs .chip').forEach(b=>b.classList.toggle('on', b.dataset.aba===n)); ['form','equipe','cadastros','mapa','pendencias'].forEach(x=>{ $('a-'+x).hidden = n!==x; }); if (['cadastros','mapa','pendencias'].includes(n)) Cad.abrir(n); if (n==='equipe') equipe(); }
+  function aba(n){ document.querySelectorAll('.adm-tabs .chip').forEach(b=>b.classList.toggle('on', b.dataset.aba===n)); ['form','equipe','cadastros','mapa','pendencias','moderacao'].forEach(x=>{ $('a-'+x).hidden = n!==x; }); if (['cadastros','mapa','pendencias'].includes(n)) Cad.abrir(n); if (n==='equipe') equipe(); if (n==='moderacao') moderacao(); }
+  /* ---- moderação dos comentários públicos ---- */
+  let moSt = 'pendente', moLigado = false;
+  const DEC = {aprovado:'Aprovado', recusado:'Recusado', pendente:'Pendente'};
+  const ALVO = {estande:'Estande', produto:'Produto', local:'Local', palestra:'Palestra'};
+  async function moderacao(){
+    const box=$('mo-lista'), em=(t,tipo)=>{ const x=$('mo-msg'); x.hidden=!t; x.textContent=t||''; x.className='adm-msg'+(tipo?' '+tipo:''); };
+    if (!moLigado){ moLigado=true;
+      document.querySelectorAll('#mo-filtro .chip').forEach(b=>b.onclick=()=>{ moSt=b.dataset.st; document.querySelectorAll('#mo-filtro .chip').forEach(x=>x.classList.toggle('on', x===b)); em(''); moderacao(); });
+      $('mo-atualizar').onclick = () => { em(''); moderacao(); };
+    }
+    if (Base.kind!=='supabase'){ box.innerHTML='<p class="adm-p">A moderação funciona no site oficial da plataforma, com o Supabase.</p>'; return; }
+    box.innerHTML='<p class="adm-p">Carregando…</p>';
+    let l;
+    try{ l = await Base.mod.listar(ed, moSt); }catch(e){ box.innerHTML='<p class="adm-msg erro">Não foi possível carregar os comentários. Confira a internet e tente de novo.</p>'; return; }
+    const chip = document.querySelector('#mo-filtro [data-st="pendente"]'); if (moSt==='pendente') chip.textContent = 'Pendentes ('+l.length+')';
+    if (!l.length){ box.innerHTML = `<p class="adm-p">${moSt==='pendente' ? 'Nenhum comentário esperando moderação.' : 'Nenhum comentário nesta situação.'}</p>`; return; }
+    const bts = x => moSt==='pendente' ? `<button class="btn sm" data-dec="aprovado" data-id="${x.id}">Aprovar</button><button class="ghost sm" data-dec="recusado" data-id="${x.id}">Recusar</button>`
+      : moSt==='aprovado' ? `<button class="ghost sm" data-dec="recusado" data-id="${x.id}">Retirar do ar</button>` : `<button class="ghost sm" data-dec="aprovado" data-id="${x.id}">Aprovar</button>`;
+    box.innerHTML = l.map(x=>`<div class="mod-item"><div class="meta"><span class="pill mut">${esc(ALVO[x.alvo_tipo]||x.alvo_tipo)}</span><b style="color:var(--ink)">${esc(x.alvo)}</b><span>${esc(quando(x.quando))}</span></div><p>${esc(x.texto)}</p><div class="adm-acts">${bts(x)}</div></div>`).join('');
+    box.querySelectorAll('[data-dec]').forEach(b=>b.onclick=async()=>{
+      b.disabled=true;
+      try{ await Base.mod.decidir(+b.dataset.id, b.dataset.dec); em(b.dataset.dec==='aprovado' ? 'Comentário aprovado.' : 'Comentário recusado. Ele continua visível para o estande, como comentário privado.', 'ok'); moderacao(); }
+      catch(e){ b.disabled=false; em('Não foi possível registrar a decisão agora. Tente de novo.','erro'); }
+    });
+  }
   async function equipe(){
     const box=$('a-equipe-corpo');
     if (Base.kind!=='supabase'){ box.innerHTML = `<div class="adm-sec"><h3>Equipe no claude.ai</h3><p class="adm-p">Nesta versão, a equipe é quem você convida pelo menu <b>Compartilhar</b> do Artifact. Quem recebe permissão de edição também pode alterar o questionário. Quem só pode usar a página consegue coletar nos tablets e ver o painel e o relatório.</p></div>`; return; }
     box.innerHTML = '<p class="adm-p">Carregando a equipe…</p>';
     try{
       const [m, c] = await Promise.all([Base.equipe.listar(), Base.equipe.convites()]);
-      box.innerHTML = `<div class="adm-sec"><h3>Convidar para a equipe</h3><p class="adm-p">Gere um link e envie para a pessoa por e-mail ou WhatsApp. O link vale por 7 dias e serve para um único cadastro. Quem entra pelo link vê o painel e o relatório; só o coordenador edita o questionário.</p>
-          <div><button class="btn sm" id="a-convidar">Gerar link de convite</button></div><div class="adm-link" id="a-link" hidden><input id="a-link-txt" readonly aria-label="Link de convite"><button class="ghost" id="a-copiar">Copiar</button></div></div>
-        <div class="adm-sec"><h3>Pessoas da equipe (${m.length})</h3><div class="tw"><table class="adm-tab"><thead><tr><th>Nome</th><th>E-mail</th><th>Papel</th><th>Desde</th><th></th></tr></thead><tbody>${m.map(x=>`<tr><td>${esc(x.nome||'–')}</td><td>${esc(x.email||'')}</td><td>${x.papel==='coordenador'?'Coordenador':'Equipe'}</td><td>${esc(new Date(x.criado_em).toLocaleDateString('pt-BR'))}</td><td>${x.papel==='coordenador'?'':`<button class="ghost sm" data-rm="${esc(x.user_id)}">Remover</button>`}</td></tr>`).join('')}</tbody></table></div></div>
-        <div class="adm-sec"><h3>Convites ainda não usados (${c.length})</h3>${c.length?`<div class="tw"><table class="adm-tab"><thead><tr><th>Criado em</th><th>Vale até</th><th></th></tr></thead><tbody>${c.map(x=>`<tr><td>${esc(quando(x.criado_em))}</td><td>${esc(quando(x.expira_em))}</td><td><button class="ghost sm" data-rv="${esc(x.id)}">Cancelar convite</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="adm-p">Nenhum convite pendente.</p>'}</div>
+      const PAP = {admin_geral:'Administrador geral', coordenador:'Coordenação', organizacao:'Organização da feira', moderador:'Moderação', equipe:'Equipe', gestor:'Gestor de estande', atendente:'Atendente de estande'};
+      const opPap = [['equipe','Equipe: painel e relatório'],['moderador','Moderação: aprova comentários públicos'],['organizacao','Organização da feira: cadastros, mapa e moderação']].concat(papel==='admin_geral' ? [['coordenador','Coordenação: questionário e equipe']] : []);
+      box.innerHTML = `<div class="adm-sec"><h3>Convidar para a equipe</h3><p class="adm-p">Escolha o papel, gere um link e envie para a pessoa por e-mail ou WhatsApp. O link vale por 7 dias e serve para um único cadastro. Contas de estande são convidadas em Cadastros › Expositores.</p>
+          <div class="adm-acts"><label class="fld" for="a-conv-papel" style="min-width:min(100%,320px)">Papel<select id="a-conv-papel">${opPap.map(([k,t])=>`<option value="${k}">${esc(t)}</option>`).join('')}</select></label><button class="btn sm" id="a-convidar" style="align-self:end">Gerar link de convite</button></div><div class="adm-link" id="a-link" hidden><input id="a-link-txt" readonly aria-label="Link de convite"><button class="ghost" id="a-copiar">Copiar</button></div></div>
+        <div class="adm-sec"><h3>Pessoas da equipe (${m.length})</h3><div class="tw"><table class="adm-tab"><thead><tr><th>Nome</th><th>E-mail</th><th>Papel</th><th>Desde</th><th></th></tr></thead><tbody>${m.map(x=>`<tr><td>${esc(x.nome||'–')}</td><td>${esc(x.email||'')}</td><td>${esc(PAP[x.papel]||x.papel)}</td><td>${esc(new Date(x.criado_em).toLocaleDateString('pt-BR'))}</td><td>${(x.papel==='coordenador'||x.papel==='admin_geral')?'':`<button class="ghost sm" data-rm="${esc(x.user_id)}">Remover</button>`}</td></tr>`).join('')}</tbody></table></div></div>
+        <div class="adm-sec"><h3>Convites ainda não usados (${c.length})</h3>${c.length?`<div class="tw"><table class="adm-tab"><thead><tr><th>Papel</th><th>Criado em</th><th>Vale até</th><th></th></tr></thead><tbody>${c.map(x=>`<tr><td>${esc(PAP[x.papel]||x.papel||'Equipe')}${x.expositor?' · '+esc(x.expositor):''}</td><td>${esc(quando(x.criado_em))}</td><td>${esc(quando(x.expira_em))}</td><td><button class="ghost sm" data-rv="${esc(x.id)}">Cancelar convite</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="adm-p">Nenhum convite pendente.</p>'}</div>
         <p class="adm-msg" id="a-eq-msg" hidden></p>`;
       const em = (t,tipo) => { const x=$('a-eq-msg'); x.hidden=!t; x.textContent=t; x.className='adm-msg'+(tipo?' '+tipo:''); };
       $('a-convidar').onclick = async () => {
-        try{ const tok = await Base.equipe.convidar(); const url = location.origin+location.pathname+'#convite-'+tok;
+        try{ const tok = await Base.equipe.convidar($('a-conv-papel').value); const url = location.origin+location.pathname+'#convite-'+tok;
           $('a-link').hidden=false; $('a-link-txt').value=url; $('a-link-txt').select(); em('Link criado. Envie para a pessoa; ele vale por 7 dias e funciona uma única vez.','ok');
         }catch(e){ em('Não foi possível criar o convite agora. Tente de novo.','erro'); }
       };
@@ -1711,16 +1804,18 @@ const Admin = (() => {
     if (!ligado){ ligado=true; ligar(); }
     const bloq = t => { $('a-bloq').hidden=false; $('a-bloq').innerHTML = t; };
     if (!Base.kind){ bloq('Nenhuma base de respostas configurada nesta versão. A edição do questionário precisa do Supabase (site próprio) ou do claude.ai.'); return; }
-    const ok = await Base.garantirAcesso('editor'); if (meu!==run) return;
+    const ok = await Base.garantirAcesso('adm'); if (meu!==run) return;
     if (!ok){
-      bloq('A Administração é para o administrador geral, a coordenação da pesquisa e a organização da feira.' + (Base.kind==='supabase' ? ' <button class="ghost sm" id="a-outra">Entrar com outra conta</button>' : ' No claude.ai, é preciso ter permissão de edição do Artifact.'));
+      bloq('A Administração é para o administrador geral, a coordenação da pesquisa, a organização da feira e a moderação.' + (Base.kind==='supabase' ? ' <button class="ghost sm" id="a-outra">Entrar com outra conta</button>' : ' No claude.ai, é preciso ter permissão de edição do Artifact.'));
       const o=$('a-outra'); if (o) o.onclick = async () => { await Base.sair(); start(); };
       return;
     }
     papel = await Base.meuPapel(); if (meu!==run) return;
-    const coord = papel==='admin_geral' || papel==='coordenador', cadOk = Base.cad.disponivel();
-    document.querySelectorAll('.adm-tabs .chip').forEach(b=>{ const a=b.dataset.aba; b.hidden = (a==='form'||a==='equipe') ? !coord : !cadOk; });
+    const coord = papel==='admin_geral' || papel==='coordenador', cadOk = Base.cad.disponivel(), editor = Base.EDITORES.includes(papel);
+    document.querySelectorAll('.adm-tabs .chip').forEach(b=>{ const a=b.dataset.aba;
+      b.hidden = (a==='form'||a==='equipe') ? !coord : a==='moderacao' ? !(cadOk && Base.MODERADORES.includes(papel)) : !(cadOk && editor); });
     Cad.papel(papel);
+    if (papel==='moderador'){ $('a-corpo').hidden = false; aba('moderacao'); return; }
     if (!coord){ $('a-corpo').hidden = false; aba('cadastros'); return; }
     await Inst.buscar(ed).catch(()=>{}); if (meu!==run) return;
     pub = clone(Inst.publicado());
@@ -1856,7 +1951,11 @@ const Cad = (() => {
     const est = ent==='expositores' && r ? estandeDe(r.id) : null;
     if (est){
       const link = location.origin + location.pathname + '#e-' + est.id;
-      extra += `<div class="larga qr-box"><img id="cf-qr" alt="QR do estande ${esc(R.nome)}" src="${qrDataURL(link)}"><div class="fld"><span>QR do estande: abre a página do estande no celular do visitante</span><input readonly id="cf-link" value="${esc(link)}" aria-label="Link do estande"><div class="adm-acts"><button class="ghost sm" id="cf-copiar">Copiar link</button><button class="ghost sm" id="cf-baixar-qr">Baixar QR (imagem)</button><a class="ghost sm" href="${esc(link)}" target="_blank" rel="noopener">Abrir a página</a></div></div></div>`;
+      extra += `<div class="larga qr-box"><img id="cf-qr" alt="QR do estande ${esc(R.nome)}" src="${qrDataURL(link)}"><div class="fld"><span>QR do estande: abre a página do estande no celular do visitante</span><input readonly id="cf-link" value="${esc(link)}" aria-label="Link do estande"><div class="adm-acts"><button class="ghost sm" id="cf-copiar">Copiar link</button><button class="ghost sm" id="cf-baixar-qr">Baixar QR (imagem)</button><a class="ghost sm" href="${esc(link)}" target="_blank" rel="noopener">Abrir a página</a></div></div></div>
+        <div class="larga adm-sec" style="background:transparent"><b>Painel do estande</b><p class="nota">O estande vê as próprias visitas, reações, avaliações (inclusive as negativas), comentários e os pedidos de contato. Gere um link de convite para o responsável: ele cria a conta e só enxerga este estande.</p>
+          <div class="adm-acts"><button class="ghost sm" id="cf-loja-conv">Gerar convite para o estande</button><a class="ghost sm" href="#expositor-${esc(est.id)}">Ver painel do estande</a></div>
+          <div class="adm-link" id="cf-loja-link" hidden><input readonly id="cf-loja-url" aria-label="Link de convite do estande"><button class="ghost sm" id="cf-loja-copiar">Copiar</button></div>
+          <div id="cf-loja-contas" class="nota">Carregando as contas do estande…</div></div>`;
     } else if (ent==='expositores' && r) extra += '<p class="nota larga">Informe os lotes desta edição e salve para gerar o QR do estande.</p>';
     $('cd-form').innerHTML = `<div class="cad-form"><h3>${novo?'Novo registro':'Editar'} · ${esc(ENT[ent].nome)}</h3>${ENT[ent].campos.map(c=>campo(c,R)).join('')}${extra}
       <div class="acts">${!novo ? (R.excluido_em ? '<button class="ghost sm" id="cf-rest">Restaurar da lixeira</button>' : '<button class="ghost sm" id="cf-exc">Mover para a lixeira</button>') : ''}<button class="ghost sm" id="cf-cancel">Cancelar</button><button class="btn sm" id="cf-salvar">Salvar</button></div></div>`;
@@ -1864,6 +1963,22 @@ const Cad = (() => {
     if ($('cf-copiar')) $('cf-copiar').onclick = () => { const t=$('cf-link'); navigator.clipboard.writeText(t.value).then(()=>msg('Link copiado.','ok')).catch(()=>{ t.select(); }); };
     if ($('cf-baixar-qr')) $('cf-baixar-qr').onclick = () => { const a=document.createElement('a'); a.href=qrDataURL($('cf-link').value, 12); a.download='qr_'+norm(R.nome).replace(/[^a-z0-9]+/g,'_')+'.gif'; document.body.appendChild(a); a.click(); a.remove(); };
     $('cf-salvar').onclick = () => salvar(R);
+    if ($('cf-loja-conv')){
+      const contas = async () => {
+        const box=$('cf-loja-contas'); if (!box) return;
+        try{ const l = await Base.loja.contas(R.id); if (!$('cf-loja-contas')) return;
+          box.innerHTML = l.length ? 'Contas com acesso: ' + l.map(c=>`${esc(c.nome||c.email)} <span class="nota">(${esc(c.email)})</span> <button class="ghost sm" data-rmc="${esc(c.user_id)}">Remover acesso</button>`).join(' · ') : 'Nenhuma conta do estande ainda.';
+          box.querySelectorAll('[data-rmc]').forEach(b=>b.onclick=async()=>{ if (b.dataset.conf!=='1'){ b.dataset.conf='1'; b.textContent='Confirmar remoção'; return; } try{ await Base.loja.remover(b.dataset.rmc, R.id); msg('Acesso removido.','ok'); contas(); }catch(e){ msg('Não foi possível remover agora.','erro'); } });
+        }catch(e){ box.textContent = 'Não foi possível carregar as contas do estande.'; }
+      };
+      contas();
+      $('cf-loja-conv').onclick = async () => {
+        try{ const tok = await Base.loja.convidar(R.id, 'gestor'); $('cf-loja-link').hidden=false; $('cf-loja-url').value = location.origin+location.pathname+'#convite-'+tok; $('cf-loja-url').select();
+          msg('Convite criado. Envie o link ao responsável pelo estande; ele vale por 14 dias e funciona uma única vez.','ok'); }
+        catch(e){ msg('Não foi possível criar o convite agora.','erro'); }
+      };
+      $('cf-loja-copiar').onclick = () => { const t=$('cf-loja-url'); navigator.clipboard.writeText(t.value).then(()=>msg('Link copiado.','ok')).catch(()=>t.select()); };
+    }
     if ($('cf-exc')) $('cf-exc').onclick = async () => { await lixeira(R, true); };
     if ($('cf-rest')) $('cf-rest').onclick = async () => { await lixeira(R, false); };
     lista(); $('cd-form').scrollIntoView({block:'nearest'});
@@ -2308,7 +2423,140 @@ const Visit = (() => {
       navigator.clipboard.writeText(url).then(()=>msgv(L().copiado,'ok')).catch(()=>msgv(url));
     };
   }
-  return {estande};
+  return {estande, CULT};
+})();
+
+/* ================== ÁREA DO EXPOSITOR (painel do estande) ==================
+   A conta do estande vê só o próprio estande. Os números vêm prontos do banco (painel_expositor);
+   o perfil dos visitantes só aparece com 5 ou mais pessoas, e o WhatsApp só de quem pediu contato. */
+const Loja = (() => {
+  const $ = id => document.getElementById(id);
+  const corpo = () => $('lj-corpo');
+  let run = 0, dados = null, lojas = [], estId = null, hora = null;
+  const n = v => (v||0).toLocaleString('pt-BR');
+  const pct = (a,b) => b ? Math.round(100*a/b) : 0;
+  const quando = iso => { try{ return new Date(iso).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}); }catch(e){ return ''; } };
+  const MOT = {fila:'Fila', demora:'Demora', preco:'Preço', falta_produto:'Faltou produto', atendimento:'Atendimento', outro:'Outro'};
+  const origem = o => o.mun && MUN.has(o.mun) ? MUN.get(o.mun)[0]+' ('+MUN.get(o.mun)[1]+')' : o.pais && PAIS.has(o.pais) ? PAIS.get(o.pais)[2] : '–';
+  const perfilNome = k => (T.pt.o||{})[k] || k || '–';
+  const cultNome = k => (Visit.CULT[k]||[k])[0];
+  const CURTO = {pp:'Produtor pequeno', pm:'Produtor médio', pg:'Produtor grande', tec:'Técnico, agrônomo', exp:'Expositor, repres.', est:'Estudante', inv:'Investidor', vis:'Visitante'};
+  const acoes = extra => `<div class="adm-acts">${extra||''}<button class="ghost sm" id="lj-sair">Sair</button><button class="ghost sm" id="lj-voltar">Início</button></div>`;
+  function ligarTopo(){
+    if ($('lj-voltar')) $('lj-voltar').onclick = () => go('inicio');
+    if ($('lj-sair')) $('lj-sair').onclick = async () => { await Base.sair(); dados=null; go('inicio'); };
+  }
+  function aviso(txt, entrar){
+    corpo().innerHTML = `<div class="adm-top"><div><div class="k">Área do expositor</div><h1>Painel do estande</h1></div>${acoes()}</div>
+      <div class="adm-sec"><p class="adm-p">${esc(txt)}</p>${entrar?'<div><button class="btn sm" id="lj-entrar">Entrar</button></div>':''}</div>`;
+    ligarTopo(); if ($('lj-entrar')) $('lj-entrar').onclick = () => start(estId||'');
+  }
+
+  async function start(id){
+    const meu = ++run; window.scrollTo(0,0); estId = /^[0-9a-f-]{36}$/.test(id||'') ? id : null;
+    if (!Base.loja.disponivel()){ aviso('A área do expositor funciona no site oficial da plataforma.'); return; }
+    aviso('Carregando…');
+    const ok = await Base.loja.entrar(); if (meu!==run) return;
+    if (!ok){ aviso('Entre com a conta do seu estande para ver o painel. Se ainda não tem conta, peça o link de convite à organização da feira.', true); return; }
+    try{ lojas = await Base.loja.minhas(); }catch(e){ lojas = []; }
+    if (meu!==run) return;
+    if (!estId){
+      if (lojas.length===1) estId = lojas[0].estande_id;
+      else { escolher(); return; }
+    }
+    carregar(meu);
+  }
+  function escolher(){
+    if (!lojas.length){ aviso('Sua conta é da organização da feira. Para ver o painel de um estande, abra Administração › Cadastros › Expositores e use "Ver painel do estande".'); return; }
+    corpo().innerHTML = `<div class="adm-top"><div><div class="k">Área do expositor</div><h1>Escolha o estande</h1></div>${acoes()}</div>
+      <div class="adm-lista">${lojas.map(l=>`<button class="mode" data-est="${esc(l.estande_id)}"><span class="k">${esc(l.edicao)}</span><b>${esc(l.expositor)}</b></button>`).join('')}</div>`;
+    ligarTopo(); corpo().querySelectorAll('[data-est]').forEach(b=>b.onclick=()=>go('expositor-'+b.dataset.est));
+  }
+  async function carregar(meu){
+    try{ dados = await Base.loja.painel(estId); }
+    catch(e){ if (meu!==run) return; aviso(e.code==='sem_permissao' ? 'Esta conta não tem acesso a este estande.' : e.code==='estande_invalido' ? 'Estande não encontrado.' : 'Não foi possível carregar o painel. Confira a internet e tente de novo.'); return; }
+    if (meu!==run) return;
+    hora = new Date(); render();
+  }
+
+  /* ---------- peças ---------- */
+  const kpi = (v, rot) => `<div class="loja-kpi"><b>${n(v)}</b><span>${esc(rot)}</span></div>`;
+  const hbars = (linhas, total, cor) => `<div class="hbars">${linhas.map(([rot, v])=>`<div class="hbar"><span class="l" title="${esc(rot)}">${esc(rot)}</span><span class="tr"><i style="width:${total?Math.max(1,100*v/total):0}%;${cor?`background:${cor}`:''}"></i></span><span class="v">${n(v)} · ${pct(v,total)}%</span></div>`).join('')}</div>`;
+  const ordenar = obj => Object.entries(obj||{}).sort((a,b)=>b[1]-a[1]);
+
+  function satisfacao(s){
+    if (!s || !s.total) return '<p class="adm-p">Ainda não há avaliações do atendimento. Elas aparecem quando os visitantes tocam nas carinhas da página do estande.</p>';
+    const idx = Math.round(100*(s.bom - s.ruim)/s.total), mot = ordenar(s.motivos), tm = mot.reduce((a,[,v])=>a+v,0);
+    return `<div class="loja-idx"><b>${idx>0?'+':''}${idx}</b><span>índice de satisfação (% bom − % ruim) · ${n(s.total)} ${s.total===1?'avaliação':'avaliações'}</span></div>
+      <div class="hbars">${[['🙂 Bom', s.bom, 'var(--good)'], ['😐 Neutro', s.neutro, 'var(--warn)'], ['🙁 Ruim', s.ruim, 'var(--bad)']].map(([r,v,c])=>hbars([[r,v]], s.total, c)).join('')}</div>
+      ${tm ? `<span class="vis-lbl">O que deu errado, segundo quem avaliou como ruim</span>${hbars(mot.map(([k,v])=>[MOT[k]||k, v]), tm)}<p class="nota">Só o seu estande e a organização da feira veem as avaliações negativas.</p>` : ''}`;
+  }
+
+  function graficoHora(lista){
+    const box = $('lj-hora'); if (!box) return;
+    if (!lista.length){ box.innerHTML = '<p class="adm-p">Sem visitas registradas ainda.</p>'; return; }
+    const W=640, H=190, L=34, R=8, T=14, B=26, base=H-B, nb=lista.length, passo=(W-L-R)/nb, bw=Math.max(3, Math.min(28, passo*0.7));
+    const max = Math.max(...lista.map(x=>x.n)), top = max<=4 ? 4 : Math.ceil(max/4)*4, y = v => base - (base-T)*v/top;
+    const lbl = h => { const d=new Date(h); return String(d.getHours()).padStart(2,'0')+'h'; };
+    const dia = h => new Date(h).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+    const cada = Math.ceil(nb/8);
+    let g = [0, top/2, top].map(v=>`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"${v?' stroke-dasharray="2 4"':''}/><text class="eixo" x="${L-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`).join('');
+    lista.forEach((x,i)=>{
+      const cx = L + passo*i + (passo-bw)/2, yt = y(x.n), r = Math.min(4, bw/2, base-yt);
+      g += x.n>0 ? `<path d="M${cx},${base} V${yt+r} Q${cx},${yt} ${cx+r},${yt} H${cx+bw-r} Q${cx+bw},${yt} ${cx+bw},${yt+r} V${base} Z" fill="var(--glow)" data-b="${i}"/>` : '';
+      if (i%cada===0) g += `<text class="eixo" x="${cx+bw/2}" y="${H-8}" text-anchor="middle">${lbl(x.hora)}</text>`;
+      g += `<rect x="${L+passo*i}" y="${T}" width="${passo}" height="${base-T}" fill="transparent" data-i="${i}"/>`;
+    });
+    box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Visitantes por hora no estande">${g}</svg><div class="tip" hidden></div>`;
+    const tip = box.querySelector('.tip'), svg = box.querySelector('svg');
+    const mostrar = i => { const x = lista[i]; svg.querySelectorAll('[data-b]').forEach(p=>p.setAttribute('opacity', p.dataset.b===String(i)?'1':'.45'));
+      tip.hidden=false; tip.innerHTML = `<b>${n(x.n)}</b> ${x.n===1?'visitante':'visitantes'} · ${esc(dia(x.hora))} ${esc(lbl(x.hora))}`;
+      tip.style.left = ((L + passo*i + passo/2)/W*100)+'%'; tip.style.top = (y(x.n)/H*100)+'%'; };
+    const esconder = () => { tip.hidden=true; svg.querySelectorAll('[data-b]').forEach(p=>p.removeAttribute('opacity')); };
+    svg.querySelectorAll('[data-i]').forEach(r=>{ r.onpointerenter = () => mostrar(+r.dataset.i); r.onclick = () => mostrar(+r.dataset.i); });
+    svg.onpointerleave = esconder;
+  }
+
+  function csvContatos(){
+    const q = v => { let s = v==null ? '' : String(v); if (/^[=+\-@\t\r]/.test(s)) s="'"+s; return /[;"\n\r]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; };
+    const linhas = [['quando','whatsapp','perfil','culturas','origem','idioma'].join(';')].concat(dados.contatos.map(c=>[quando(c.quando), c.whatsapp, perfilNome(c.perfil), (c.culturas||[]).map(cultNome).join(' | '), origem(c), c.lang].map(q).join(';')));
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿'+linhas.join('\n')], {type:'text/csv;charset=utf-8'}));
+    a.download = 'contatos_'+norm(dados.estande.expositor).replace(/[^a-z0-9]+/g,'_')+'.csv'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
+  }
+
+  function render(){
+    const d = dados, t = d.totais, e = d.estande, lotes = (e.lotes||[]).join(', ');
+    const pf = d.perfil, b = d.benchmark;
+    const wa = w => { const dg = String(w||'').replace(/\D/g,''); return dg ? `<a href="https://wa.me/${dg}" target="_blank" rel="noopener noreferrer">${esc(w)}</a>` : '–'; };
+    corpo().innerHTML = `<div class="adm-top"><div><div class="k">Área do expositor · ${esc(e.ed)}</div><h1>${esc(e.expositor)}</h1><div class="nota">${lotes ? (e.lotes.length>1?'Lotes ':'Lote ')+esc(lotes)+' · ' : ''}atualizado às ${esc(hora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}))}</div></div>
+        ${acoes('<button class="btn sm" id="lj-atualizar">Atualizar</button>' + (lojas.length>1 ? '<button class="ghost sm" id="lj-trocar">Trocar de estande</button>' : ''))}</div>
+      <p class="adm-msg">Estes dados são só do seu estande. Avaliações negativas e comentários "só para a loja" aparecem aqui e para a organização da feira, nunca em público.</p>
+      <div class="loja-kpis">${kpi(t.visitantes,'visitantes leram o QR')}${kpi(t.curti,'curtidas')}${kpi(t.amei,'amei')}${kpi(t.seguidores,'seguidores')}${kpi(t.salvos,'produtos salvos')}${kpi(t.contatos,'pedidos de contato')}</div>
+      <div class="loja-duo">
+        <section class="adm-sec"><h3>Atendimento</h3>${satisfacao(d.satisfacao)}</section>
+        <section class="adm-sec"><h3>Visitantes por hora</h3><div class="hora" id="lj-hora"></div><p class="nota">Pessoas diferentes que leram o QR do estande, nas horas com movimento.</p>
+          ${b ? `<p class="adm-p">Seu estande: <b>${n(t.visitantes)}</b> visitantes. Média do seu segmento: <b>${String(b.media_visitantes).replace('.',',')}</b> por estande (${n(b.estandes)} estandes).</p>` : ''}</section>
+      </div>
+      <section class="adm-sec"><h3>Pedidos de contato (${n(t.contatos)})</h3>
+        <p class="adm-p">Estas pessoas pediram para o estande falar com elas. Use o número só para responder a esse pedido: ele não pode ser repassado nem usado em listas de envio (LGPD). Cada consulta a esta lista fica registrada.</p>
+        ${d.contatos.length ? `<div class="tw"><table class="adm-tab"><thead><tr><th>Quando</th><th>WhatsApp</th><th>Perfil</th><th>Interesses</th><th>Origem</th></tr></thead><tbody>${d.contatos.map(c=>`<tr><td>${esc(quando(c.quando))}</td><td>${wa(c.whatsapp)}</td><td>${esc(perfilNome(c.perfil))}</td><td>${esc((c.culturas||[]).map(cultNome).join(', ')||'–')}</td><td>${esc(origem(c))}</td></tr>`).join('')}</tbody></table></div>
+          <div><button class="ghost sm" id="lj-csv">Baixar planilha de contatos</button></div>` : '<p class="nota">Nenhum pedido de contato ainda.</p>'}</section>
+      <div class="loja-duo">
+        <section class="adm-sec"><h3>Produtos</h3>${d.produtos.length ? `<div class="tw"><table class="adm-tab"><thead><tr><th>Produto</th><th>Curtidas</th><th>Amei</th><th>Salvos</th></tr></thead><tbody>${d.produtos.map(p=>`<tr><td>${esc(p.nome)}</td><td class="tabnum">${n(p.curti)}</td><td class="tabnum">${n(p.amei)}</td><td class="tabnum">${n(p.salvos)}</td></tr>`).join('')}</tbody></table></div>` : '<p class="adm-p">Nenhum produto publicado. Envie a lista de produtos à organização da feira para aparecerem na vitrine do estande.</p>'}</section>
+        <section class="adm-sec"><h3>Quem visitou</h3>${pf ? `<span class="vis-lbl">Perfil</span>${hbars(ordenar(pf.perfil).map(([k,v])=>[CURTO[k]||perfilNome(k),v]), t.visitantes)}
+            ${ordenar(pf.culturas).length ? `<span class="vis-lbl">Interesses mais citados</span>${hbars(ordenar(pf.culturas).slice(0,6).map(([k,v])=>[cultNome(k),v]), t.visitantes)}` : ''}
+            ${(pf.origem||[]).length ? `<span class="vis-lbl">Principais origens</span>${hbars(pf.origem.slice(0,6).map(o=>[origem(o), o.n]), t.visitantes)}` : ''}
+            <p class="nota">Percentuais sobre ${n(t.visitantes)} visitantes; uma pessoa pode citar mais de um interesse.</p>`
+          : `<p class="adm-p">O perfil dos visitantes aparece quando pelo menos 5 pessoas tiverem lido o QR do estande. Antes disso ele não é mostrado, para proteger a privacidade de quem visitou.</p>`}</section>
+      </div>
+      <section class="adm-sec"><h3>Comentários (${n(d.comentarios.length)})</h3>${d.comentarios.length ? `<div class="coments">${d.comentarios.map(c=>`<div class="coment"><div class="meta">${c.publico ? `<span class="pill ${c.status==='aprovado'?'ok':c.status==='recusado'?'mut':'warn'}">público · ${c.status==='aprovado'?'publicado':c.status==='recusado'?'recusado na moderação':'em moderação'}</span>` : '<span class="pill mut">só para a loja</span>'}${c.produto?`<span>sobre ${esc(c.produto)}</span>`:''}<span>${esc(quando(c.quando))}</span></div><p>${esc(c.texto)}</p></div>`).join('')}</div>` : '<p class="adm-p">Nenhum comentário ainda.</p>'}</section>`;
+    ligarTopo();
+    $('lj-atualizar').onclick = () => carregar(run);
+    if ($('lj-trocar')) $('lj-trocar').onclick = () => { estId=null; escolher(); };
+    if ($('lj-csv')) $('lj-csv').onclick = csvContatos;
+    graficoHora(d.por_hora||[]);
+  }
+  return {start};
 })();
 
 /* ================== CONVITE (cadastro na equipe por link) ================== */
@@ -2325,10 +2573,16 @@ const Convite = (() => {
     $('c-ok').textContent = modo==='novo' ? 'Criar conta' : modo==='entrar' ? 'Entrar e aceitar' : 'Aceitar convite';
   }
   async function aceitar(t){
-    try{ await Base.equipe.aceitar(t); LS.set(PK, null); return true; }
+    try{ const r = await Base.equipe.aceitar(t); LS.set(PK, null); return r==='expositor' ? 'expositor' : 'equipe'; }
     catch(e){ LS.set(PK, null); texto(e.code==='convite_invalido' ? 'Este convite expirou, foi cancelado ou já foi usado. Peça um novo link ao coordenador.' : 'Não foi possível aceitar o convite agora. Tente de novo.'); return false; }
   }
-  async function concluir(){ if (await aceitar(tok)){ history.replaceState(null,'',location.pathname+'#painel'); texto('Pronto! Você agora faz parte da equipe. Abrindo o painel…', true); setTimeout(()=>{ current=null; route(); }, 1200); } }
+  async function concluir(){
+    const r = await aceitar(tok); if (!r) return;
+    const loja = r==='expositor';
+    history.replaceState(null,'',location.pathname+(loja ? '#expositor' : '#painel'));
+    texto(loja ? 'Pronto! Sua conta está ligada ao estande. Abrindo o painel do estande…' : 'Pronto! Você agora faz parte da equipe. Abrindo o painel…', true);
+    setTimeout(()=>{ current=null; route(); }, 1200);
+  }
   document.querySelectorAll('#c-modo .lang').forEach(b=>b.onclick=()=>{ modo=b.dataset.m; texto(''); modoUI(); });
   $('c-voltar').onclick = () => go('inicio');
   $('c-form').onsubmit = async ev => {
@@ -2352,15 +2606,15 @@ const Convite = (() => {
   async function start(t){
     tok = /^[a-f0-9]{32}$/.test(t||'') ? t : ''; texto('');
     if (Base.kind!=='supabase' || !tok){ $('c-intro').textContent = 'Este link de convite não é válido. Peça um novo link ao coordenador da pesquisa.'; modo='aceitar'; modoUI(); $('c-ok').hidden=true; return; }
-    $('c-ok').hidden=false; $('c-intro').textContent = 'Você foi convidado para a equipe de pesquisa do Tecnoshow Avalia. Crie sua conta ou entre com uma conta que já tem.';
+    $('c-ok').hidden=false; $('c-intro').textContent = 'Você recebeu um convite para a plataforma Tecnoshow Avalia (equipe da pesquisa ou do seu estande). Crie sua conta ou entre com uma conta que já tem.';
     modo = (await Base.temSessao().catch(()=>false)) ? 'aceitar' : 'novo';
-    if (modo==='aceitar') $('c-intro').textContent = 'Você já está conectado. Toque em Aceitar convite para entrar na equipe.';
+    if (modo==='aceitar') $('c-intro').textContent = 'Você já está conectado. Toque em Aceitar convite para ligar esta conta ao convite.';
     modoUI();
   }
   /* Volta da confirmação de e-mail: se havia convite pendente e agora há sessão, aceita sozinho. */
   setTimeout(async ()=>{
     const p = LS.get(PK, null); if (!p || Base.kind!=='supabase') return;
-    if (await Base.temSessao().catch(()=>false)){ if (await aceitar(p)){ const a=document.getElementById('cfg-aviso'); a.hidden=false; a.textContent='Convite aceito: você agora faz parte da equipe.'; } }
+    if (await Base.temSessao().catch(()=>false)){ const r = await aceitar(p); if (r){ const a=document.getElementById('cfg-aviso'); a.hidden=false; a.textContent = r==='expositor' ? 'Convite aceito: abra a Área do expositor para ver o painel do seu estande.' : 'Convite aceito: você agora faz parte da equipe.'; } }
   }, 1500);
   return {start};
 })();
