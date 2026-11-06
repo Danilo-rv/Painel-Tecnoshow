@@ -701,10 +701,10 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 26. Cartão de story: a logo do app já é obrigatória (seção 20). Falta decidir quem desenha a moldura, se cada estande pode ter a sua versão e se há espaço para patrocinador.
 
 **Do benchmark do app oficial**
-31. ~~Relação com o app oficial~~ → **decidida** (ver seção 20). Fica em aberto só: há como receber da Comigo, em planilha ou API, o cadastro de expositores, locais e agenda?
+31. ~~Relação com o app oficial~~ → **decidida** (seção 20); o cadastro vai para a pauta da Comigo (seção 21).
 
 **Do mapa da feira (detalhe em `docs/mapa-2026/LEIAME.md`)**
-32. Dez dúvidas para a reconstrução do mapa: planta oficial em vetor para 2027, QR por expositor ou por lote, expositores em vários lotes, leituras incertas, categorias, palcos da agenda, georreferência, banheiros e acessibilidade, Portaria I, faixa de test drives.
+32. ~~Dúvidas do mapa~~ → decididas as que dependiam de nós (32-2, 32-3, 32-7, 32-10); as demais vão para a pauta da Comigo (seção 21). Texto original: dez dúvidas para a reconstrução do mapa: planta oficial em vetor para 2027, QR por expositor ou por lote, expositores em vários lotes, leituras incertas, categorias, palcos da agenda, georreferência, banheiros e acessibilidade, Portaria I, faixa de test drives.
 
 **Da porta de entrada do visitante**
 33. ~~Porta de entrada e WhatsApp~~ → **decidida** (ver seção 20, 33a e 33b).
@@ -757,8 +757,41 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 | 33b | **Vínculo com o WhatsApp obrigatório** no perfil | 06/11/2026 | Número confirmado por código, guardado em hash, com consentimento específico. Permite recuperar o perfil, enviar a avaliação e formar o painel entre edições. Risco a tratar: visitante sem WhatsApp (alternativa por e-mail ou pelo tablet da sala de avaliação) |
 | 32-2 | **QR e página por expositor**, com o número do lote como endereço no mapa | 06/11/2026 | Funciona nos 49 lotes compartilhados |
 | 32-3 | **Expositor em vários lotes: ele escolhe** se junta tudo num estande ou separa um estande por lote | 06/11/2026 | O cadastro tem a opção "juntar lotes"; o painel mostra os números por lote quando juntos |
+| 33b-c | **Sem WhatsApp, o visitante responde a pesquisa no tablet da sala de avaliação**, sem acesso a reações e trilhas pelo celular | 06/11/2026 | A sala de avaliação continua necessária. Estimar, no piloto, quantos ficam de fora por não ter ou não querer informar o WhatsApp |
+| 32-7 | **Georreferência pela equipe do ITA em campo + pedido à Comigo** do levantamento que houver | 06/11/2026 | Coleta dos 4 cantos com o celular, conferida com imagem de satélite e com o material da Comigo |
+| 32-10 | **Test drives e helipontos como áreas com horário e QR**, ligadas ao estande da marca | 06/11/2026 | Entram no mapa, nas trilhas e no funil (procura real por demonstração) |
+| 31-r / 32 | **Dúvidas que dependem da Comigo vão numa lista única para a primeira reunião** (seção 21) | 06/11/2026 | A pauta fica pronta antes da reunião do acordo de cooperação |
 
 ---
+
+---
+
+## 21. Pauta para a primeira reunião com a Comigo
+
+**Proposta**
+1. Apresentar a ITex como camada de dados e inteligência que agrega valor ao app e à feira, **sem competir** com o app oficial (decisão 31).
+2. Propor o acordo de cooperação técnica IF Goiano–Comigo e a indicação do administrador geral da feira (decisões 6, 8 e 27).
+3. Apresentar o piloto e o cronograma; pedir uma data provável da Tecnoshow 2027 e um evento menor para o piloto (decisão 20).
+4. Apresentar o modelo de dados abertos agregados e os relatórios que a organização receberá.
+
+**Pedidos de dados**
+5. Planta oficial da Tecnoshow 2027 em arquivo vetorial (PDF, AI ou DWG), com medidas e, se houver, georreferenciada.
+6. A numeração e a distribuição dos lotes de 2026 se repetem em 2027?
+7. Cadastro de expositores (nome, lote, categoria, contato do responsável) em planilha ou por API do app oficial.
+8. Agenda de palestras e eventos com o palco de cada um, em planilha ou API.
+9. Lista de locais: banheiros, pontos de água, rampas e rotas de acessibilidade, saídas de emergência, ambulatório.
+
+**Confirmações sobre o mapa de 2026**
+10. Conferir os nomes de leitura incerta em `docs/mapa-2026/lotes.csv` (lotes 13, 14, 19, 21, 35, 48, 49, 54 a 57, 61 a 64, 67, 72, 73, 76 a 78).
+11. Revisar as categorias do app oficial (exemplo: Adama em "Sementes").
+12. A portaria principal, junto à Administração, é a "Portaria I"?
+13. Os test drives e helipontos mudam de lugar a cada edição?
+
+**Para o piloto**
+14. Lista de 20 a 40 expositores parceiros, de segmentos variados, para o piloto.
+15. Interesse da Comigo e dos bancos parceiros na simulação de crédito da 2ª fase (decisão 12).
+16. Patrocinadores e órgãos públicos interessados em lançar trilhas com brinde (exemplo: Prefeitura de Rio Verde).
+
 
 ## Histórico
 
@@ -783,3 +816,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 06/11/2026: vitrine do expositor com preço, pagamento e financiamento opcionais (seção 18-D e seção 16.5 do plano).
 - 06/11/2026: perfil do visitante como porta de entrada da interatividade (seção 18-E e seção 16.6 do plano); decisão 33.
 - 06/11/2026: decisões 33a, 33b, 32-2 e 32-3 tomadas.
+- 06/11/2026: decisões 33b-c, 32-7, 32-10 e 31-r/32 tomadas; pauta para a reunião com a Comigo (seção 21). Todas as decisões em aberto foram respondidas.
