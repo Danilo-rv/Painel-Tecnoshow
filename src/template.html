@@ -380,6 +380,13 @@ details.vis-card summary{cursor:pointer;font-weight:600}
 .ap-cod b{font-family:var(--f-mono);font-size:2.6rem;letter-spacing:.2em;color:var(--glow2)}
 .cfg-hab{display:grid;gap:6px;font-size:.8rem;color:var(--muted)} .cfg-hab .lin{display:flex;gap:8px;flex-wrap:wrap}
 .cfg-hab input{width:9ch;font-family:var(--f-mono);letter-spacing:.2em}
+.chat{display:grid;gap:10px;padding-bottom:40px}
+.bal{max-width:88%;padding:12px 14px;border-radius:16px 16px 16px 4px;background:var(--panel);border:1px solid var(--line);line-height:1.45;font-size:1rem}
+.bal.eu{justify-self:end;background:rgba(95,208,255,.16);border-color:var(--glow);border-radius:16px 16px 4px 16px}
+.chat-resp{display:grid;gap:10px}
+.chat-rate{display:grid;gap:6px} .chat-rate span{font-size:.9rem;color:var(--muted)} .chat-rate div{display:flex;gap:6px;flex-wrap:wrap}
+.chat-rate .vis-chip,.chat-nps .vis-chip{min-width:44px;justify-content:center;text-align:center}
+.chat-nps{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -1027,6 +1034,8 @@ const Base = (() => {
     perguntar: (token, id, tx) => rpc('perguntar', {p_token:token, p_agenda:id, p_texto:tx}),
     votar: (token, q) => rpc('votar_pergunta', {p_token:token, p_pergunta:q}),
     agora: ed => rpc('agora', {p_ed:ed}),
+    avaliacaoEstado: token => rpc('avaliacao_estado', {p_token:token}),
+    responderAvaliacao: (token, r) => rpc('responder_avaliacao', {p_token:token, p_resp:r}),
     agirCidade: (token, id, acao, valor) => rpc('interagir_cidade', {p_token:token, p_estab:id, p_acao:acao, p_valor:valor||null}),
     hospede: (token, id, dados) => rpc('pesquisa_hospede', {p_token:token, p_estab:id, p_dados:dados}),
     publicar: (token, tipo, id, texto, foto) => rpc('publicar_mural', {p_token:token, p_alvo_tipo:tipo, p_alvo_id:id, p_texto:texto, p_foto:foto||null}),
@@ -1069,6 +1078,7 @@ const Base = (() => {
     infoUnica: ed => rpc('info_chave_unica', {p_ed:ed})
   };
   const dadosAbertos = ed => rpc('dados_abertos', {p_ed:ed});
+  const limparEdicao = (ed, conf) => rpc('limpar_edicao', {p_ed:ed, p_confirmacao:conf||null});
   /* Moderação dos comentários públicos */
   const mod = {
     listar: (ed, st) => rpc('listar_moderacao', {p_ed:ed, p_status:st||'pendente'}),
@@ -1099,7 +1109,7 @@ const Base = (() => {
   const rpcPublica = (nome, args) => kind==='supabase' ? rpc(nome, args) : Promise.reject(erro('sem_base'));
   const saida = { definir: (ed, cod) => rpc('definir_codigo_saida', {p_ed:ed, p_codigo:cod}), info: ed => rpc('info_codigo_saida', {p_ed:ed}) };
   return {kind, rpcPublica, saida, enviar, ler, acompanhar, precisaLogin, garantirAcesso, sair, entrar, cadastrar, temSessao, souCoordenador, meuPapel,
-          instrumentoAtual, publicarInstrumento, historico, equipe, cad, vis, mod, mural, loja, agenda, parceiro, aparelhos, dadosAbertos, EDITORES, MODERADORES};
+          instrumentoAtual, publicarInstrumento, historico, equipe, cad, vis, mod, mural, loja, agenda, parceiro, aparelhos, dadosAbertos, limparEdicao, EDITORES, MODERADORES};
 })();
 
 /* Questionário em uso neste aparelho: a última versão publicada da edição, guardada para uso offline. */
@@ -1219,7 +1229,7 @@ function route(){
   if (/^convite-/.test(base)) base='convite';
   if (/^e-[0-9a-f-]{36}$/.test(base)) base='visitante';
   if (/^expositor(-[0-9a-f-]{36})?$/.test(base)) base='expositor';
-  if (/^p-[0-9a-f-]{36}(-[0-9a-f]{10})?$/.test(base) || /^[tc]-[0-9a-f-]{36}$/.test(base) || base==='trilhas' || base==='agora') base='visitante';
+  if (/^p-[0-9a-f-]{36}(-[0-9a-f]{10})?$/.test(base) || /^[tc]-[0-9a-f-]{36}$/.test(base) || base==='trilhas' || base==='agora' || base==='avaliar') base='visitante';
   if (/^mediar-[0-9a-f-]{36}$/.test(base)) base='mediar';
   if (/^telao-[0-9a-f-]{36}$/.test(base)) base='telao';
   let v = VIEWS.includes(base) ? base : 'inicio';
@@ -1238,6 +1248,7 @@ function route(){
     else if (h.startsWith('t-')) Visit.trilha(h.slice(2));
     else if (h.startsWith('c-')) Visit.cidade(h.slice(2));
     else if (h==='agora') Visit.agora();
+    else if (h==='avaliar') Visit.avaliar();
     else Visit.trilhas();
   }
   if (v==='telao') Telao.start(h.slice(6));
@@ -2059,6 +2070,8 @@ const Admin = (() => {
         <div class="adm-sec"><h3>Código de saída dos tablets</h3><p class="adm-p">Os tablets ficam travados na coleta. Para sair, a equipe toca e segura o logotipo por 3 segundos e digita este código (4 a 6 dígitos). Troque o código a cada edição. Os tablets recebem o código novo na próxima vez que estiverem com internet.</p>
           <p class="nota" id="a-saida-st">Consultando…</p>
           <div class="adm-acts"><label class="fld" for="a-saida-cod">Novo código<input id="a-saida-cod" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password"></label><button class="btn sm" id="a-saida-ok" style="align-self:end">Salvar código</button></div></div>
+        ${papel==='admin_geral' ? `<div class="adm-sec" style="border-color:var(--bad)"><h3>Limpar dados de teste (antes do piloto)</h3><p class="adm-p">Apaga respostas, visitantes e tudo o que eles geraram nesta edição (visitas, avaliações, comentários, mural, presenças, cupons, cidade) e os tablets habilitados. Cadastros, equipe, questionário e auditoria ficam. Não dá para desfazer.</p>
+          <div class="adm-acts"><button class="ghost sm" id="a-lp-ver">Ver o que seria apagado</button></div><div id="a-lp-res"></div></div>` : ''}
         <p class="adm-msg" id="a-eq-msg" hidden></p>`;
       const em = (t,tipo) => { const x=$('a-eq-msg'); x.hidden=!t; x.textContent=t; x.className='adm-msg'+(tipo?' '+tipo:''); };
       $('a-convidar').onclick = async () => {
@@ -2073,6 +2086,16 @@ const Admin = (() => {
         if (!/^[0-9]{4,6}$/.test(c)){ em('O código precisa ter de 4 a 6 dígitos.','erro'); return; }
         try{ saidaSt(await Base.saida.definir(ed, c)); $('a-saida-cod').value=''; em('Código de saída salvo. Avise a equipe dos tablets.','ok'); }
         catch(e){ em('Não foi possível salvar o código agora.','erro'); }
+      };
+      if ($('a-lp-ver')) $('a-lp-ver').onclick = async () => {
+        const box = $('a-lp-res'), NOMES = {respostas_da_pesquisa:'respostas da pesquisa', visitantes:'visitantes', visitas_a_estandes:'visitas a estandes', comentarios:'comentários', publicacoes_do_mural:'publicações do mural', presencas:'presenças em palestras', cupons:'cupons de trilhas', checkins_na_cidade:'check-ins na cidade', ocupacao_hoteleira:'registros de ocupação hoteleira', tablets_habilitados:'tablets habilitados'};
+        try{ const r = await Base.limparEdicao(ed);
+          box.innerHTML = `<ul class="adm-p">${Object.entries(r.apagaria).map(([k,v])=>`<li>${v.toLocaleString('pt-BR')} ${esc(NOMES[k]||k)}</li>`).join('')}</ul>
+            <label class="fld" for="a-lp-conf">Para confirmar, digite o código da edição: <b>${esc(ed)}</b><input id="a-lp-conf" autocomplete="off" spellcheck="false"></label>
+            <div class="adm-acts"><button class="btn sm" id="a-lp-ok" style="background:var(--bad)" disabled>Apagar definitivamente</button></div>`;
+          $('a-lp-conf').oninput = () => { $('a-lp-ok').disabled = $('a-lp-conf').value.trim()!==ed; };
+          $('a-lp-ok').onclick = async () => { try{ await Base.limparEdicao(ed, $('a-lp-conf').value.trim()); box.innerHTML = '<p class="adm-msg ok">Dados de teste apagados. A edição está pronta para o piloto.</p>'; }catch(e){ em('Não foi possível apagar agora.','erro'); } };
+        }catch(e){ em('Não foi possível consultar agora.','erro'); }
       };
       $('a-copiar').onclick = () => { const t=$('a-link-txt'); navigator.clipboard.writeText(t.value).then(()=>em('Link copiado.','ok')).catch(()=>{ t.select(); em('Selecionei o link: copie com Ctrl+C (ou toque e segure).','aviso'); }); };
       box.querySelectorAll('[data-rm]').forEach(b=>b.onclick=async()=>{ if (b.dataset.conf!=='1'){ b.dataset.conf='1'; b.textContent='Confirmar remoção'; return; } try{ await Base.equipe.remover(b.dataset.rm); equipe(); }catch(e){ em('Não foi possível remover agora.','erro'); } });
@@ -2112,6 +2135,19 @@ const Admin = (() => {
    Tudo o que depende da organização da feira é editável aqui. Os registros se ligam por id:
    renomear uma categoria, mudar um expositor de lote ou trocar o palco de uma palestra
    aparece em todas as telas. Excluir leva à lixeira (excluido_em); o banco audita cada mudança. */
+/* Marca usada em toda imagem compartilhada e no telão. PROVISÓRIA: quando a logo for definida,
+   troque só este objeto (por exemplo, desenhando a imagem da logo com g.drawImage). */
+const MARCA = {
+  nome: ['TECNOSHOW', 'AO VIVO'],
+  desenhar(g, cx, cy, k=1){
+    g.save(); g.font = `800 ${Math.round(56*k)}px Saira, "Arial Narrow", Arial, sans-serif`; g.textAlign = 'left'; g.textBaseline = 'middle';
+    const a = this.nome[0]+' ', b = this.nome[1], wa = g.measureText(a).width, wb = g.measureText(b).width, x0 = cx-(wa+wb)/2;
+    g.fillStyle = 'rgba(4,11,31,.85)'; const pad = 28*k, h = 92*k; g.beginPath(); g.roundRect ? g.roundRect(x0-pad, cy-h/2, wa+wb+2*pad, h, h/2) : g.rect(x0-pad, cy-h/2, wa+wb+2*pad, h); g.fill();
+    g.strokeStyle = '#1d3b7a'; g.lineWidth = 3; g.stroke();
+    g.fillStyle = '#e7f1ff'; g.fillText(a, x0, cy); g.fillStyle = '#5fd0ff'; g.fillText(b, x0+wa, cy); g.restore();
+  }
+};
+
 /* ================== TECNOSHOW NA CIDADE: rótulos comuns ================== */
 const CID = {
   tipo: {bar:'Bar', restaurante:'Restaurante', hotel:'Hotel', loja:'Loja', servico:'Serviço', turismo:'Turismo', outro:'Outro'},
@@ -2633,6 +2669,7 @@ const Visit = (() => {
         semRede:'Sem internet agora. Abra este QR de novo quando o sinal voltar.', naFila:'Sem internet: guardamos aqui e enviamos sozinhos quando o sinal voltar.', pendentes:'ações esperando internet',
         trilhas:'Trilhas', etapas:'etapas', premio:'Prêmio', oferecido:'Oferecido por', verTodas:'Ver todas as trilhas', ganhou:'Você completou a trilha!', mostreCupom:'Mostre este código no estande {x} para retirar o prêmio.', mostreCupomCid:'Mostre este código em {x} para retirar o prêmio.', mostreCupomOrg:'Mostre este código à organização da feira para retirar o prêmio.', retirado:'Prêmio já retirado.', esgotada:'Os prêmios desta trilha acabaram.', encerrada:'Esta trilha já foi encerrada.', prazo:'Até', regulamento:'Regulamento', semTrilhas:'Nenhuma trilha aberta agora.', semTrilha:'Trilha não encontrada ou encerrada.', comecar:'Leia o QR de um estande ou de uma palestra para começar.', palestra:'Palestra', estande:'Estande', presencaOk:'Presença registrada ✓', presencaSem:'Para registrar presença, leia o QR do telão durante a palestra.', foraHorario:'A presença só pode ser registrada durante a palestra.', expirado:'Este QR já mudou. Leia de novo o QR do telão.', avalPal:'O que achou da palestra?', comentPal:'Comentário para a organização (não é publicado)',
         publicar:'Publicar no telão', mensagem:'Mensagem (até 140 caracteres)', foto:'Adicionar foto', publicarAj:'Sua publicação passa pela moderação antes de aparecer no telão da feira, com a marca da plataforma. Não publique fotos de outras pessoas sem a permissão delas.', publicado:'Enviado! Sua publicação aparece no telão depois da moderação.', muitas:'Você já publicou muitas vezes na última hora. Tente mais tarde.', fotoErro:'Não foi possível ler esta foto. Tente outra.', fotoOuTexto:'Escreva uma mensagem ou escolha uma foto.',
+        av_semPerfil:'Para avaliar a feira, leia antes o QR de um estande ou de uma palestra neste celular.', av_jaRespondeu:'Você já avaliou esta edição. Obrigado!', av_ola:'Olá! 👋', av_intro:'São {n} perguntas rápidas sobre a feira. Toque nas respostas; dá para pular as opcionais.', av_pular:'Pular', av_pronto:'Pronto', av_pulei:'(pulei)', av_enviando:'Enviando…', av_obrigado:'Obrigado! Sua avaliação foi registrada.', av_km:'Você percorreu {km} km até a Tecnoshow.', av_semRede:'Sem internet agora. Suas respostas ficaram guardadas neste celular.', av_tentar:'Tentar de novo', story:'Story', storyEstive:'Estive no estande', storyAvaliei:'Eu avaliei a', storyTrilha:'Completei a trilha', avaliarBtn:'Avalie a Tecnoshow', avaliarSub:'Cerca de 2 minutos, em formato de conversa.',
         perguntas:'Perguntas ao vivo', suaPergunta:'Sua pergunta para o palestrante', perguntar:'Enviar pergunta', aguardando:'Aguardando a mediação', respondida:'Respondida', votar:'Votar nesta pergunta', semPerguntas:'Nenhuma pergunta no ar ainda.', perguntaOk:'Pergunta enviada. Ela aparece para todos depois da mediação.', perguntaLimite:'Você já enviou 3 perguntas nesta palestra.', agoraTit:'Acontecendo agora', agoraPal:'Palestras agora', nadaAgora:'Nenhuma palestra neste momento.', aSeguir:'A seguir', emAlta:'Estandes em alta', pessoasAgora:'pessoas na última meia hora', assuntos:'Assuntos em alta',
         cid:{parceiro:'Parceiro Tecnoshow', obrigado:'Check-in feito. Obrigado por visitar!', comoFoi:'Como foi?', naFeira:'Gostaria de ver este lugar na Tecnoshow?', naFeiraAj:'Sua resposta ajuda a feira a convidar novos expositores.', sim:'Sim', nao:'Não', pesquisa:'Você está hospedado aqui?', pesquisaAj:'Leva 20 segundos e ajuda a cidade a se preparar para a próxima feira. As respostas são anônimas.', noites:'Quantas noites?', pessoas:'Quantas pessoas no quarto?', diaria:'Valor da diária', antecedencia:'Com que antecedência reservou?', motivo:'Motivo da viagem', satisf:'Como está a estadia?', falta:'Responda as cinco primeiras perguntas.', hospedeOk:'Resposta registrada. Obrigado!', refazer:'Corrigir minha resposta', tipo:{bar:'Bar', restaurante:'Restaurante', hotel:'Hotel', loja:'Loja', servico:'Serviço', turismo:'Turismo', outro:'Parceiro'}, diarias:{d1:'Até R$ 150', d2:'R$ 151–250', d3:'R$ 251–400', d4:'R$ 401–600', d5:'Mais de R$ 600'}, antecedencias:{a0:'Menos de 1 semana', a1:'Até 1 mês', a2:'1 a 3 meses', a3:'Mais de 3 meses'}, motivos:{feira:'Tecnoshow', negocios:'Negócios', turismo:'Turismo', familia:'Família', outro:'Outro'}}},
     en:{entrar:'Before you interact, tell us a little about yourself', entrarSub:'It takes about 40 seconds and covers the whole fair. We do not ask for your name or ID.',
@@ -2650,6 +2687,7 @@ const Visit = (() => {
         semRede:'No internet right now. Open this QR code again when you have signal.', naFila:'No internet: saved on this phone and sent automatically when the signal returns.', pendentes:'actions waiting for internet',
         trilhas:'Trails', etapas:'steps', premio:'Prize', oferecido:'Offered by', verTodas:'See all trails', ganhou:'You completed the trail!', mostreCupom:'Show this code at the {x} booth to collect your prize.', mostreCupomCid:'Show this code at {x} to collect your prize.', mostreCupomOrg:'Show this code to the fair staff to collect your prize.', retirado:'Prize already collected.', esgotada:'The prizes for this trail have run out.', encerrada:'This trail has ended.', prazo:'Until', regulamento:'Rules', semTrilhas:'No open trails right now.', semTrilha:'Trail not found or ended.', comecar:'Scan the QR code of a booth or a talk to start.', palestra:'Talk', estande:'Booth', presencaOk:'Attendance recorded ✓', presencaSem:'To record attendance, scan the QR code on the screen during the talk.', foraHorario:'Attendance can only be recorded during the talk.', expirado:'This QR code has changed. Scan the screen again.', avalPal:'How was the talk?', comentPal:'Comment for the organizers (not published)',
         publicar:'Post to the big screen', mensagem:'Message (up to 140 characters)', foto:'Add photo', publicarAj:'Your post is reviewed before it appears on the fair screen, with the platform logo. Do not post photos of other people without their permission.', publicado:'Sent! Your post will appear on the screen after review.', muitas:'You have posted many times in the last hour. Try again later.', fotoErro:'This photo could not be read. Try another one.', fotoOuTexto:'Write a message or choose a photo.',
+        av_semPerfil:'To rate the fair, first scan the QR code of a booth or talk on this phone.', av_jaRespondeu:'You have already rated this edition. Thank you!', av_ola:'Hi! 👋', av_intro:'{n} quick questions about the fair. Tap your answers; optional ones can be skipped.', av_pular:'Skip', av_pronto:'Done', av_pulei:'(skipped)', av_enviando:'Sending…', av_obrigado:'Thank you! Your rating was recorded.', av_km:'You traveled {km} km to Tecnoshow.', av_semRede:'No internet right now. Your answers are saved on this phone.', av_tentar:'Try again', story:'Story', storyEstive:'I visited', storyAvaliei:'I rated', storyTrilha:'I completed the trail', avaliarBtn:'Rate Tecnoshow', avaliarSub:'About 2 minutes, like a chat.',
         perguntas:'Live questions', suaPergunta:'Your question for the speaker', perguntar:'Send question', aguardando:'Waiting for review', respondida:'Answered', votar:'Vote for this question', semPerguntas:'No questions on screen yet.', perguntaOk:'Question sent. Everyone sees it after review.', perguntaLimite:'You have already sent 3 questions in this talk.', agoraTit:'Happening now', agoraPal:'Talks now', nadaAgora:'No talks right now.', aSeguir:'Coming up', emAlta:'Trending booths', pessoasAgora:'people in the last half hour', assuntos:'Trending topics',
         cid:{parceiro:'Tecnoshow partner', obrigado:'Checked in. Thanks for visiting!', comoFoi:'How was it?', naFeira:'Would you like to see this place at Tecnoshow?', naFeiraAj:'Your answer helps the fair invite new exhibitors.', sim:'Yes', nao:'No', pesquisa:'Are you staying here?', pesquisaAj:'It takes 20 seconds and helps the city prepare for the next fair. Answers are anonymous.', noites:'How many nights?', pessoas:'How many people in the room?', diaria:'Nightly rate', antecedencia:'How far in advance did you book?', motivo:'Reason for the trip', satisf:'How is your stay?', falta:'Please answer the first five questions.', hospedeOk:'Answer recorded. Thank you!', refazer:'Change my answer', tipo:{bar:'Bar', restaurante:'Restaurant', hotel:'Hotel', loja:'Shop', servico:'Service', turismo:'Tourism', outro:'Partner'}, diarias:{d1:'Up to R$ 150', d2:'R$ 151–250', d3:'R$ 251–400', d4:'R$ 401–600', d5:'Over R$ 600'}, antecedencias:{a0:'Less than 1 week', a1:'Up to 1 month', a2:'1 to 3 months', a3:'Over 3 months'}, motivos:{feira:'Tecnoshow', negocios:'Business', turismo:'Tourism', familia:'Family', outro:'Other'}}},
     es:{entrar:'Antes de interactuar, cuéntenos un poco sobre usted', entrarSub:'Toma unos 40 segundos y vale para toda la feria. No pedimos nombre ni documento.',
@@ -2667,6 +2705,7 @@ const Visit = (() => {
         semRede:'Sin internet ahora. Abra este código QR de nuevo cuando vuelva la señal.', naFila:'Sin internet: lo guardamos aquí y lo enviamos solo cuando vuelva la señal.', pendentes:'acciones esperando internet',
         trilhas:'Rutas', etapas:'etapas', premio:'Premio', oferecido:'Ofrecido por', verTodas:'Ver todas las rutas', ganhou:'¡Completó la ruta!', mostreCupom:'Muestre este código en el stand {x} para retirar el premio.', mostreCupomCid:'Muestre este código en {x} para retirar el premio.', mostreCupomOrg:'Muestre este código a la organización de la feria para retirar el premio.', retirado:'Premio ya retirado.', esgotada:'Se agotaron los premios de esta ruta.', encerrada:'Esta ruta ya terminó.', prazo:'Hasta', regulamento:'Reglamento', semTrilhas:'No hay rutas abiertas ahora.', semTrilha:'Ruta no encontrada o terminada.', comecar:'Lea el código QR de un stand o de una charla para empezar.', palestra:'Charla', estande:'Stand', presencaOk:'Asistencia registrada ✓', presencaSem:'Para registrar asistencia, lea el código QR de la pantalla durante la charla.', foraHorario:'La asistencia solo se registra durante la charla.', expirado:'Este código QR ya cambió. Léalo de nuevo en la pantalla.', avalPal:'¿Qué le pareció la charla?', comentPal:'Comentario para la organización (no se publica)',
         publicar:'Publicar en la pantalla', mensagem:'Mensaje (hasta 140 caracteres)', foto:'Agregar foto', publicarAj:'Su publicación pasa por moderación antes de aparecer en la pantalla de la feria, con la marca de la plataforma. No publique fotos de otras personas sin su permiso.', publicado:'¡Enviado! Su publicación aparece en la pantalla después de la moderación.', muitas:'Ya publicó muchas veces en la última hora. Intente más tarde.', fotoErro:'No fue posible leer esta foto. Pruebe otra.', fotoOuTexto:'Escriba un mensaje o elija una foto.',
+        av_semPerfil:'Para evaluar la feria, lea antes el código QR de un stand o de una charla en este celular.', av_jaRespondeu:'Usted ya evaluó esta edición. ¡Gracias!', av_ola:'¡Hola! 👋', av_intro:'Son {n} preguntas rápidas sobre la feria. Toque sus respuestas; las opcionales se pueden omitir.', av_pular:'Omitir', av_pronto:'Listo', av_pulei:'(omití)', av_enviando:'Enviando…', av_obrigado:'¡Gracias! Su evaluación fue registrada.', av_km:'Usted recorrió {km} km hasta la Tecnoshow.', av_semRede:'Sin internet ahora. Sus respuestas quedaron guardadas en este celular.', av_tentar:'Intentar de nuevo', story:'Story', storyEstive:'Estuve en el stand', storyAvaliei:'Yo evalué la', storyTrilha:'Completé la ruta', avaliarBtn:'Evalúe la Tecnoshow', avaliarSub:'Unos 2 minutos, como una conversación.',
         perguntas:'Preguntas en vivo', suaPergunta:'Su pregunta para el ponente', perguntar:'Enviar pregunta', aguardando:'Esperando la moderación', respondida:'Respondida', votar:'Votar esta pregunta', semPerguntas:'Aún no hay preguntas en pantalla.', perguntaOk:'Pregunta enviada. Todos la verán después de la moderación.', perguntaLimite:'Ya envió 3 preguntas en esta charla.', agoraTit:'Pasando ahora', agoraPal:'Charlas ahora', nadaAgora:'No hay charlas en este momento.', aSeguir:'A continuación', emAlta:'Stands en tendencia', pessoasAgora:'personas en la última media hora', assuntos:'Temas en tendencia',
         cid:{parceiro:'Socio Tecnoshow', obrigado:'Check-in hecho. ¡Gracias por visitar!', comoFoi:'¿Cómo le fue?', naFeira:'¿Le gustaría ver este lugar en la Tecnoshow?', naFeiraAj:'Su respuesta ayuda a la feria a invitar nuevos expositores.', sim:'Sí', nao:'No', pesquisa:'¿Está hospedado aquí?', pesquisaAj:'Toma 20 segundos y ayuda a la ciudad a prepararse para la próxima feria. Las respuestas son anónimas.', noites:'¿Cuántas noches?', pessoas:'¿Cuántas personas en la habitación?', diaria:'Valor de la noche', antecedencia:'¿Con cuánta anticipación reservó?', motivo:'Motivo del viaje', satisf:'¿Cómo está la estadía?', falta:'Responda las cinco primeras preguntas.', hospedeOk:'Respuesta registrada. ¡Gracias!', refazer:'Corregir mi respuesta', tipo:{bar:'Bar', restaurante:'Restaurante', hotel:'Hotel', loja:'Tienda', servico:'Servicio', turismo:'Turismo', outro:'Socio'}, diarias:{d1:'Hasta R$ 150', d2:'R$ 151–250', d3:'R$ 251–400', d4:'R$ 401–600', d5:'Más de R$ 600'}, antecedencias:{a0:'Menos de 1 semana', a1:'Hasta 1 mes', a2:'1 a 3 meses', a3:'Más de 3 meses'}, motivos:{feira:'Tecnoshow', negocios:'Negocios', turismo:'Turismo', familia:'Familia', outro:'Otro'}}}
   };
@@ -2829,7 +2868,7 @@ const Visit = (() => {
       <div class="vis-card" id="vp-trilhas" hidden></div>
       ${s.menor ? '' : '<div class="vis-card" id="vp-mural"></div>'}
       <a class="ghost" href="#agora" style="justify-self:start">⚡ ${esc(t.agoraTit)}</a>
-      <button class="ghost" id="vp-share">${esc(t.compartilhar)}</button>
+      <div class="vis-chips"><button class="ghost" id="vp-share">${esc(t.compartilhar)}</button><button class="ghost" id="vp-story">📲 ${esc(t.story)}</button></div>
       ${fila().length ? `<p class="vis-msg">⏳ ${fila().length} ${esc(t.pendentes)}</p>` : ''}
       <p class="vis-msg" id="vp-msg" hidden></p>`;
     ligarIdioma();
@@ -2854,6 +2893,7 @@ const Visit = (() => {
     $('vp-enviar').onclick = async () => { const tx=$('vp-coment').value.trim(); if (!tx) return; if (await agir('comentario', {texto:tx, publico:pub})){ $('vp-coment').value=''; msgv(L().enviado,'ok'); } };
     formMural('estande', e.id, tok);
     if ($('vp-contato')) $('vp-contato').onclick = async () => { if (await agir('contato')){ pagina(); msgv(L().contatoOk,'ok'); } };
+    $('vp-story').onclick = () => cardStory({topo:L().storyEstive, titulo:e.expositor, sub:lotes ? L().lote+' '+lotes+' · '+cfg.edicao : cfg.edicao, url:location.origin+location.pathname+'#e-'+e.id});
     $('vp-share').onclick = async () => {
       const url = location.origin + location.pathname + '#e-' + e.id;
       try{ if (navigator.share){ await navigator.share({title:e.expositor, text:e.expositor+' · Tecnoshow', url}); return; } }catch(err){ return; }
@@ -2906,8 +2946,10 @@ const Visit = (() => {
       <div class="vis-card"><span class="vis-lbl">${esc(t.premio)}</span><b>${esc(tr.premio)}</b>${doador?`<span class="sub">${esc(t.oferecido)} ${esc(doador)}</span>`:''}${tr.prazo?`<span class="sub">${esc(t.prazo)} ${esc(fmtHora(tr.prazo))}</span>`:''}
         <span class="vis-lbl">${tr.feitas}/${tr.total} ${esc(t.etapas)}</span>${progresso(tr)}<ol class="vis-etapas">${(tr.etapas||[]).map(etapa).join('')}</ol></div>
       ${tr.regulamento?`<details class="vis-card"><summary>${esc(t.regulamento)}</summary><p class="sub" style="white-space:pre-line">${esc(tr.regulamento)}</p></details>`:''}
+      ${tr.cupom ? `<button class="ghost" id="vt-story" style="justify-self:start">📲 ${esc(t.story)}</button>` : ''}
       <a class="ghost" href="#trilhas" style="justify-self:start">${esc(t.verTodas)}</a>`;
     ligarIdioma();
+    if ($('vt-story')) $('vt-story').onclick = () => cardStory({topo:L().storyTrilha, titulo:tr.titulo, sub:cfg.edicao, url:location.origin+location.pathname+'#trilhas'});
   }
 
   /* ---------- publicar no telão social ----------
@@ -3044,6 +3086,7 @@ const Visit = (() => {
     const hora = iso => new Date(iso).toLocaleTimeString(lang==='en'?'en-US':'pt-BR',{hour:'2-digit',minute:'2-digit'});
     const pal = p => `<a class="vis-trilha" href="#p-${esc(p.id)}"><b>${esc(p.titulo)}</b><span class="sub">${esc([hora(p.inicio)+(p.fim?'–'+hora(p.fim):''), p.local, p.palestrante].filter(Boolean).join(' · '))}</span></a>`;
     corpo().innerHTML = topo() + `<h1>⚡ ${esc(t.agoraTit)}</h1>
+      <a class="vis-trilha" href="#avaliar" style="border-color:var(--gold)"><b>📝 ${esc(t.avaliarBtn)}</b><span class="sub">${esc(t.avaliarSub)}</span></a>
       <div class="vis-card"><h2>🎤 ${esc(t.agoraPal)}</h2>${a.agora.length ? a.agora.map(pal).join('') : `<p class="sub">${esc(t.nadaAgora)}</p>`}</div>
       ${a.a_seguir.length ? `<div class="vis-card"><h2>⏭️ ${esc(t.aSeguir)}</h2>${a.a_seguir.map(pal).join('')}</div>` : ''}
       ${a.em_alta.length ? `<div class="vis-card"><h2>🔥 ${esc(t.emAlta)}</h2>${a.em_alta.map(x=>`<a class="vis-trilha" href="#e-${esc(x.estande)}"><b>${esc(x.nome)}</b><span class="sub">${x.lotes&&x.lotes.length?esc(t.lote)+' '+esc(x.lotes.join(', '))+' · ':''}${x.n} ${esc(t.pessoasAgora)}</span></a>`).join('')}</div>` : ''}
@@ -3051,6 +3094,99 @@ const Visit = (() => {
       ${a.trilhas.length ? `<div class="vis-card"><h2>🏁 ${esc(t.trilhas)}</h2>${a.trilhas.map(x=>`<a class="vis-trilha" href="#t-${esc(x.id)}"><b>${esc(x.titulo)}</b><span class="sub">${x.etapas} ${esc(t.etapas)} · ${esc(t.premio)}: ${esc(x.premio)}</span></a>`).join('')}</div>` : ''}`;
     ligarIdioma();
     setTimeout(()=>{ if (atual===agora && location.hash==='#agora') agora(true); }, 60000);
+  }
+
+  /* ---------- avaliação final em formato de conversa (#avaliar, decisão 33a) ----------
+     Sem menus nem login: o link irá por WhatsApp. Usa o questionário publicado e pula o que o perfil já respondeu. */
+  async function avaliar(){
+    window.scrollTo(0,0); atual = avaliar;
+    const ed = LS.get('tsa_vis_ed', null), tok = ed && tokenDe(ed);
+    if (!Base.vis.disponivel()){ aviso(L().indisponivel); return; }
+    if (!tok){ aviso(L().av_semPerfil); return; }
+    corpo().innerHTML = topo() + `<p class="sub">${esc(L().carregando)}</p>`;
+    let st; try{ st = await Base.vis.avaliacaoEstado(tok); }catch(e){ aviso(e.code==='rede' ? L().semRede : L().erro); return; }
+    if (st.respondeu){ aviso(L().av_jaRespondeu); return; }
+    try{ await Inst.buscar(st.ed); }catch(e){}
+    Inst.restaurar();
+    const pf = st.perfil || {}, PULA = ['origem','perfil','idade'];
+    const qs = QS.filter(q=>!PULA.includes(q.id) && !(['prim','dias','pern'].includes(q.id) && pf[q.id]));
+    const ans = {x:{}}, t0 = Date.now(), SK = 'tsa_aval_'+st.ed;
+    Object.assign(ans, LS.get(SK, null) || {}); ans.x = ans.x || {};
+    const getA = q => q.nucleo ? ans[q.id] : ans.x[q.id], setA = (q,v) => { if (q.nucleo) ans[q.id]=v; else ans.x[q.id]=v; LS.set(SK, ans); };
+    const T0 = () => T[lang] || T.pt;
+    const nomeOpc = o => T0().o[o] || o, nomeItem = it => (T0().av||{})[it] || it;
+    corpo().innerHTML = topo() + `<div class="chat" id="ch"></div>`; ligarIdioma();
+    const ch = $('ch');
+    const bolha = (html, eu) => { const d = document.createElement('div'); d.className = 'bal'+(eu?' eu':''); d.innerHTML = html; ch.appendChild(d); d.scrollIntoView({block:'end', behavior:'smooth'}); return d; };
+    const area = html => { const d = document.createElement('div'); d.className = 'chat-resp'; d.innerHTML = html; ch.appendChild(d); setTimeout(()=>d.scrollIntoView({block:'end', behavior:'smooth'}), 30); return d; };
+    bolha(`<b>${esc(L().av_ola)}</b><br>${esc(L().av_intro.replace('{n}', qs.length))}`);
+    let i = 0;
+    const responder = (q, v, rotulo) => { setA(q, v); bolha(esc(rotulo || L().av_pulei), true); i++; setTimeout(proxima, 250); };
+    function proxima(){
+      if (i >= qs.length){ enviar(); return; }
+      const q = qs[i], t = T0();
+      bolha(`<span class="sub">${i+1}/${qs.length}</span><br>${esc(t.q[q.id] || q.id)}${t.help[q.id] ? `<br><span class="sub">${esc(t.help[q.id])}</span>` : ''}`);
+      const pular = q.obrig ? '' : `<button class="vis-chip" data-pular>${esc(L().av_pular)}</button>`;
+      if (q.type==='single'){
+        const a = area(`<div class="vis-chips">${q.opts.map(o=>`<button class="vis-chip" data-o="${esc(o)}">${esc(nomeOpc(o))}</button>`).join('')}${pular}</div>`);
+        a.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{ a.remove(); responder(q, b.dataset.o, nomeOpc(b.dataset.o)); });
+      } else if (q.type==='multi'){
+        const sel = [];
+        const a = area(`<div class="vis-chips">${q.opts.map(o=>`<button class="vis-chip" data-o="${esc(o)}">${esc(nomeOpc(o))}</button>`).join('')}</div><div class="vis-chips"><button class="btn sec" data-ok disabled>${esc(L().av_pronto)}</button>${pular}</div>`);
+        a.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{ const o=b.dataset.o, k=sel.indexOf(o); k>=0?sel.splice(k,1):sel.push(o); b.classList.toggle('sel'); a.querySelector('[data-ok]').disabled = !sel.length; });
+        a.querySelector('[data-ok]').onclick = () => { a.remove(); responder(q, sel.slice(), sel.map(nomeOpc).join(', ')); };
+      } else if (q.type==='rating'){
+        const av = {};
+        const a = area(`${q.items.map(it=>`<div class="chat-rate"><span>${esc(nomeItem(it))}</span><div>${[1,2,3,4,5].map(v=>`<button class="vis-chip" data-i="${esc(it)}" data-v="${v}" aria-label="${esc(nomeItem(it))}: ${v}">${v}</button>`).join('')}</div></div>`).join('')}
+          <div class="vis-chips"><button class="btn sec" data-ok ${q.obrig?'disabled':''}>${esc(L().av_pronto)}</button></div>`);
+        a.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{ av[b.dataset.i] = +b.dataset.v; a.querySelectorAll(`[data-i="${b.dataset.i}"]`).forEach(x=>x.classList.toggle('sel', +x.dataset.v<=+b.dataset.v)); a.querySelector('[data-ok]').disabled = q.obrig && !q.items.every(it=>av[it]); });
+        a.querySelector('[data-ok]').onclick = () => { a.remove(); responder(q, av, Object.keys(av).length ? q.items.filter(it=>av[it]).map(it=>nomeItem(it)+': '+av[it]).join(' · ') : null); };
+      } else if (q.type==='nps'){
+        const a = area(`<div class="chat-nps">${[...Array(11).keys()].map(k=>`<button class="vis-chip" data-v="${k}">${k}</button>`).join('')}</div>${pular?`<div class="vis-chips">${pular}</div>`:''}`);
+        a.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{ a.remove(); responder(q, +b.dataset.v, b.dataset.v); });
+      } else if (q.type==='text'){
+        const a = area(`<textarea class="vis-in" rows="3" maxlength="400" aria-label="${esc(t.q[q.id]||'')}"></textarea><div class="vis-chips"><button class="btn sec" data-ok>${esc(L().enviar)}</button>${q.obrig?'':`<button class="vis-chip" data-pular>${esc(L().av_pular)}</button>`}</div>`);
+        a.querySelector('[data-ok]').onclick = () => { const v = a.querySelector('textarea').value.trim().slice(0,400); if (!v && q.obrig) return; a.remove(); responder(q, v || null, v || null); };
+      } else { i++; proxima(); return; }
+      const p = ch.lastElementChild.querySelector('[data-pular]'); if (p) p.onclick = () => { p.closest('.chat-resp').remove(); responder(q, null, null); };
+    }
+    async function enviar(){
+      const r = {lang, v: INST.versao||0, dur: Math.round((Date.now()-t0)/1000)};
+      ['gen','prim','dias','pern','obj','av','tecn','neg','gasto','nps','com'].forEach(k=>{ const v = ans[k]; if (v!=null && v!=='' && !(Array.isArray(v)&&!v.length) && !(typeof v==='object'&&!Array.isArray(v)&&!Object.keys(v).length)) r[k] = v; });
+      const x = {}; Object.entries(ans.x||{}).forEach(([k,v])=>{ if (v!=null && v!=='' && !(Array.isArray(v)&&!v.length)) x[k]=v; }); if (Object.keys(x).length) r.x = x;
+      const b = bolha(esc(L().av_enviando));
+      try{ const res = await Base.vis.responderAvaliacao(tok, r); LS.set(SK, null);
+        const o = origemDe({br: res.pais==='BR'?1:0, mun: res.mun, pais: res.pais}), km = o ? Math.round(o.km) : 0;
+        b.innerHTML = `<b>${esc(L().av_obrigado)}</b>${km>15 ? `<br>${esc(L().av_km.replace('{km}', km.toLocaleString(lang==='en'?'en-US':'pt-BR')))}` : ''}`;
+        const s = area(`<button class="btn" data-story>📲 ${esc(L().story)}</button>`);
+        s.querySelector('[data-story]').onclick = () => cardStory({topo:L().storyAvaliei, titulo:cfg.edicao, sub: km>15 ? L().av_km.replace('{km}', km.toLocaleString('pt-BR')) : '', url: location.origin+location.pathname+'#agora'});
+      }catch(e){
+        b.innerHTML = esc(e.code==='ja_respondeu' ? L().av_jaRespondeu : e.code==='rede' ? L().av_semRede : L().erro);
+        if (e.code==='rede'){ const a = area(`<button class="btn sec" data-de-novo>${esc(L().av_tentar)}</button>`); a.querySelector('[data-de-novo]').onclick = () => { a.remove(); b.remove(); enviar(); }; }
+      }
+    }
+    proxima();
+  }
+
+  /* ---------- card para o story (Instagram e WhatsApp) ----------
+     Toda imagem compartilhada leva a marca da plataforma. A logo definitiva entra em MARCA, num ponto só. */
+  async function cardStory({topo:t1, titulo, sub, url}){
+    const W = 1080, H = 1920, c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
+    const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, '#071637'); gr.addColorStop(1, '#040b1f'); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+    g.strokeStyle = 'rgba(95,208,255,.25)'; g.lineWidth = 2; for (let k=0;k<6;k++){ g.beginPath(); g.arc(W/2, H*0.38, 220+k*90, 0, Math.PI*2); g.stroke(); }
+    MARCA.desenhar(g, W/2, 210, 1.15);
+    const quebra = (txt, max) => { const out=[]; let lin=''; String(txt||'').split(/\s+/).forEach(w=>{ const t2 = lin ? lin+' '+w : w; if (g.measureText(t2).width > max && lin){ out.push(lin); lin=w; } else lin=t2; }); if (lin) out.push(lin); return out; };
+    g.textAlign = 'center'; g.fillStyle = '#9ef0ff'; g.font = '600 52px "IBM Plex Sans", system-ui, sans-serif'; g.fillText(t1||'', W/2, 600);
+    g.fillStyle = '#e7f1ff'; g.font = '800 104px Saira, "Arial Narrow", sans-serif';
+    quebra(titulo, W-160).slice(0,4).forEach((l,k)=>g.fillText(l, W/2, 760 + k*118));
+    if (sub){ g.fillStyle = '#ffc861'; g.font = '600 50px "IBM Plex Sans", system-ui, sans-serif'; quebra(sub, W-200).slice(0,2).forEach((l,k)=>g.fillText(l, W/2, 1260 + k*64)); }
+    if (url && typeof qrcode==='function'){ const q = qrcode(0,'M'); q.addData(url); q.make(); const n = q.getModuleCount(), cel = Math.floor(300/n), lado = cel*n, x0 = (W-lado)/2, y0 = 1420;
+      g.fillStyle = '#fff'; g.fillRect(x0-20, y0-20, lado+40, lado+40); g.fillStyle = '#040b1f'; for (let r=0;r<n;r++) for (let s=0;s<n;s++) if (q.isDark(r,s)) g.fillRect(x0+s*cel, y0+r*cel, cel, cel); }
+    g.fillStyle = '#8fa6d1'; g.font = '500 34px "IBM Plex Mono", monospace'; g.fillText('#Tecnoshow · Rio Verde (GO)', W/2, H-70);
+    const blob = await new Promise(ok => c.toBlob(ok, 'image/png'));
+    const arq = new File([blob], 'tecnoshow-story.png', {type:'image/png'});
+    try{ if (navigator.canShare && navigator.canShare({files:[arq]})){ await navigator.share({files:[arq], title:titulo}); return; } }catch(e){ if (e && e.name==='AbortError') return; }
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'tecnoshow-story.png'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
   }
 
   /* ---------- palestra (QR do telão) ---------- */
@@ -3101,7 +3237,7 @@ const Visit = (() => {
     };
     atual = pag; pag();
   }
-  return {estande, palestra, trilha, trilhas, cidade, agora, CULT};
+  return {estande, palestra, trilha, trilhas, cidade, agora, avaliar, CULT};
 })();
 
 /* ================== TELÃO DE PRESENÇA (auditório) ==================

@@ -291,3 +291,27 @@ Testes:
   - o estande propõe e a organização aprova;
   - dados abertos no celular, com CSV e JSON.
 - Os testes anteriores continuam passando.
+
+## Avaliação pelo celular, story e limpeza (décima segunda etapa)
+
+| Item | Como funciona | Proteção |
+|---|---|---|
+| Avaliação final | `responder_avaliacao` monta a resposta com o perfil guardado no banco e valida com as mesmas regras dos tablets (`_resposta_valida`, `_conforme_instrumento`) | Uma por visitante (id `web-<visitante>`); campos de perfil enviados pelo celular são ignorados; só com a edição aberta |
+| Origem WEB | `_resposta_valida` aceita `tab = WEB` | Demais regras inalteradas |
+| Card do story | Desenhado no próprio celular (canvas), sem enviar nada ao servidor | Não leva dados pessoais, só o nome do estande ou da trilha e a marca |
+| Limpeza | `limpar_edicao` mostra a prévia; apaga só com o código da edição | Só o administrador geral; mantém cadastros, equipe, questionário e auditoria; a limpeza é auditada |
+
+Testes:
+- **Banco local:**
+  - perfil trocado pelo celular (ignorado);
+  - segunda resposta;
+  - item e nota fora do questionário;
+  - limpeza pela coordenação (recusada);
+  - confirmação errada.
+- **Navegador:**
+  - visitante cria o perfil no estande e responde as 8 perguntas restantes em conversa;
+  - reabre a página e vê "já avaliou";
+  - card do story gerado;
+  - administrador geral vê a prévia e limpa;
+  - coordenação não vê a limpeza.
+- Os testes anteriores continuam passando.

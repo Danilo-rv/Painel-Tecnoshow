@@ -25,7 +25,7 @@ As respostas ficam num banco **Supabase** do próprio projeto. Uma versão alter
 ## 1. Configurar o Supabase (uma vez)
 
 1. Crie um projeto em <https://supabase.com> (região São Paulo, `sa-east-1`).
-2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`, `003_visitante_estande.sql`, `004_moderacao_painel_expositor.sql`, `005_saida_tablets.sql`, `006_presenca_trilhas.sql`, `007_mural.sql`, `008_cidade.sql`, `009_passaporte_ao_vivo.sql` e `010_aparelhos_propostas_dados.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
+2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`, `003_visitante_estande.sql`, `004_moderacao_painel_expositor.sql`, `005_saida_tablets.sql`, `006_presenca_trilhas.sql`, `007_mural.sql`, `008_cidade.sql`, `009_passaporte_ao_vivo.sql`, `010_aparelhos_propostas_dados.sql` e `011_avaliacao_limpeza.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
 3. Em **Authentication → Sign In / Providers**, deixe **ligado** "Allow new users to sign up" (a equipe se cadastra pelo link de convite; uma conta criada sem convite não acessa nada) e mantenha "Confirm email" ligado.
    Em **Authentication → URL Configuration**, coloque o endereço do site em **Site URL** e em **Redirect URLs** (ex.: `https://danilo-rv.github.io/Painel-Tecnoshow/**`), para o e-mail de confirmação voltar ao app.
 4. Gere a chave da coleta: no SQL Editor, rode `select replace(gen_random_uuid()::text, '-', '') as chave_da_coleta;` e guarde o resultado.
@@ -300,6 +300,28 @@ Cada estande tem um QR (em **Administração → Cadastros → Expositores**, ab
 - **Regra:** só agregados. Grupos com menos de 5 pessoas não aparecem ou entram em "outros". A ocupação hoteleira só aparece com 3 ou mais hotéis.
 - **Fica de fora:** dados pessoais, avaliações de estandes (decisão 25) e dados de um hotel em particular.
 - A licença de uso será definida pelo comitê de dados (decisão 18).
+
+## 17. Avaliação final pelo celular
+
+- **Onde fica:** `…/#avaliar`, também pelo botão "Avalie a Tecnoshow" na página "Acontecendo agora". É uma conversa em tela cheia, sem menus nem login, para mandar pelo WhatsApp quando o provedor for contratado (decisão 33a).
+- **Como funciona:**
+  - usa o questionário publicado (com perguntas novas e traduções);
+  - pula o que o perfil do visitante já respondeu (origem, perfil, idade, primeira vez, dias e pernoite);
+  - as perguntas opcionais podem ser puladas;
+  - sem internet, as respostas ficam guardadas no celular, com um botão para tentar de novo.
+- **Gravação:** uma resposta por visitante, no mesmo formato dos tablets (origem `WEB`). O painel e o relatório já a contam. Os dados do perfil vêm do banco, não do celular.
+
+## 18. Card para o story
+
+- Botão **📲 Story** na página do estande, na página da trilha completada e no fim da avaliação. Gera uma imagem 1080×1920 com a marca da plataforma, o nome do estande ou da trilha e um QR, pronta para o story do Instagram ou do WhatsApp. No celular, abre o compartilhamento; no computador, baixa a imagem.
+- **Marca provisória:** "TECNOSHOW AO VIVO". Quando a logo for definida, troque só o objeto `MARCA` em `src/template.html`; o card e as demais imagens passam a usá-la.
+
+## 19. Limpeza antes do piloto
+
+- Em **Administração → Equipe**, só para o administrador geral: **Limpar dados de teste**.
+- Primeiro mostra quantos registros seriam apagados. Para apagar, é preciso digitar o código da edição.
+- **Apaga:** respostas, visitantes e tudo o que eles geraram (visitas, avaliações, comentários, mural, presenças, cupons, cidade) e os tablets habilitados.
+- **Mantém:** cadastros, equipe, questionário e auditoria. A limpeza fica registrada na auditoria e não dá para desfazer.
 
 ## Proteção de dados (LGPD)
 
