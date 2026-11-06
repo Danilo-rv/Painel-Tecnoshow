@@ -707,7 +707,7 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 32. Dez dúvidas para a reconstrução do mapa: planta oficial em vetor para 2027, QR por expositor ou por lote, expositores em vários lotes, leituras incertas, categorias, palcos da agenda, georreferência, banheiros e acessibilidade, Portaria I, faixa de test drives.
 
 **Da porta de entrada do visitante**
-33. Porta de entrada: perfil curto obrigatório no primeiro QR + avaliação da feira depois (recomendado), ou a pesquisa inteira na entrada, como proposto? Vincular o WhatsApp é opcional ou obrigatório?
+33. ~~Porta de entrada e WhatsApp~~ → **decidida** (ver seção 20, 33a e 33b).
 
 **Da etapa de administração geral e aparelhos**
 27. Administrador geral: quem será (uma pessoa ou mais)? Fica na organização da feira, no ITA, ou um de cada?
@@ -753,6 +753,10 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 | 28 | **Hierarquia com 10 papéis:** os 9 da seção 18.2 **+ Patrocinador** (vê só os resultados das próprias cotas) | 06/11/2026 | Painel do patrocinador entra junto com os relatórios de patrocínio |
 | 23 | **Nomes de trabalho: ITex** (marca-mãe: Inteligência Territorial + expo/eventos, ligada ao Observatório ITA) **e ShowPulse** (painel ao vivo). Pendentes de busca no INPI; se houver conflito, usar grafia distintiva (ITexpo, ShowPulso) | 06/11/2026 | Busca web preliminar: "ITEX" é usado por várias empresas no exterior (bolsa de permutas e uma feira de TI nos EUA, têxteis); "ShowPulse" é um software de palco para músicos (show-pulse.com). Nada encontrado no Brasil. A logo e a moldura (decisões 26 e 26-parcial) seguem esses nomes |
 | 31 | **A ITex não é um aplicativo da Tecnoshow e não compete com o app oficial.** É uma camada de dados e inteligência que agrega valor ao app e à feira, para ser comercializada no futuro. O visitante só a encontra em pontos de contato abertos por QR ou link, sem instalação | 06/11/2026 | Agenda, locais e navegação ficam no app oficial. Do app, a ITex aproveita o mapa, a agenda, as categorias e os cadastros. O plano de implantação precisa ser ajustado nas seções 1, 3, 6.1 e 9 |
+| 33a | **Perfil curto obrigatório no primeiro QR, com o número de WhatsApp; a avaliação da feira chega depois por link no WhatsApp.** O link abre uma tela cheia em formato de conversa (estilo WhatsApp), sem menus administrativos, sem barra superior e sem login ou cadastro | 06/11/2026 | O questionário de avaliação ganha uma versão conversacional, aberta por link único por visitante (o link identifica a pessoa, sem senha). A tela segue o estilo de conversa, sem usar logo ou marca do WhatsApp |
+| 33b | **Vínculo com o WhatsApp obrigatório** no perfil | 06/11/2026 | Número confirmado por código, guardado em hash, com consentimento específico. Permite recuperar o perfil, enviar a avaliação e formar o painel entre edições. Risco a tratar: visitante sem WhatsApp (alternativa por e-mail ou pelo tablet da sala de avaliação) |
+| 32-2 | **QR e página por expositor**, com o número do lote como endereço no mapa | 06/11/2026 | Funciona nos 49 lotes compartilhados |
+| 32-3 | **Expositor em vários lotes: ele escolhe** se junta tudo num estande ou separa um estande por lote | 06/11/2026 | O cadastro tem a opção "juntar lotes"; o painel mostra os números por lote quando juntos |
 
 ---
 
@@ -778,3 +782,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 06/11/2026: avaliação de palestras e serviços com análise de sentimento só para a organização; mecanismos do Instagram (seção 18-C e seção 16 do plano).
 - 06/11/2026: vitrine do expositor com preço, pagamento e financiamento opcionais (seção 18-D e seção 16.5 do plano).
 - 06/11/2026: perfil do visitante como porta de entrada da interatividade (seção 18-E e seção 16.6 do plano); decisão 33.
+- 06/11/2026: decisões 33a, 33b, 32-2 e 32-3 tomadas.
