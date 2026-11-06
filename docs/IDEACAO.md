@@ -636,6 +636,24 @@ Detalhado na seção 16.5 do plano de implantação.
   - nenhum expositor vê o preço de outro identificado;
   - sem ranking de preço entre concorrentes: o visitante compara só o que salvou.
 
+## 18-E. Perfil do visitante como porta de entrada
+
+Detalhado na seção 16.6 do plano de implantação.
+
+- **Proposta do coordenador:** sem perfil, o visitante não interage. Ao ler qualquer QR sem estar identificado, ele responde a pesquisa (a mesma dos tablets, também possível pelo WhatsApp) e então é liberado para a interatividade ao vivo.
+- **Recomendação: dividir a pesquisa em duas partes:**
+  - **perfil**, obrigatório no primeiro QR, com cerca de 40 segundos;
+  - **avaliação da feira** (satisfação, NPS, gasto, negócios), no fim do dia ou da visita, com incentivo de pontos ou como etapa de trilha.
+
+  Assim evitamos o abandono no primeiro QR e o viés de avaliar a feira no primeiro minuto.
+- **Identidade:**
+  - um identificador anônimo no aparelho;
+  - vínculo opcional com o WhatsApp, que recupera o perfil e permite um painel longitudinal entre edições;
+  - QR "continue no seu celular" no fim da pesquisa do tablet, para não duplicar a resposta;
+  - o canal de cada resposta fica registrado.
+- **O expositor vê o perfil só agregado** (grupos de 5 ou mais). Nome e contato só com "quero contato" ou "pedir proposta".
+- **Menores:** sem envio de contato e sem fotos no telão.
+
 ---
 
 ## 19. Decisões pendentes (acumuladas)
@@ -687,6 +705,9 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 
 **Do mapa da feira (detalhe em `docs/mapa-2026/LEIAME.md`)**
 32. Dez dúvidas para a reconstrução do mapa: planta oficial em vetor para 2027, QR por expositor ou por lote, expositores em vários lotes, leituras incertas, categorias, palcos da agenda, georreferência, banheiros e acessibilidade, Portaria I, faixa de test drives.
+
+**Da porta de entrada do visitante**
+33. Porta de entrada: perfil curto obrigatório no primeiro QR + avaliação da feira depois (recomendado), ou a pesquisa inteira na entrada, como proposto? Vincular o WhatsApp é opcional ou obrigatório?
 
 **Da etapa de administração geral e aparelhos**
 27. Administrador geral: quem será (uma pessoa ou mais)? Fica na organização da feira, no ITA, ou um de cada?
@@ -756,3 +777,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 06/11/2026: decisão 31 tomada (ITex é camada de dados, sem app próprio nem competição); agenda como mecanismo de gamificação (seção 18-B).
 - 06/11/2026: avaliação de palestras e serviços com análise de sentimento só para a organização; mecanismos do Instagram (seção 18-C e seção 16 do plano).
 - 06/11/2026: vitrine do expositor com preço, pagamento e financiamento opcionais (seção 18-D e seção 16.5 do plano).
+- 06/11/2026: perfil do visitante como porta de entrada da interatividade (seção 18-E e seção 16.6 do plano); decisão 33.
