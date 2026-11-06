@@ -855,3 +855,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 06/11/2026: base multifeira construída e aplicada em produção (migração 002, sementes de 2027, abas Cadastros, Mapa e Pendências na Administração).
 - 06/11/2026: porta de entrada do visitante e página do estande por QR construídas e em produção (migração 003); produtos e QR na Administração.
 - 06/11/2026: moderação de comentários públicos e área do expositor (painel do estande com convite por link) construídas e em produção (migração 004).
+- 06/11/2026: seta de voltar em todas as telas, saída protegida dos tablets (decisão 24, migração 005) e fila sem internet para as ações do visitante.

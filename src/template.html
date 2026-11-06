@@ -313,6 +313,13 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
 .coment{border-left:3px solid var(--line);padding:2px 0 2px 12px;display:grid;gap:4px}
 .coment p{margin:0;line-height:1.5;overflow-wrap:anywhere}
 .coment .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;color:var(--muted);font-size:.78rem}
+.voltar{width:40px;height:40px;flex:none;display:inline-grid;place-items:center;border-radius:50%;border:1px solid var(--line);background:var(--deep);color:var(--ink);font-size:1.25rem;line-height:1}
+.voltar:hover{border-color:var(--glow);color:var(--glow2)}
+.com-voltar{display:flex;align-items:center;gap:12px}
+.ptop .voltar{opacity:.45;transition:opacity .2s} .ptop .voltar:hover,.ptop .voltar:focus-visible{opacity:1}
+.kbar .brand{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+.kbar .brand.segurando{color:var(--glow2);text-shadow:0 0 12px var(--glow)}
+.saida-cod{font-family:var(--f-mono);font-size:1.6rem;letter-spacing:.4em;text-align:center}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -340,14 +347,14 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
 </div>
 
 <div id="v-coleta" class="view" hidden>
-  <div class="kbar"><span class="brand">TECNOSHOW <i>AVALIA</i></span><span class="net"><span class="badge-demo" id="k-previa" hidden>PRÉ-VISUALIZAÇÃO</span><button class="ghost" id="k-fechar" hidden>Fechar prévia</button><span id="k-tab">Tablet 1</span> · <span class="dot" id="k-dot"></span><span id="k-net">online</span> · <span id="k-pend">0 na fila</span></span></div>
+  <div class="kbar"><span class="brand" id="k-brand" title="Equipe: toque e segure por 3 segundos para sair">TECNOSHOW <i>AVALIA</i></span><span class="net"><span class="badge-demo" id="k-previa" hidden>PRÉ-VISUALIZAÇÃO</span><button class="ghost" id="k-fechar" hidden>Fechar prévia</button><span id="k-tab">Tablet 1</span> · <span class="dot" id="k-dot"></span><span id="k-net">online</span> · <span id="k-pend">0 na fila</span></span></div>
   <div class="progress"><i id="k-prog"></i></div>
   <div class="kstage" id="k-stage"></div>
 </div>
 
 <div id="v-painel" class="view" hidden>
   <div class="ptop">
-    <h1 class="ptitle" id="p-title">TECNOSHOW <span>AO VIVO</span></h1>
+    <div class="com-voltar"><button class="voltar" data-voltar aria-label="Voltar">←</button><h1 class="ptitle" id="p-title">TECNOSHOW <span>AO VIVO</span></h1></div>
     <div class="pmeta"><span class="live"><span class="dot" id="p-dot"></span><span id="p-status">conectando</span></span><span id="p-clock" class="tabnum"></span><span class="badge-demo" id="p-demo" hidden>DEMONSTRAÇÃO</span></div>
   </div>
   <div class="mapwrap" id="mapwrap">
@@ -383,7 +390,7 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
 
 <div id="v-relatorio" class="view" hidden>
   <div class="rtools">
-    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:end">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:end"><button class="voltar" data-voltar aria-label="Voltar">←</button>
       <label for="r-publico">Público total (organização)<input id="r-publico" type="number" min="0" max="10000000" value="120000"></label>
       <label for="r-ini">De<input id="r-ini" type="date"></label>
       <label for="r-fim">Até<input id="r-fim" type="date"></label>
@@ -398,7 +405,7 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
 <div id="v-admin" class="view" hidden>
   <div class="adm">
     <div class="adm-top">
-      <div><div class="k">Administração · <span id="a-ed"></span></div><h1>Gestão da plataforma</h1></div>
+      <div class="com-voltar"><button class="voltar" data-voltar aria-label="Voltar">←</button><div><div class="k">Administração · <span id="a-ed"></span></div><h1>Gestão da plataforma</h1></div></div>
       <div class="adm-tabs"><button class="chip on" data-aba="form">Questionário</button><button class="chip" data-aba="equipe">Equipe</button><button class="chip" data-aba="cadastros">Cadastros</button><button class="chip" data-aba="mapa">Mapa</button><button class="chip" data-aba="pendencias">Pendências</button><button class="chip" data-aba="moderacao">Moderação</button><button class="ghost" id="a-voltar">Voltar ao início</button></div>
     </div>
     <p class="adm-msg erro" id="a-bloq" hidden></p>
@@ -476,6 +483,16 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
     <p class="login-msg" id="c-msg" role="alert"></p>
     <div class="knav"><button type="button" class="ghost" id="c-voltar">Voltar ao início</button><button class="rbtn" type="submit" id="c-ok">Criar conta</button></div>
   </form></div>
+</div>
+
+<div id="saida" class="login" hidden>
+  <form id="saida-form" class="login-box" autocomplete="off">
+    <b>Sair da coleta</b>
+    <p id="saida-txt">Digite o código de saída da equipe.</p>
+    <label for="saida-cod" id="saida-cod-wrap">Código<input id="saida-cod" class="saida-cod" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off"></label>
+    <p class="login-msg" id="saida-msg" role="alert"></p>
+    <div class="knav"><button type="button" class="ghost" id="saida-cancel">Continuar na coleta</button><button class="rbtn" type="submit" id="saida-ok">Sair</button></div>
+  </form>
 </div>
 
 <div id="login" class="login" hidden>
@@ -947,7 +964,9 @@ const Base = (() => {
         negado:'Esta conta não está ligada a nenhum estande. Peça o link de convite à organização da feira.'});
     }
   };
-  return {kind, enviar, ler, acompanhar, precisaLogin, garantirAcesso, sair, entrar, cadastrar, temSessao, souCoordenador, meuPapel,
+  const rpcPublica = (nome, args) => kind==='supabase' ? rpc(nome, args) : Promise.reject(erro('sem_base'));
+  const saida = { definir: (ed, cod) => rpc('definir_codigo_saida', {p_ed:ed, p_codigo:cod}), info: ed => rpc('info_codigo_saida', {p_ed:ed}) };
+  return {kind, rpcPublica, saida, enviar, ler, acompanhar, precisaLogin, garantirAcesso, sair, entrar, cadastrar, temSessao, souCoordenador, meuPapel,
           instrumentoAtual, publicarInstrumento, historico, equipe, cad, vis, mod, loja, EDITORES, MODERADORES};
 })();
 
@@ -988,18 +1007,74 @@ const Inst = (() => {
   }
 })();
 
+/* ================== SAÍDA PROTEGIDA DA COLETA (decisão 24) ==================
+   Um tablet com chave de coleta fica travado na coleta, mesmo se recarregar a página.
+   Sair: tocar e segurar o logotipo por 3 segundos e digitar o código da edição.
+   O código é conferido no próprio tablet (sha256 de "edição:código"), então funciona sem internet. */
+const Saida = (() => {
+  const $ = id => document.getElementById(id);
+  const TK = 'tsa_trava', HK = e => 'tsa_saida_'+e;
+  let erros = 0, bloqueadoAte = 0;
+  const ativo = () => Base.kind==='supabase' && !!LS.get('tsa_chave','');
+  async function sha(t){ const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(''); }
+  async function atualizar(){                              // busca o hash do código (precisa da chave da coleta)
+    if (!ativo() || !navigator.onLine) return;
+    try{ const h = await Base.rpcPublica('codigo_saida', {p_ed:edSlug(), p_chave:LS.get('tsa_chave','')}); LS.set(HK(edSlug()), h||null); }catch(e){}
+    registrarPendentes().catch(()=>{});
+  }
+  function travar(){ if (ativo()){ LS.set(TK, edSlug()); atualizar(); } }
+  const travado = () => ativo() && !!LS.get(TK, null);
+  const PK = 'tsa_saidas_pend';                            // saídas feitas sem internet: registradas quando o sinal voltar
+  async function registrarPendentes(){
+    const q = LS.get(PK, null) || [];
+    while (q.length){ try{ await Base.rpcPublica('registrar_saida', q[0]); }catch(e){ if (e.code==='rede') break; } q.shift(); LS.set(PK, q); }
+  }
+  function sair(){
+    LS.set(TK, null); const q = LS.get(PK, null) || [];
+    if (q.length<50){ q.push({p_ed:edSlug(), p_chave:LS.get('tsa_chave',''), p_tablet:cfg.tablet}); LS.set(PK, q); }
+    registrarPendentes().catch(()=>{}); $('saida').hidden=true; go('inicio');
+  }
+  function abrir(){
+    if (!travado()){ go('inicio'); return; }
+    const hash = LS.get(HK(edSlug()), null);
+    $('saida').hidden=false; $('saida-msg').textContent=''; $('saida-cod').value='';
+    $('saida-cod-wrap').hidden = !hash;
+    $('saida-txt').textContent = hash ? 'Digite o código de saída da equipe.' : 'Nenhum código de saída foi definido para esta edição (a coordenação define em Administração › Equipe). Confirme para sair.';
+    if (hash) setTimeout(()=>$('saida-cod').focus(), 30);
+  }
+  $('saida-cancel').onclick = () => { $('saida').hidden=true; };
+  $('saida-form').onsubmit = async ev => {
+    ev.preventDefault();
+    const hash = LS.get(HK(edSlug()), null);
+    if (!hash){ sair(); return; }
+    if (Date.now()<bloqueadoAte){ $('saida-msg').textContent='Muitas tentativas. Aguarde um minuto.'; return; }
+    if (await sha(edSlug()+':'+$('saida-cod').value.trim()) === hash){ erros=0; sair(); return; }
+    erros++; $('saida-cod').value='';
+    if (erros>=5){ erros=0; bloqueadoAte=Date.now()+60000; $('saida-msg').textContent='Código incorreto. Tente de novo em um minuto.'; }
+    else $('saida-msg').textContent='Código incorreto.';
+  };
+  // tocar e segurar o logotipo por 3 segundos
+  const marca = $('k-brand'); let t=null;
+  const soltar = () => { clearTimeout(t); t=null; marca.classList.remove('segurando'); };
+  marca.addEventListener('pointerdown', ev => { ev.preventDefault(); marca.classList.add('segurando'); t = setTimeout(()=>{ soltar(); abrir(); }, 3000); });
+  ['pointerup','pointerleave','pointercancel'].forEach(e=>marca.addEventListener(e, soltar));
+  marca.addEventListener('contextmenu', ev => ev.preventDefault());
+  return {travar, travado, atualizar, sha};
+})();
+
 /* ================== ROTEAMENTO ================== */
 const VIEWS = ['inicio','coleta','painel','relatorio','admin','convite','visitante','expositor'];
 let current = null;
 function route(){
-  const h = (location.hash||'').replace('#','');
+  let h = (location.hash||'').replace('#','');
   const demo = h.endsWith('-demo');
   let base = demo ? h.replace('-demo','') : h;
   if (base==='previa') base='coleta';
   if (/^convite-/.test(base)) base='convite';
   if (/^e-[0-9a-f-]{36}$/.test(base)) base='visitante';
   if (/^expositor(-[0-9a-f-]{36})?$/.test(base)) base='expositor';
-  const v = VIEWS.includes(base) ? base : 'inicio';
+  let v = VIEWS.includes(base) ? base : 'inicio';
+  if (v!=='coleta' && Saida.travado()){ history.replaceState(null,'',location.pathname+'#coleta'); v='coleta'; h='coleta'; }
   VIEWS.forEach(x => document.getElementById('v-'+x).hidden = x!==v);
   if (current === h) return; current = h;
   if (h!=='previa') Inst.restaurar();                     // a prévia usa o rascunho; o resto, a versão publicada
@@ -1011,6 +1086,14 @@ function route(){
   if (v==='visitante') Visit.estande(h.slice(2));
   if (v==='expositor') Loja.start(h.slice(10));
 }
+/* Seta de voltar: volta para a tela anterior do app; se a pessoa chegou direto (link ou QR), vai para o início. */
+const PILHA = [location.hash||'#inicio'];
+window.addEventListener('hashchange', () => {
+  const h = location.hash||'#inicio';
+  if (PILHA.length>1 && PILHA[PILHA.length-2]===h) PILHA.pop(); else if (PILHA[PILHA.length-1]!==h) PILHA.push(h);
+});
+function voltar(){ if (PILHA.length>1) history.back(); else go('inicio'); }
+document.addEventListener('click', ev => { const b = ev.target.closest('[data-voltar]'); if (b){ ev.preventDefault(); voltar(); } });
 window.addEventListener('hashchange', route);
 const go = h => { location.hash = h; };
 document.getElementById('go-coleta').onclick = () => go('coleta');
@@ -1186,6 +1269,7 @@ const Coleta = (() => {
     document.getElementById('k-previa').hidden = !previa; document.getElementById('k-fechar').hidden = !previa;
     document.getElementById('k-tab').textContent = cfg.tablet==='PAINEL'?'Sem número de tablet':('Tablet '+(+cfg.tablet.slice(1)));
     if (previa){ welcome(); return; }
+    Saida.travar();
     if(!started){ started=true; scheduleSync(); manterTelaLigada(); try{ navigator.storage && navigator.storage.persist && navigator.storage.persist(); }catch(e){} }
     setNet(navigator.onLine, navigator.onLine?'online':'sem internet · guardando aqui'); welcome(); sync();
   } };
@@ -1786,12 +1870,23 @@ const Admin = (() => {
           <div class="adm-acts"><label class="fld" for="a-conv-papel" style="min-width:min(100%,320px)">Papel<select id="a-conv-papel">${opPap.map(([k,t])=>`<option value="${k}">${esc(t)}</option>`).join('')}</select></label><button class="btn sm" id="a-convidar" style="align-self:end">Gerar link de convite</button></div><div class="adm-link" id="a-link" hidden><input id="a-link-txt" readonly aria-label="Link de convite"><button class="ghost" id="a-copiar">Copiar</button></div></div>
         <div class="adm-sec"><h3>Pessoas da equipe (${m.length})</h3><div class="tw"><table class="adm-tab"><thead><tr><th>Nome</th><th>E-mail</th><th>Papel</th><th>Desde</th><th></th></tr></thead><tbody>${m.map(x=>`<tr><td>${esc(x.nome||'–')}</td><td>${esc(x.email||'')}</td><td>${esc(PAP[x.papel]||x.papel)}</td><td>${esc(new Date(x.criado_em).toLocaleDateString('pt-BR'))}</td><td>${(x.papel==='coordenador'||x.papel==='admin_geral')?'':`<button class="ghost sm" data-rm="${esc(x.user_id)}">Remover</button>`}</td></tr>`).join('')}</tbody></table></div></div>
         <div class="adm-sec"><h3>Convites ainda não usados (${c.length})</h3>${c.length?`<div class="tw"><table class="adm-tab"><thead><tr><th>Papel</th><th>Criado em</th><th>Vale até</th><th></th></tr></thead><tbody>${c.map(x=>`<tr><td>${esc(PAP[x.papel]||x.papel||'Equipe')}${x.expositor?' · '+esc(x.expositor):''}</td><td>${esc(quando(x.criado_em))}</td><td>${esc(quando(x.expira_em))}</td><td><button class="ghost sm" data-rv="${esc(x.id)}">Cancelar convite</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="adm-p">Nenhum convite pendente.</p>'}</div>
+        <div class="adm-sec"><h3>Código de saída dos tablets</h3><p class="adm-p">Os tablets ficam travados na coleta. Para sair, a equipe toca e segura o logotipo por 3 segundos e digita este código (4 a 6 dígitos). Troque o código a cada edição. Os tablets recebem o código novo na próxima vez que estiverem com internet.</p>
+          <p class="nota" id="a-saida-st">Consultando…</p>
+          <div class="adm-acts"><label class="fld" for="a-saida-cod">Novo código<input id="a-saida-cod" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password"></label><button class="btn sm" id="a-saida-ok" style="align-self:end">Salvar código</button></div></div>
         <p class="adm-msg" id="a-eq-msg" hidden></p>`;
       const em = (t,tipo) => { const x=$('a-eq-msg'); x.hidden=!t; x.textContent=t; x.className='adm-msg'+(tipo?' '+tipo:''); };
       $('a-convidar').onclick = async () => {
         try{ const tok = await Base.equipe.convidar($('a-conv-papel').value); const url = location.origin+location.pathname+'#convite-'+tok;
           $('a-link').hidden=false; $('a-link-txt').value=url; $('a-link-txt').select(); em('Link criado. Envie para a pessoa; ele vale por 7 dias e funciona uma única vez.','ok');
         }catch(e){ em('Não foi possível criar o convite agora. Tente de novo.','erro'); }
+      };
+      const saidaSt = em => { $('a-saida-st').textContent = em ? 'Código definido em '+quando(em)+'.' : 'Ainda não há código: hoje, qualquer pessoa que segurar o logotipo sai da coleta.'; };
+      Base.saida.info(ed).then(saidaSt).catch(()=>{ $('a-saida-st').textContent=''; });
+      $('a-saida-ok').onclick = async () => {
+        const c = $('a-saida-cod').value.trim();
+        if (!/^[0-9]{4,6}$/.test(c)){ em('O código precisa ter de 4 a 6 dígitos.','erro'); return; }
+        try{ saidaSt(await Base.saida.definir(ed, c)); $('a-saida-cod').value=''; em('Código de saída salvo. Avise a equipe dos tablets.','ok'); }
+        catch(e){ em('Não foi possível salvar o código agora.','erro'); }
       };
       $('a-copiar').onclick = () => { const t=$('a-link-txt'); navigator.clipboard.writeText(t.value).then(()=>em('Link copiado.','ok')).catch(()=>{ t.select(); em('Selecionei o link: copie com Ctrl+C (ou toque e segure).','aviso'); }); };
       box.querySelectorAll('[data-rm]').forEach(b=>b.onclick=async()=>{ if (b.dataset.conf!=='1'){ b.dataset.conf='1'; b.textContent='Confirmar remoção'; return; } try{ await Base.equipe.remover(b.dataset.rm); equipe(); }catch(e){ em('Não foi possível remover agora.','erro'); } });
@@ -2256,7 +2351,8 @@ const Visit = (() => {
         coment:'Deixe um comentário', soLoja:'Só para a loja', publico:'Público (passa por moderação)', enviar:'Enviar', enviado:'Comentário enviado. Obrigado!',
         contato:'Quero contato', contatoAj:'O estande recebe seu WhatsApp para falar com você.', contatoOk:'Pedido enviado. O estande vai falar com você.',
         compartilhar:'Compartilhar', copiado:'Link copiado.', obrigado:'Registrado!', erro:'Não foi possível registrar agora. Confira a internet e tente de novo.',
-        naoAchado:'Estande não encontrado. Confira o QR code ou procure a equipe da feira.', indisponivel:'A interatividade ao vivo funciona no site oficial da plataforma.', carregando:'Carregando…'},
+        naoAchado:'Estande não encontrado. Confira o QR code ou procure a equipe da feira.', indisponivel:'A interatividade ao vivo funciona no site oficial da plataforma.', carregando:'Carregando…',
+        semRede:'Sem internet agora. Abra este QR de novo quando o sinal voltar.', naFila:'Sem internet: guardamos aqui e enviamos sozinhos quando o sinal voltar.', pendentes:'ações esperando internet'},
     en:{entrar:'Before you interact, tell us a little about yourself', entrarSub:'It takes about 40 seconds and covers the whole fair. We do not ask for your name or ID.',
         idioma:'Language', origem:'Where did you come from?', cidade:'Type your city', pais:'Type your country', perfil:'Which best describes you?', idade:'Age group',
         culturas:'Crops and activities of interest', prim:'Is this your first time at the fair?', dias:'How many days are you attending?', pern:'Are you staying overnight because of the fair?',
@@ -2268,7 +2364,8 @@ const Visit = (() => {
         coment:'Leave a comment', soLoja:'Only for the exhibitor', publico:'Public (moderated)', enviar:'Send', enviado:'Comment sent. Thank you!',
         contato:'Contact me', contatoAj:'The exhibitor receives your WhatsApp to contact you.', contatoOk:'Request sent. The exhibitor will contact you.',
         compartilhar:'Share', copiado:'Link copied.', obrigado:'Saved!', erro:'Could not save right now. Check your connection and try again.',
-        naoAchado:'Exhibitor not found. Check the QR code or ask the fair staff.', indisponivel:'Live interaction works on the platform website.', carregando:'Loading…'},
+        naoAchado:'Exhibitor not found. Check the QR code or ask the fair staff.', indisponivel:'Live interaction works on the platform website.', carregando:'Loading…',
+        semRede:'No internet right now. Open this QR code again when you have signal.', naFila:'No internet: saved on this phone and sent automatically when the signal returns.', pendentes:'actions waiting for internet'},
     es:{entrar:'Antes de interactuar, cuéntenos un poco sobre usted', entrarSub:'Toma unos 40 segundos y vale para toda la feria. No pedimos nombre ni documento.',
         idioma:'Idioma', origem:'¿De dónde viene?', cidade:'Escriba su ciudad', pais:'Escriba su país', perfil:'¿Cuál es su perfil?', idade:'Rango de edad',
         culturas:'Cultivos y actividades de interés', prim:'¿Es su primera vez en la feria?', dias:'¿Cuántos días viene?', pern:'¿Va a pasar la noche fuera de casa por la feria?',
@@ -2280,7 +2377,8 @@ const Visit = (() => {
         coment:'Deje un comentario', soLoja:'Solo para el expositor', publico:'Público (con moderación)', enviar:'Enviar', enviado:'Comentario enviado. ¡Gracias!',
         contato:'Quiero contacto', contatoAj:'El expositor recibe su WhatsApp para contactarlo.', contatoOk:'Pedido enviado. El expositor lo contactará.',
         compartilhar:'Compartir', copiado:'Enlace copiado.', obrigado:'¡Registrado!', erro:'No fue posible registrar ahora. Revise su conexión e intente de nuevo.',
-        naoAchado:'Expositor no encontrado. Revise el código QR o busque al personal de la feria.', indisponivel:'La interacción en vivo funciona en el sitio de la plataforma.', carregando:'Cargando…'}
+        naoAchado:'Expositor no encontrado. Revise el código QR o busque al personal de la feria.', indisponivel:'La interacción en vivo funciona en el sitio de la plataforma.', carregando:'Cargando…',
+        semRede:'Sin internet ahora. Abra este código QR de nuevo cuando vuelva la señal.', naFila:'Sin internet: lo guardamos aquí y lo enviamos solo cuando vuelva la señal.', pendentes:'acciones esperando internet'}
   };
   const CULT = {soja:['Soja','Soybean','Soja'], milho:['Milho','Corn','Maíz'], algodao:['Algodão','Cotton','Algodón'], cana:['Cana','Sugarcane','Caña'], cafe:['Café','Coffee','Café'],
     feijao:['Feijão','Beans','Frijol'], sorgo:['Sorgo','Sorghum','Sorgo'], trigo:['Trigo','Wheat','Trigo'], pecuaria_corte:['Pecuária de corte','Beef cattle','Ganadería de carne'],
@@ -2289,23 +2387,61 @@ const Visit = (() => {
   if (!VT[lang]) lang = 'pt';
   const L = () => VT[lang], li = () => ({pt:0,en:1,es:2})[lang];
   const corpo = () => $('vis-corpo');
-  const topo = () => `<div class="vis-top"><span class="brand">TECNOSHOW <i>AO VIVO</i></span><span>${['pt','en','es'].map(k=>`<button class="vis-chip ${k===lang?'sel':''}" data-vl="${k}" style="padding:4px 10px;font-size:.75rem">${k.toUpperCase()}</button>`).join(' ')}</span></div>`;
+  const topo = () => `<div class="vis-top"><span class="com-voltar">${PILHA.length>1?'<button class="voltar" data-voltar aria-label="Voltar">←</button>':''}<span class="brand">TECNOSHOW <i>AO VIVO</i></span></span><span>${['pt','en','es'].map(k=>`<button class="vis-chip ${k===lang?'sel':''}" data-vl="${k}" style="padding:4px 10px;font-size:.75rem">${k.toUpperCase()}</button>`).join(' ')}</span></div>`;
   const tokenDe = ed => LS.get('tsa_vis_'+ed, null);
   let atual = null, est = null, estado = null, ruimSel = null;
 
   function ligarIdioma(){ corpo().querySelectorAll('[data-vl]').forEach(b=>b.onclick=()=>{ lang=b.dataset.vl; LS.set('tsa_vis_lang', lang); atual && atual(); }); }
   function aviso(t){ corpo().innerHTML = topo() + `<div class="vis-card"><p class="sub">${esc(t)}</p></div>`; ligarIdioma(); }
 
+  /* ---------- fila sem internet ----------
+     Ação que não chega ao banco por falta de sinal fica guardada no celular e é reenviada sozinha.
+     A tela mostra o resultado na hora (curtir, salvar, seguir…), e o banco confirma depois. */
+  const FK = 'tsa_vis_fila', EK = id => 'tsa_vis_est_'+id, SK = id => 'tsa_vis_st_'+id;
+  const fila = () => LS.get(FK, null) || [];
+  const semRede = e => e && e.code==='rede';
+  let enviando = false;
+  async function descarregar(){
+    if (enviando || !fila().length) return; enviando = true;
+    try{
+      for (;;){
+        const q = fila(); if (!q.length) break; const x = q[0];
+        try{ const r = await Base.vis.agir(x.tok, x.est, x.acao, x.extra||{}); if (est && est.id===x.est && x.acao!=='checkin'){ estado = r; LS.set(SK(x.est), r); } }
+        catch(e){ if (semRede(e)) break; }            // sem sinal: tenta depois; recusa do banco (limite, menor…): descarta
+        const r2 = fila(); r2.shift(); LS.set(FK, r2);
+      }
+    } finally { enviando = false; }
+    if (atual===pagina && est) pagina();
+  }
+  window.addEventListener('online', descarregar);
+  setInterval(()=>{ if (fila().length && navigator.onLine) descarregar(); }, 30000);
+  function enfileirar(x){ const q = fila(); if (q.length<300){ q.push(x); LS.set(FK, q); } }
+  function otimista(acao, extra){                          // o que a tela mostra enquanto a ação espera na fila
+    const s = estado = estado || {produtos:{}}; s.produtos = s.produtos || {};
+    if (extra.produto){ const p = s.produtos[extra.produto] = s.produtos[extra.produto] || {}; const k = acao==='salvar' ? 'salvo' : acao; p[k] = !p[k]; }
+    else if (acao==='curti' || acao==='amei') s[acao] = !s[acao];
+    else if (acao==='seguir') s.seguindo = !s.seguindo;
+    else if (acao==='carinha') s.carinha = {carinha:extra.valor, motivo:extra.texto||null};
+    else if (acao==='contato') s.contato = true;
+    LS.set(SK(est.id), s);
+  }
+
   async function estande(id){
     window.scrollTo(0,0);
     if (!Base.vis.disponivel()){ aviso(L().indisponivel); return; }
     corpo().innerHTML = topo() + `<p class="sub">${esc(L().carregando)}</p>`;
-    try{ est = await Base.vis.estande(id); }catch(e){ est = null; }
-    if (!est){ atual = () => aviso(L().naoAchado); atual(); return; }
+    let offline = false;
+    try{ est = await Base.vis.estande(id); if (est) LS.set(EK(id), est); }
+    catch(e){ est = semRede(e) ? LS.get(EK(id), null) : null; offline = semRede(e); }
+    if (!est){ atual = () => aviso(offline ? L().semRede : L().naoAchado); atual(); return; }
     const tok = tokenDe(est.ed);
     if (!tok){ atual = () => entrada(est.ed, () => estande(id)); atual(); return; }
-    try{ estado = await Base.vis.estado(tok, est.id); Base.vis.agir(tok, est.id, 'checkin').catch(()=>{}); }
-    catch(e){ if (e.code==='visitante_invalido'){ LS.set('tsa_vis_'+est.ed, null); atual = () => entrada(est.ed, () => estande(id)); atual(); return; } estado = {produtos:{}}; }
+    try{ await descarregar(); estado = await Base.vis.estado(tok, est.id); LS.set(SK(est.id), estado); Base.vis.agir(tok, est.id, 'checkin').catch(e=>{ if (semRede(e)) enfileirar({tok, est:est.id, acao:'checkin'}); }); }
+    catch(e){
+      if (e.code==='visitante_invalido'){ LS.set('tsa_vis_'+est.ed, null); atual = () => entrada(est.ed, () => estande(id)); atual(); return; }
+      estado = LS.get(SK(est.id), null) || {produtos:{}};
+      if (semRede(e)) enfileirar({tok, est:est.id, acao:'checkin'});
+    }
     atual = pagina; pagina();
   }
 
@@ -2399,12 +2535,17 @@ const Visit = (() => {
       </div>
       ${s.menor ? '' : `<div class="vis-card"><button class="btn" id="vp-contato" ${s.contato?'disabled':''}>${esc(s.contato?t.contatoOk:t.contato)}</button><p class="sub" style="font-size:.85rem">${esc(t.contatoAj)}</p></div>`}
       <button class="ghost" id="vp-share">${esc(t.compartilhar)}</button>
+      ${fila().length ? `<p class="vis-msg">⏳ ${fila().length} ${esc(t.pendentes)}</p>` : ''}
       <p class="vis-msg" id="vp-msg" hidden></p>`;
     ligarIdioma();
     const tok = tokenDe(e.ed), msgv = (txt, tipo) => { const m=$('vp-msg'); m.hidden=!txt; m.textContent=txt||''; m.className='vis-msg'+(tipo?' '+tipo:''); };
     const agir = async (acao, extra) => {
-      try{ estado = await Base.vis.agir(tok, e.id, acao, extra); return true; }
-      catch(err){ msgv(L().erro, 'erro'); return false; }
+      extra = extra || {};
+      try{ estado = await Base.vis.agir(tok, e.id, acao, extra); LS.set(SK(e.id), estado); return true; }
+      catch(err){
+        if (!semRede(err)){ msgv(L().erro, 'erro'); return false; }
+        enfileirar({tok, est:e.id, acao, extra}); otimista(acao, extra); setTimeout(()=>msgv(L().naFila, 'ok'), 0); return true;
+      }
     };
     corpo().querySelectorAll('[data-acao]').forEach(b=>b.onclick=async()=>{ b.disabled=true; if (await agir(b.dataset.acao, {produto:b.dataset.prod})) pagina(); else b.disabled=false; });
     corpo().querySelectorAll('[data-car]').forEach(b=>b.onclick=async()=>{
@@ -2447,7 +2588,7 @@ const Loja = (() => {
     if ($('lj-sair')) $('lj-sair').onclick = async () => { await Base.sair(); dados=null; go('inicio'); };
   }
   function aviso(txt, entrar){
-    corpo().innerHTML = `<div class="adm-top"><div><div class="k">Área do expositor</div><h1>Painel do estande</h1></div>${acoes()}</div>
+    corpo().innerHTML = `<div class="adm-top"><div class="com-voltar"><button class="voltar" data-voltar aria-label="Voltar">←</button><div><div class="k">Área do expositor</div><h1>Painel do estande</h1></div></div>${acoes()}</div>
       <div class="adm-sec"><p class="adm-p">${esc(txt)}</p>${entrar?'<div><button class="btn sm" id="lj-entrar">Entrar</button></div>':''}</div>`;
     ligarTopo(); if ($('lj-entrar')) $('lj-entrar').onclick = () => start(estId||'');
   }
@@ -2468,7 +2609,7 @@ const Loja = (() => {
   }
   function escolher(){
     if (!lojas.length){ aviso('Sua conta é da organização da feira. Para ver o painel de um estande, abra Administração › Cadastros › Expositores e use "Ver painel do estande".'); return; }
-    corpo().innerHTML = `<div class="adm-top"><div><div class="k">Área do expositor</div><h1>Escolha o estande</h1></div>${acoes()}</div>
+    corpo().innerHTML = `<div class="adm-top"><div class="com-voltar"><button class="voltar" data-voltar aria-label="Voltar">←</button><div><div class="k">Área do expositor</div><h1>Escolha o estande</h1></div></div>${acoes()}</div>
       <div class="adm-lista">${lojas.map(l=>`<button class="mode" data-est="${esc(l.estande_id)}"><span class="k">${esc(l.edicao)}</span><b>${esc(l.expositor)}</b></button>`).join('')}</div>`;
     ligarTopo(); corpo().querySelectorAll('[data-est]').forEach(b=>b.onclick=()=>go('expositor-'+b.dataset.est));
   }
@@ -2528,7 +2669,7 @@ const Loja = (() => {
     const d = dados, t = d.totais, e = d.estande, lotes = (e.lotes||[]).join(', ');
     const pf = d.perfil, b = d.benchmark;
     const wa = w => { const dg = String(w||'').replace(/\D/g,''); return dg ? `<a href="https://wa.me/${dg}" target="_blank" rel="noopener noreferrer">${esc(w)}</a>` : '–'; };
-    corpo().innerHTML = `<div class="adm-top"><div><div class="k">Área do expositor · ${esc(e.ed)}</div><h1>${esc(e.expositor)}</h1><div class="nota">${lotes ? (e.lotes.length>1?'Lotes ':'Lote ')+esc(lotes)+' · ' : ''}atualizado às ${esc(hora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}))}</div></div>
+    corpo().innerHTML = `<div class="adm-top"><div class="com-voltar"><button class="voltar" data-voltar aria-label="Voltar">←</button><div><div class="k">Área do expositor · ${esc(e.ed)}</div><h1>${esc(e.expositor)}</h1><div class="nota">${lotes ? (e.lotes.length>1?'Lotes ':'Lote ')+esc(lotes)+' · ' : ''}atualizado às ${esc(hora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}))}</div></div></div>
         ${acoes('<button class="btn sm" id="lj-atualizar">Atualizar</button>' + (lojas.length>1 ? '<button class="ghost sm" id="lj-trocar">Trocar de estande</button>' : ''))}</div>
       <p class="adm-msg">Estes dados são só do seu estande. Avaliações negativas e comentários "só para a loja" aparecem aqui e para a organização da feira, nunca em público.</p>
       <div class="loja-kpis">${kpi(t.visitantes,'visitantes leram o QR')}${kpi(t.curti,'curtidas')}${kpi(t.amei,'amei')}${kpi(t.seguidores,'seguidores')}${kpi(t.salvos,'produtos salvos')}${kpi(t.contatos,'pedidos de contato')}</div>

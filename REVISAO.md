@@ -128,3 +128,26 @@ Testes:
   - convite de estande de ponta a ponta;
   - os testes anteriores do visitante e dos cadastros continuam passando.
 - **Pendente:** gestor e atendente têm hoje o mesmo acesso; diferenciar fica para a próxima etapa.
+
+## Navegação, saída dos tablets e fila do visitante (sexta etapa)
+
+| Item | Como funciona | Proteção |
+|---|---|---|
+| Seta de voltar | Pilha das telas abertas no app; sem tela anterior, vai ao início | Não sai do app para outro site |
+| Tablet travado | A trava vale quando o aparelho tem chave da coleta; qualquer outra tela redireciona para a coleta | Saída só com o gesto de 3 segundos mais o código |
+| Código de saída | O banco guarda o sha256 de "edição:código"; o tablet busca esse hash com a chave da coleta e confere o código sem internet | Sem a chave da coleta não se obtém o hash; 5 erros bloqueiam por 1 minuto; a coluna não é lida pela API; cada saída vai para a auditoria |
+| Fila do visitante | Ações sem sinal ficam no celular (até 300) e são reenviadas quando a conexão volta | O banco confere tudo de novo no reenvio; uma ação recusada (limite, menor de idade) é descartada |
+
+Testes, no navegador contra o banco local:
+- seta a partir do início e de um link direto;
+- trava do tablet resistindo à recarga e à troca de tela;
+- toque curto não abre a saída;
+- código errado e código certo sem internet, com o registro na auditoria quando o sinal volta;
+- visitante curtindo, salvando e avaliando sem internet, recarregando a página sem sinal, com a sincronização quando volta.
+
+Os ataques ao banco foram recusados:
+- chave errada;
+- usuário anônimo definindo o código;
+- moderador definindo o código;
+- código com letras;
+- leitura direta do hash.

@@ -25,7 +25,7 @@ As respostas ficam num banco **Supabase** do próprio projeto. Uma versão alter
 ## 1. Configurar o Supabase (uma vez)
 
 1. Crie um projeto em <https://supabase.com> (região São Paulo, `sa-east-1`).
-2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`, `003_visitante_estande.sql` e `004_moderacao_painel_expositor.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
+2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`, `003_visitante_estande.sql`, `004_moderacao_painel_expositor.sql` e `005_saida_tablets.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
 3. Em **Authentication → Sign In / Providers**, deixe **ligado** "Allow new users to sign up" (a equipe se cadastra pelo link de convite; uma conta criada sem convite não acessa nada) e mantenha "Confirm email" ligado.
    Em **Authentication → URL Configuration**, coloque o endereço do site em **Site URL** e em **Redirect URLs** (ex.: `https://danilo-rv.github.io/Painel-Tecnoshow/**`), para o e-mail de confirmação voltar ao app.
 4. Gere a chave da coleta: no SQL Editor, rode `select replace(gen_random_uuid()::text, '-', '') as chave_da_coleta;` e guarde o resultado.
@@ -77,6 +77,16 @@ Para testar no computador, sirva a pasta `dist/` com `python3 -m http.server -d 
 4. **Não faça login da equipe nos tablets.** O login dá acesso a todas as respostas.
 
 Se a internet cair, a barra mostra `sem internet · guardando aqui` e o número de respostas na fila. Elas são enviadas sozinhas quando a conexão volta (a cada 20 s, e logo que o aparelho fica online). Não limpe os dados do navegador enquanto houver respostas na fila.
+
+### Tablet travado na coleta
+
+- Depois que o tablet recebe a chave da coleta e abre a Coleta, ele fica travado nela, mesmo se alguém recarregar a página ou tentar abrir outra tela.
+- **Para sair:** toque e segure o logotipo "TECNOSHOW AVALIA", no alto da tela, por 3 segundos, e digite o código de saída.
+  - O código, de 4 a 6 dígitos, é definido pela coordenação em **Administração → Equipe → Código de saída dos tablets**. Troque-o a cada edição.
+  - O tablet confere o código sem precisar de internet.
+  - Cada saída fica registrada na auditoria, assim que o tablet tiver sinal.
+  - Cinco códigos errados bloqueiam novas tentativas por um minuto.
+  - Sem código definido, segurar o logotipo e confirmar já basta.
 
 ## 4. Painel e relatório
 
@@ -164,6 +174,15 @@ Cada estande tem um QR (em **Administração → Cadastros → Expositores**, ab
   - o perfil de quem visitou só aparece com 5 ou mais visitantes; a média do segmento, com 5 ou mais estandes da mesma categoria;
   - na mesma tela do expositor, a organização vê quem tem acesso e pode remover uma conta (quando a pessoa sai da empresa);
   - a organização também abre o painel de qualquer estande por **Ver painel do estande**.
+
+## 9. Navegação e uso sem internet
+
+- **Seta de voltar (←):** está no painel, no relatório, na Administração, na área do expositor e na página do estande (quando o visitante veio de outra tela). Ela volta para a tela anterior do app ou, se a pessoa chegou direto por um link, para o início.
+- **Visitante sem sinal no estande:**
+  - curtir, amei, salvar, seguir, avaliar, comentar e pedir contato ficam guardados no celular e aparecem na tela na hora;
+  - quando o sinal volta, tudo é enviado sozinho, e a página avisa quantas ações ainda esperam internet;
+  - um estande já aberto antes continua aparecendo sem internet;
+  - um estande nunca aberto mostra o aviso para tentar de novo quando o sinal voltar.
 
 ## Proteção de dados (LGPD)
 
