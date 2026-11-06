@@ -544,7 +544,7 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 22. Transporte: começar com transporte oficial e caravanas, e deixar a carona em grupos verificados para depois? Há interesse de prefeituras vizinhas em vans?
 
 **Da etapa de identidade**
-23. Nome: escolher 2 ou 3 finalistas da seção 15 (ITA-e, iTA, ITAvents, Expolytics, ExpoIQ…) para a busca no INPI, USPTO e domínios. A sigla ITA precisa estar na marca ou basta a assinatura "by Observatório ITA"?
+23. **(Volta ao final, com mais opções de nomes.)** Nome: escolher 2 ou 3 finalistas da seção 15 (ITA-e, iTA, ITAvents, Expolytics, ExpoIQ…) para a busca no INPI, USPTO e domínios. A sigla ITA precisa estar na marca ou basta a assinatura "by Observatório ITA"?
 
 **Da etapa de usabilidade**
 24. Saída da coleta pela equipe: gesto + código numérico serve? Quem define e guarda o código?
@@ -591,6 +591,9 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 | 21 | **De 6 a 10 mestrandos**, cada um com um eixo de pesquisa, **mais bolsistas** de extensão (graduação e técnico) | 06/11/2026 | Prever bolsas e certificação de horas. Cada eixo vira capítulo ou dissertação |
 | 22 | **Transporte oficial e caravanas institucionais primeiro;** carona só depois, em grupos verificados | 06/11/2026 | O módulo de transporte da fase 1 cadastra rotas oficiais e caravanas, sem carona entre desconhecidos |
 | 24 | **Saída da coleta: tocar e segurar o logotipo por 3 segundos + código de 4 a 6 dígitos**, definido pelo administrador e trocado a cada edição | 06/11/2026 | O código fica na Administração, com registro de uso na auditoria |
+| 26 | **Moldura oficial da plataforma** (logo do app + marca da feira), **com espaço reservado para a logo de cada estande**; patrocinador só em moldura especial de campanha | 06/11/2026 | Gerador de cartões com camadas fixas (logo do app e da feira) e uma camada do estande |
+| 29 | **Painel de estande no celular do expositor e dos atendentes, com exibição opcional numa TV ou tablet** do próprio expositor, habilitada pela equipe treinada | 06/11/2026 | O painel tem uma versão para celular e outra para tela grande, com o QR de interação |
+| 30 | **Treinamento pelo app (vídeos, passo a passo, teste) + uma sessão prática presencial;** o selo "treinado" é liberado pelo administrador geral ou pela organização depois das duas etapas | 06/11/2026 | Módulo de treinamento e controle do selo entram na Administração |
 
 ---
 
@@ -607,3 +610,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 06/11/2026: administração geral, hierarquia de papéis, habilitação de aparelhos pela equipe treinada, decisões 27 a 30.
 - 06/11/2026: decisões 1 a 14, 20 e 27 tomadas.
 - 06/11/2026: decisões 15 a 19, 21, 22 e 24 tomadas.
+- 06/11/2026: decisões 26, 29 e 30 tomadas; decisão 23 adiada para o final, com mais opções de nomes.
