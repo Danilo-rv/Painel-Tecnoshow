@@ -859,3 +859,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 06/11/2026: presença em palestras com QR que muda a cada minuto, avaliação de palestras só para a organização, trilhas com cupom de uso único e baixa pelo estande doador (seção 18-B, migração 006).
 - 06/11/2026: telão social com fotos e mensagens moderadas sobre o mapa da feira, destaque com a marca da plataforma e "em alta agora" (migração 007).
 - 06/11/2026: Tecnoshow na Cidade construído (seção 10; decisões 15 a 17; migração 008): parceiros com QR, "quero na feira", pesquisa do hóspede, área do parceiro com ocupação sigilosa e demanda da cidade, e aba Cidade para a organização.
+- 06/11/2026: perguntas ao vivo com mediação e votos, assuntos em alta, página "Acontecendo agora" e Passaporte da Cidade (seções 10.3 e 18-C; migração 009).

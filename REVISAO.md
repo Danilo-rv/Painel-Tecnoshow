@@ -234,3 +234,34 @@ Testes:
   - hotel entrando pelo convite e informando a ocupação;
   - aba Cidade.
 - Os testes anteriores continuam passando.
+
+## Ao vivo e Passaporte da Cidade (décima etapa)
+
+| Item | Como funciona | Proteção |
+|---|---|---|
+| Perguntas | Só quem tem presença registrada na palestra; até 3 por pessoa; de 3 a 200 caracteres | Menores não perguntam; nada aparece ao público antes da mediação; cada mediação é auditada |
+| Votos | Votar de novo desfaz o voto; só em perguntas no ar e por quem esteve presente | Um voto por pessoa por pergunta |
+| Mediação | `perguntas_mediador` e `mediar_pergunta` | Só contas da equipe |
+| Assuntos em alta | Contagem de palavras em textos públicos aprovados | Palavra só aparece se citada por 3 ou mais pessoas; nada pendente ou privado entra |
+| Acontecendo agora | `agora` devolve agenda, contagens e trilhas | Sem dados de pessoas: só contagens, a partir de 3 |
+| Passaporte | Etapa "cidade" validada pelo banco; doador da cidade | Baixa só pelo parceiro doador ou pela organização; código de outro doador aparece como "não encontrado" |
+
+Testes:
+- **Banco local:**
+  - pergunta de menor;
+  - pergunta sem presença;
+  - texto curto demais;
+  - voto em pergunta não aprovada;
+  - mediação por conta de estande;
+  - decisão inválida;
+  - cupom do Passaporte resgatado por um estande que não é o doador.
+- **Navegador**, do começo ao fim:
+  - a coordenação cria o Passaporte;
+  - o visitante pergunta;
+  - a mediação aprova;
+  - outro visitante vota;
+  - o telão mostra a pergunta;
+  - o check-in no restaurante completa a trilha;
+  - o parceiro dá baixa no cupom;
+  - "Acontecendo agora" e assuntos no telão social.
+- Os testes anteriores continuam passando.

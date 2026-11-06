@@ -369,6 +369,13 @@ details.vis-card summary{cursor:pointer;font-weight:600}
 .mu-alta b{color:var(--gold)}
 .vis-foto-prev{max-width:100%;max-height:260px;border-radius:10px;display:block}
 .mod-foto{max-width:min(100%,360px);max-height:280px;border-radius:10px;display:block;background:var(--night)}
+.vis-pergs{display:grid;gap:8px}
+.vis-perg{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
+.vis-perg p{margin:0;line-height:1.4;overflow-wrap:anywhere} .vis-perg.respondida{opacity:.6} .vis-perg.pendente{border-style:dashed}
+.tl-pergs{display:grid;gap:10px;margin-top:8px} .tl-pergs h2{margin:0;font-family:var(--f-display);font-size:1.3rem;color:var(--glow2)}
+.tl-perg{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:baseline;font-size:clamp(1.05rem,1.6vw,1.4rem);line-height:1.3}
+.tl-perg b{font-family:var(--f-mono);color:var(--gold);font-size:1rem}
+.mu-assuntos{display:flex;flex-wrap:wrap;gap:8px} .mu-assuntos span{font-family:var(--f-display);font-size:1.15rem;padding:6px 12px;border-radius:999px;border:1px solid var(--line);color:var(--glow2)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -528,6 +535,8 @@ details.vis-card summary{cursor:pointer;font-weight:600}
 <div id="v-mural" class="view" hidden><div class="mu" id="mu-corpo"></div></div>
 
 <div id="v-parceiro" class="view" hidden><div class="loja" id="pc-corpo"></div></div>
+
+<div id="v-mediar" class="view" hidden><div class="loja" id="md-corpo"></div></div>
 
 <div id="v-convite" class="view" hidden>
   <div class="conv"><form class="login-box" id="c-form" autocomplete="on">
@@ -1005,6 +1014,10 @@ const Base = (() => {
     avaliarPalestra: (token, id, car, txt) => rpc('avaliar_palestra', {p_token:token, p_agenda:id, p_carinha:car, p_texto:txt}),
     trilhas: token => rpc('trilhas_visitante', {p_token:token}),
     estab: id => rpc('estab_publico', {p_estab:id}),
+    perguntas: (token, id) => rpc('perguntas_palestra', {p_token:token, p_agenda:id}),
+    perguntar: (token, id, tx) => rpc('perguntar', {p_token:token, p_agenda:id, p_texto:tx}),
+    votar: (token, q) => rpc('votar_pergunta', {p_token:token, p_pergunta:q}),
+    agora: ed => rpc('agora', {p_ed:ed}),
     agirCidade: (token, id, acao, valor) => rpc('interagir_cidade', {p_token:token, p_estab:id, p_acao:acao, p_valor:valor||null}),
     hospede: (token, id, dados) => rpc('pesquisa_hospede', {p_token:token, p_estab:id, p_dados:dados}),
     publicar: (token, tipo, id, texto, foto) => rpc('publicar_mural', {p_token:token, p_alvo_tipo:tipo, p_alvo_id:id, p_texto:texto, p_foto:foto||null}),
@@ -1015,7 +1028,9 @@ const Base = (() => {
     telao: id => rpc('codigo_palestra', {p_agenda:id}),
     presencas: ed => rpc('presencas_edicao', {p_ed:ed}),
     comentarios: id => rpc('comentarios_palestra', {p_agenda:id}),
-    metricasTrilha: id => rpc('metricas_trilha', {p_trilha:id})
+    metricasTrilha: id => rpc('metricas_trilha', {p_trilha:id}),
+    perguntas: id => rpc('perguntas_mediador', {p_agenda:id}),
+    mediar: (id, st) => rpc('mediar_pergunta', {p_id:id, p_status:st})
   };
   /* Tecnoshow na Cidade: parceiros (bares, restaurantes, hotéis) e resumo para a organização */
   const parceiro = {
@@ -1027,6 +1042,8 @@ const Base = (() => {
     contas: id => rpc('listar_contas_parceiro', {p_estab:id}),
     remover: (u, id) => rpc('remover_conta_parceiro', {p_user:u, p_estab:id}),
     resumo: ed => rpc('resumo_cidade', {p_ed:ed}),
+    trilhas: id => rpc('trilhas_do_estab', {p_estab:id}),
+    resgatar: cod => rpc('resgatar_cupom', {p_codigo:cod}),
     async entrar(){
       const serve = async () => { if (EDITORES.includes(await meuPapel())) return true; try{ return (await rpc('meus_estabelecimentos')).length>0; }catch(e){ return false; } };
       if ((await temSessao().catch(()=>false)) && await serve()) return true;
@@ -1159,7 +1176,7 @@ const Saida = (() => {
 })();
 
 /* ================== ROTEAMENTO ================== */
-const VIEWS = ['inicio','coleta','painel','relatorio','admin','convite','visitante','expositor','telao','mural','parceiro'];
+const VIEWS = ['inicio','coleta','painel','relatorio','admin','convite','visitante','expositor','telao','mural','parceiro','mediar'];
 let current = null;
 function route(){
   let h = (location.hash||'').replace('#','');
@@ -1169,7 +1186,8 @@ function route(){
   if (/^convite-/.test(base)) base='convite';
   if (/^e-[0-9a-f-]{36}$/.test(base)) base='visitante';
   if (/^expositor(-[0-9a-f-]{36})?$/.test(base)) base='expositor';
-  if (/^p-[0-9a-f-]{36}(-[0-9a-f]{10})?$/.test(base) || /^[tc]-[0-9a-f-]{36}$/.test(base) || base==='trilhas') base='visitante';
+  if (/^p-[0-9a-f-]{36}(-[0-9a-f]{10})?$/.test(base) || /^[tc]-[0-9a-f-]{36}$/.test(base) || base==='trilhas' || base==='agora') base='visitante';
+  if (/^mediar-[0-9a-f-]{36}$/.test(base)) base='mediar';
   if (/^telao-[0-9a-f-]{36}$/.test(base)) base='telao';
   let v = VIEWS.includes(base) ? base : 'inicio';
   if (v!=='coleta' && Saida.travado()){ history.replaceState(null,'',location.pathname+'#coleta'); v='coleta'; h='coleta'; }
@@ -1186,11 +1204,13 @@ function route(){
     else if (h.startsWith('p-')) Visit.palestra(h.slice(2,38), h.slice(39)||null);
     else if (h.startsWith('t-')) Visit.trilha(h.slice(2));
     else if (h.startsWith('c-')) Visit.cidade(h.slice(2));
+    else if (h==='agora') Visit.agora();
     else Visit.trilhas();
   }
   if (v==='telao') Telao.start(h.slice(6));
   if (v==='mural') Mural.start();
   if (v==='parceiro') Parceiro.start();
+  if (v==='mediar') Mediar.start(h.slice(7));
   if (v==='expositor') Loja.start(h.slice(10));
 }
 /* Seta de voltar: volta para a tela anterior do app; se a pessoa chegou direto (link ou QR), vai para o início. */
@@ -2109,7 +2129,7 @@ const Cad = (() => {
       {k:'quartos', l:'Quartos (só hotéis)', t:'num'}, st, {k:'obs', l:'Observação (interna)', t:'area', max:500}]},
     trilhas: {nome:'Trilhas', esc:'ed', chave:'titulo', semCSV:true, campos:[
       {k:'titulo', l:'Nome da trilha', t:'text', req:1, max:120}, {k:'premio', l:'Prêmio', t:'text', req:1, max:200},
-      {k:'doador_estande', l:'Estande que entrega o prêmio (dá baixa no cupom)', t:'ref', ref:'estandes'}, {k:'estoque', l:'Quantidade de prêmios', t:'num'},
+      {k:'doador_estande', l:'Estande que entrega o prêmio (dá baixa no cupom)', t:'ref', ref:'estandes'}, {k:'doador_estab', l:'Ou: parceiro da cidade que entrega o prêmio', t:'ref', ref:'estabelecimentos'}, {k:'estoque', l:'Quantidade de prêmios', t:'num'},
       {k:'prazo', l:'Prazo (opcional)', t:'dt'}, {k:'status', l:'Situação', t:'sel', op:TS},
       {k:'etapas', l:'Etapas', t:'etapas'}, {k:'descricao', l:'Descrição para o visitante', t:'area', max:1000},
       {k:'regulamento', l:'Regulamento (prêmio por ordem de chegada, sem sorteio)', t:'area', max:3000}]},
@@ -2183,6 +2203,7 @@ const Cad = (() => {
     const base = ref==='categorias' ? d.categorias.filter(c=>!c.excluido_em).sort((a,b)=>a.ordem-b.ordem).map(c=>[c.id,c.nome])
       : ref==='expositores' ? d.expositores.filter(x=>!x.excluido_em).sort((a,b)=>a.nome.localeCompare(b.nome,'pt')).map(x=>[x.id,x.nome])
       : ref==='estandes' ? d.estandes.filter(s=>!s.excluido_em).map(s=>[s.id, (d.expositores.find(x=>x.id===s.expositor_id)||{}).nome||'–']).sort((a,b)=>a[1].localeCompare(b[1],'pt'))
+      : ref==='estabelecimentos' ? (d.estabelecimentos||[]).filter(x=>!x.excluido_em).sort((a,b)=>a.nome.localeCompare(b.nome,'pt')).map(x=>[x.id, x.nome+' ('+(CID.tipo[x.tipo]||x.tipo)+')'])
       : ref==='lotes' ? d.lotes.filter(l=>!l.excluido_em).sort((a,b)=>num(a.numero)-num(b.numero)).map(l=>[l.id,'Lote '+l.numero])
       : d.locais.filter(l=>!l.excluido_em).sort((a,b)=>a.nome.localeCompare(b.nome,'pt')).map(l=>[l.id, l.nome+' ('+(TC[l.tipo]||l.tipo)+')']);
     return '<option value="">—</option>' + base.map(([v,t])=>`<option value="${esc(v)}" ${v===atual?'selected':''}>${esc(t)}</option>`).join('');
@@ -2202,7 +2223,8 @@ const Cad = (() => {
     if (c.t==='etapas') return `<div class="fld larga"><span>${lbl} · o visitante cumpre todas, em qualquer ordem</span><div id="cf-etapas" class="adm-lista"></div>
       <div class="adm-acts"><select id="cf-etapa-nova" aria-label="Nova etapa"><option value="">Escolha uma palestra ou um estande…</option>
         <optgroup label="Palestras e atividades">${d.agenda.filter(a=>!a.excluido_em).sort((a,b)=>String(a.inicio||'').localeCompare(String(b.inicio||''))).map(a=>`<option value="palestra:${esc(a.id)}">${esc((a.inicio?new Date(a.inicio).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})+' · ':'')+a.titulo)}</option>`).join('')}</optgroup>
-        <optgroup label="Estandes">${opcoesRef('estandes').replace('<option value="">—</option>','').replace(/value="/g,'value="estande:')}</optgroup></select><button type="button" class="ghost sm" id="cf-etapa-add">Adicionar etapa</button></div></div>`;
+        <optgroup label="Estandes">${opcoesRef('estandes').replace('<option value="">—</option>','').replace(/value="/g,'value="estande:')}</optgroup>
+        <optgroup label="Cidade (Passaporte)">${opcoesRef('estabelecimentos').replace('<option value="">—</option>','').replace(/value="/g,'value="cidade:')}</optgroup></select><button type="button" class="ghost sm" id="cf-etapa-add">Adicionar etapa</button></div></div>`;
     if (c.t==='cor') return `<label class="fld" for="${id}">${lbl}<input type="color" id="${id}" data-k="${c.k}" value="${esc(v||'#5fd0ff')}"></label>`;
     return `<label class="fld" for="${id}">${lbl}<input id="${id}" data-k="${c.k}" maxlength="${c.max||200}" value="${esc(v||'')}"></label>`;
   }
@@ -2224,7 +2246,7 @@ const Cad = (() => {
       const pr = d.pres[r.id] || {}, tel = location.origin + location.pathname + '#telao-' + r.id;
       extra += `<div class="larga adm-sec" style="background:transparent"><b>Presença e avaliação</b>
         <p class="nota">Abra o telão de presença no computador do auditório (com uma conta da equipe). O QR muda a cada minuto e só vale de 15 minutos antes do início até 15 minutos depois do fim.</p>
-        <div class="adm-acts"><a class="ghost sm" href="${esc(tel)}" target="_blank" rel="noopener">Abrir telão de presença</a></div>
+        <div class="adm-acts"><a class="ghost sm" href="${esc(tel)}" target="_blank" rel="noopener">Abrir telão de presença</a><a class="ghost sm" href="#mediar-${esc(r.id)}" target="_blank" rel="noopener">Mediar perguntas ao vivo</a></div>
         <p class="adm-p"><b>${pr.presentes||0}</b> presenças · avaliações: 😀 ${pr.bom||0} · 😐 ${pr.neutro||0} · ☹️ ${pr.ruim||0} · ${pr.comentarios||0} comentários (só a organização vê)</p>
         <div id="cf-pal-com" class="coments"></div></div>`;
     }
@@ -2265,7 +2287,7 @@ const Cad = (() => {
         etapasEd.push({tipo, id}); desenharEtapas(); $('cf-etapa-nova').value=''; };
       if (r) Base.agenda.metricasTrilha(r.id).then(m=>{ const box=$('cf-tri-num'); if (!box) return;
         box.innerHTML = `<b>Números da trilha</b><p class="adm-p">${m.comecaram} começaram · ${m.cupons} completaram e receberam cupom · ${m.resgatados} retiraram o prêmio · ${Math.max(0, m.estoque-m.cupons)} prêmios restantes</p>
-          <div class="tw"><table class="adm-tab"><thead><tr><th>Etapa</th><th>Visitantes que cumpriram</th></tr></thead><tbody>${(m.etapas||[]).map(e=>`<tr><td>${esc((e.tipo==='palestra'?'Palestra: ':'Estande: ')+(e.nome||'–'))}</td><td class="tabnum">${e.n}</td></tr>`).join('')}</tbody></table></div>`; }).catch(()=>{ const box=$('cf-tri-num'); if (box) box.innerHTML='<span class="nota">Não foi possível carregar os números agora.</span>'; });
+          <div class="tw"><table class="adm-tab"><thead><tr><th>Etapa</th><th>Visitantes que cumpriram</th></tr></thead><tbody>${(m.etapas||[]).map(e=>`<tr><td>${esc((e.tipo==='palestra'?'Palestra: ':e.tipo==='cidade'?'Cidade: ':'Estande: ')+(e.nome||'–'))}</td><td class="tabnum">${e.n}</td></tr>`).join('')}</tbody></table></div>`; }).catch(()=>{ const box=$('cf-tri-num'); if (box) box.innerHTML='<span class="nota">Não foi possível carregar os números agora.</span>'; });
     }
     if (ent==='agenda' && r && $('cf-pal-com')) Base.agenda.comentarios(r.id).then(l=>{ const box=$('cf-pal-com'); if (box && l.length) box.innerHTML = l.map(c=>`<div class="coment"><div class="meta"><span>${esc(new Date(c.quando).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}))}</span></div><p>${esc(c.texto)}</p></div>`).join(''); }).catch(()=>{});
     if ($('cf-loja-conv')){
@@ -2288,7 +2310,7 @@ const Cad = (() => {
     if ($('cf-rest')) $('cf-rest').onclick = async () => { await lixeira(R, false); };
     lista(); $('cd-form').scrollIntoView({block:'nearest'});
   }
-  const nomeEtapa = e => e.tipo==='palestra' ? 'Palestra: '+((d.agenda.find(a=>a.id===e.id)||{}).titulo||'(removida)') : 'Estande: '+((d.expositores.find(x=>x.id===((d.estandes.find(s=>s.id===e.id)||{}).expositor_id))||{}).nome||'(removido)');
+  const nomeEtapa = e => e.tipo==='palestra' ? 'Palestra: '+((d.agenda.find(a=>a.id===e.id)||{}).titulo||'(removida)') : e.tipo==='cidade' ? 'Cidade: '+(((d.estabelecimentos||[]).find(x=>x.id===e.id)||{}).nome||'(removido)') : 'Estande: '+((d.expositores.find(x=>x.id===((d.estandes.find(s=>s.id===e.id)||{}).expositor_id))||{}).nome||'(removido)');
   function desenharEtapas(){
     const box = $('cf-etapas'); if (!box) return;
     box.innerHTML = etapasEd.length ? etapasEd.map((e,i)=>`<div class="orow"><span>${i+1}. ${esc(nomeEtapa(e))}</span><button type="button" class="ib" data-rmet="${i}" aria-label="Remover etapa ${i+1}">✕</button></div>`).join('') : '<p class="nota">Nenhuma etapa ainda.</p>';
@@ -2572,8 +2594,9 @@ const Visit = (() => {
         compartilhar:'Compartilhar', copiado:'Link copiado.', obrigado:'Registrado!', erro:'Não foi possível registrar agora. Confira a internet e tente de novo.',
         naoAchado:'Estande não encontrado. Confira o QR code ou procure a equipe da feira.', indisponivel:'A interatividade ao vivo funciona no site oficial da plataforma.', carregando:'Carregando…',
         semRede:'Sem internet agora. Abra este QR de novo quando o sinal voltar.', naFila:'Sem internet: guardamos aqui e enviamos sozinhos quando o sinal voltar.', pendentes:'ações esperando internet',
-        trilhas:'Trilhas', etapas:'etapas', premio:'Prêmio', oferecido:'Oferecido por', verTodas:'Ver todas as trilhas', ganhou:'Você completou a trilha!', mostreCupom:'Mostre este código no estande {x} para retirar o prêmio.', mostreCupomOrg:'Mostre este código à organização da feira para retirar o prêmio.', retirado:'Prêmio já retirado.', esgotada:'Os prêmios desta trilha acabaram.', encerrada:'Esta trilha já foi encerrada.', prazo:'Até', regulamento:'Regulamento', semTrilhas:'Nenhuma trilha aberta agora.', semTrilha:'Trilha não encontrada ou encerrada.', comecar:'Leia o QR de um estande ou de uma palestra para começar.', palestra:'Palestra', estande:'Estande', presencaOk:'Presença registrada ✓', presencaSem:'Para registrar presença, leia o QR do telão durante a palestra.', foraHorario:'A presença só pode ser registrada durante a palestra.', expirado:'Este QR já mudou. Leia de novo o QR do telão.', avalPal:'O que achou da palestra?', comentPal:'Comentário para a organização (não é publicado)',
+        trilhas:'Trilhas', etapas:'etapas', premio:'Prêmio', oferecido:'Oferecido por', verTodas:'Ver todas as trilhas', ganhou:'Você completou a trilha!', mostreCupom:'Mostre este código no estande {x} para retirar o prêmio.', mostreCupomCid:'Mostre este código em {x} para retirar o prêmio.', mostreCupomOrg:'Mostre este código à organização da feira para retirar o prêmio.', retirado:'Prêmio já retirado.', esgotada:'Os prêmios desta trilha acabaram.', encerrada:'Esta trilha já foi encerrada.', prazo:'Até', regulamento:'Regulamento', semTrilhas:'Nenhuma trilha aberta agora.', semTrilha:'Trilha não encontrada ou encerrada.', comecar:'Leia o QR de um estande ou de uma palestra para começar.', palestra:'Palestra', estande:'Estande', presencaOk:'Presença registrada ✓', presencaSem:'Para registrar presença, leia o QR do telão durante a palestra.', foraHorario:'A presença só pode ser registrada durante a palestra.', expirado:'Este QR já mudou. Leia de novo o QR do telão.', avalPal:'O que achou da palestra?', comentPal:'Comentário para a organização (não é publicado)',
         publicar:'Publicar no telão', mensagem:'Mensagem (até 140 caracteres)', foto:'Adicionar foto', publicarAj:'Sua publicação passa pela moderação antes de aparecer no telão da feira, com a marca da plataforma. Não publique fotos de outras pessoas sem a permissão delas.', publicado:'Enviado! Sua publicação aparece no telão depois da moderação.', muitas:'Você já publicou muitas vezes na última hora. Tente mais tarde.', fotoErro:'Não foi possível ler esta foto. Tente outra.', fotoOuTexto:'Escreva uma mensagem ou escolha uma foto.',
+        perguntas:'Perguntas ao vivo', suaPergunta:'Sua pergunta para o palestrante', perguntar:'Enviar pergunta', aguardando:'Aguardando a mediação', respondida:'Respondida', votar:'Votar nesta pergunta', semPerguntas:'Nenhuma pergunta no ar ainda.', perguntaOk:'Pergunta enviada. Ela aparece para todos depois da mediação.', perguntaLimite:'Você já enviou 3 perguntas nesta palestra.', agoraTit:'Acontecendo agora', agoraPal:'Palestras agora', nadaAgora:'Nenhuma palestra neste momento.', aSeguir:'A seguir', emAlta:'Estandes em alta', pessoasAgora:'pessoas na última meia hora', assuntos:'Assuntos em alta',
         cid:{parceiro:'Parceiro Tecnoshow', obrigado:'Check-in feito. Obrigado por visitar!', comoFoi:'Como foi?', naFeira:'Gostaria de ver este lugar na Tecnoshow?', naFeiraAj:'Sua resposta ajuda a feira a convidar novos expositores.', sim:'Sim', nao:'Não', pesquisa:'Você está hospedado aqui?', pesquisaAj:'Leva 20 segundos e ajuda a cidade a se preparar para a próxima feira. As respostas são anônimas.', noites:'Quantas noites?', pessoas:'Quantas pessoas no quarto?', diaria:'Valor da diária', antecedencia:'Com que antecedência reservou?', motivo:'Motivo da viagem', satisf:'Como está a estadia?', falta:'Responda as cinco primeiras perguntas.', hospedeOk:'Resposta registrada. Obrigado!', refazer:'Corrigir minha resposta', tipo:{bar:'Bar', restaurante:'Restaurante', hotel:'Hotel', loja:'Loja', servico:'Serviço', turismo:'Turismo', outro:'Parceiro'}, diarias:{d1:'Até R$ 150', d2:'R$ 151–250', d3:'R$ 251–400', d4:'R$ 401–600', d5:'Mais de R$ 600'}, antecedencias:{a0:'Menos de 1 semana', a1:'Até 1 mês', a2:'1 a 3 meses', a3:'Mais de 3 meses'}, motivos:{feira:'Tecnoshow', negocios:'Negócios', turismo:'Turismo', familia:'Família', outro:'Outro'}}},
     en:{entrar:'Before you interact, tell us a little about yourself', entrarSub:'It takes about 40 seconds and covers the whole fair. We do not ask for your name or ID.',
         idioma:'Language', origem:'Where did you come from?', cidade:'Type your city', pais:'Type your country', perfil:'Which best describes you?', idade:'Age group',
@@ -2588,8 +2611,9 @@ const Visit = (() => {
         compartilhar:'Share', copiado:'Link copied.', obrigado:'Saved!', erro:'Could not save right now. Check your connection and try again.',
         naoAchado:'Exhibitor not found. Check the QR code or ask the fair staff.', indisponivel:'Live interaction works on the platform website.', carregando:'Loading…',
         semRede:'No internet right now. Open this QR code again when you have signal.', naFila:'No internet: saved on this phone and sent automatically when the signal returns.', pendentes:'actions waiting for internet',
-        trilhas:'Trails', etapas:'steps', premio:'Prize', oferecido:'Offered by', verTodas:'See all trails', ganhou:'You completed the trail!', mostreCupom:'Show this code at the {x} booth to collect your prize.', mostreCupomOrg:'Show this code to the fair staff to collect your prize.', retirado:'Prize already collected.', esgotada:'The prizes for this trail have run out.', encerrada:'This trail has ended.', prazo:'Until', regulamento:'Rules', semTrilhas:'No open trails right now.', semTrilha:'Trail not found or ended.', comecar:'Scan the QR code of a booth or a talk to start.', palestra:'Talk', estande:'Booth', presencaOk:'Attendance recorded ✓', presencaSem:'To record attendance, scan the QR code on the screen during the talk.', foraHorario:'Attendance can only be recorded during the talk.', expirado:'This QR code has changed. Scan the screen again.', avalPal:'How was the talk?', comentPal:'Comment for the organizers (not published)',
+        trilhas:'Trails', etapas:'steps', premio:'Prize', oferecido:'Offered by', verTodas:'See all trails', ganhou:'You completed the trail!', mostreCupom:'Show this code at the {x} booth to collect your prize.', mostreCupomCid:'Show this code at {x} to collect your prize.', mostreCupomOrg:'Show this code to the fair staff to collect your prize.', retirado:'Prize already collected.', esgotada:'The prizes for this trail have run out.', encerrada:'This trail has ended.', prazo:'Until', regulamento:'Rules', semTrilhas:'No open trails right now.', semTrilha:'Trail not found or ended.', comecar:'Scan the QR code of a booth or a talk to start.', palestra:'Talk', estande:'Booth', presencaOk:'Attendance recorded ✓', presencaSem:'To record attendance, scan the QR code on the screen during the talk.', foraHorario:'Attendance can only be recorded during the talk.', expirado:'This QR code has changed. Scan the screen again.', avalPal:'How was the talk?', comentPal:'Comment for the organizers (not published)',
         publicar:'Post to the big screen', mensagem:'Message (up to 140 characters)', foto:'Add photo', publicarAj:'Your post is reviewed before it appears on the fair screen, with the platform logo. Do not post photos of other people without their permission.', publicado:'Sent! Your post will appear on the screen after review.', muitas:'You have posted many times in the last hour. Try again later.', fotoErro:'This photo could not be read. Try another one.', fotoOuTexto:'Write a message or choose a photo.',
+        perguntas:'Live questions', suaPergunta:'Your question for the speaker', perguntar:'Send question', aguardando:'Waiting for review', respondida:'Answered', votar:'Vote for this question', semPerguntas:'No questions on screen yet.', perguntaOk:'Question sent. Everyone sees it after review.', perguntaLimite:'You have already sent 3 questions in this talk.', agoraTit:'Happening now', agoraPal:'Talks now', nadaAgora:'No talks right now.', aSeguir:'Coming up', emAlta:'Trending booths', pessoasAgora:'people in the last half hour', assuntos:'Trending topics',
         cid:{parceiro:'Tecnoshow partner', obrigado:'Checked in. Thanks for visiting!', comoFoi:'How was it?', naFeira:'Would you like to see this place at Tecnoshow?', naFeiraAj:'Your answer helps the fair invite new exhibitors.', sim:'Yes', nao:'No', pesquisa:'Are you staying here?', pesquisaAj:'It takes 20 seconds and helps the city prepare for the next fair. Answers are anonymous.', noites:'How many nights?', pessoas:'How many people in the room?', diaria:'Nightly rate', antecedencia:'How far in advance did you book?', motivo:'Reason for the trip', satisf:'How is your stay?', falta:'Please answer the first five questions.', hospedeOk:'Answer recorded. Thank you!', refazer:'Change my answer', tipo:{bar:'Bar', restaurante:'Restaurant', hotel:'Hotel', loja:'Shop', servico:'Service', turismo:'Tourism', outro:'Partner'}, diarias:{d1:'Up to R$ 150', d2:'R$ 151–250', d3:'R$ 251–400', d4:'R$ 401–600', d5:'Over R$ 600'}, antecedencias:{a0:'Less than 1 week', a1:'Up to 1 month', a2:'1 to 3 months', a3:'Over 3 months'}, motivos:{feira:'Tecnoshow', negocios:'Business', turismo:'Tourism', familia:'Family', outro:'Other'}}},
     es:{entrar:'Antes de interactuar, cuéntenos un poco sobre usted', entrarSub:'Toma unos 40 segundos y vale para toda la feria. No pedimos nombre ni documento.',
         idioma:'Idioma', origem:'¿De dónde viene?', cidade:'Escriba su ciudad', pais:'Escriba su país', perfil:'¿Cuál es su perfil?', idade:'Rango de edad',
@@ -2604,8 +2628,9 @@ const Visit = (() => {
         compartilhar:'Compartir', copiado:'Enlace copiado.', obrigado:'¡Registrado!', erro:'No fue posible registrar ahora. Revise su conexión e intente de nuevo.',
         naoAchado:'Expositor no encontrado. Revise el código QR o busque al personal de la feria.', indisponivel:'La interacción en vivo funciona en el sitio de la plataforma.', carregando:'Cargando…',
         semRede:'Sin internet ahora. Abra este código QR de nuevo cuando vuelva la señal.', naFila:'Sin internet: lo guardamos aquí y lo enviamos solo cuando vuelva la señal.', pendentes:'acciones esperando internet',
-        trilhas:'Rutas', etapas:'etapas', premio:'Premio', oferecido:'Ofrecido por', verTodas:'Ver todas las rutas', ganhou:'¡Completó la ruta!', mostreCupom:'Muestre este código en el stand {x} para retirar el premio.', mostreCupomOrg:'Muestre este código a la organización de la feria para retirar el premio.', retirado:'Premio ya retirado.', esgotada:'Se agotaron los premios de esta ruta.', encerrada:'Esta ruta ya terminó.', prazo:'Hasta', regulamento:'Reglamento', semTrilhas:'No hay rutas abiertas ahora.', semTrilha:'Ruta no encontrada o terminada.', comecar:'Lea el código QR de un stand o de una charla para empezar.', palestra:'Charla', estande:'Stand', presencaOk:'Asistencia registrada ✓', presencaSem:'Para registrar asistencia, lea el código QR de la pantalla durante la charla.', foraHorario:'La asistencia solo se registra durante la charla.', expirado:'Este código QR ya cambió. Léalo de nuevo en la pantalla.', avalPal:'¿Qué le pareció la charla?', comentPal:'Comentario para la organización (no se publica)',
+        trilhas:'Rutas', etapas:'etapas', premio:'Premio', oferecido:'Ofrecido por', verTodas:'Ver todas las rutas', ganhou:'¡Completó la ruta!', mostreCupom:'Muestre este código en el stand {x} para retirar el premio.', mostreCupomCid:'Muestre este código en {x} para retirar el premio.', mostreCupomOrg:'Muestre este código a la organización de la feria para retirar el premio.', retirado:'Premio ya retirado.', esgotada:'Se agotaron los premios de esta ruta.', encerrada:'Esta ruta ya terminó.', prazo:'Hasta', regulamento:'Reglamento', semTrilhas:'No hay rutas abiertas ahora.', semTrilha:'Ruta no encontrada o terminada.', comecar:'Lea el código QR de un stand o de una charla para empezar.', palestra:'Charla', estande:'Stand', presencaOk:'Asistencia registrada ✓', presencaSem:'Para registrar asistencia, lea el código QR de la pantalla durante la charla.', foraHorario:'La asistencia solo se registra durante la charla.', expirado:'Este código QR ya cambió. Léalo de nuevo en la pantalla.', avalPal:'¿Qué le pareció la charla?', comentPal:'Comentario para la organización (no se publica)',
         publicar:'Publicar en la pantalla', mensagem:'Mensaje (hasta 140 caracteres)', foto:'Agregar foto', publicarAj:'Su publicación pasa por moderación antes de aparecer en la pantalla de la feria, con la marca de la plataforma. No publique fotos de otras personas sin su permiso.', publicado:'¡Enviado! Su publicación aparece en la pantalla después de la moderación.', muitas:'Ya publicó muchas veces en la última hora. Intente más tarde.', fotoErro:'No fue posible leer esta foto. Pruebe otra.', fotoOuTexto:'Escriba un mensaje o elija una foto.',
+        perguntas:'Preguntas en vivo', suaPergunta:'Su pregunta para el ponente', perguntar:'Enviar pregunta', aguardando:'Esperando la moderación', respondida:'Respondida', votar:'Votar esta pregunta', semPerguntas:'Aún no hay preguntas en pantalla.', perguntaOk:'Pregunta enviada. Todos la verán después de la moderación.', perguntaLimite:'Ya envió 3 preguntas en esta charla.', agoraTit:'Pasando ahora', agoraPal:'Charlas ahora', nadaAgora:'No hay charlas en este momento.', aSeguir:'A continuación', emAlta:'Stands en tendencia', pessoasAgora:'personas en la última media hora', assuntos:'Temas en tendencia',
         cid:{parceiro:'Socio Tecnoshow', obrigado:'Check-in hecho. ¡Gracias por visitar!', comoFoi:'¿Cómo le fue?', naFeira:'¿Le gustaría ver este lugar en la Tecnoshow?', naFeiraAj:'Su respuesta ayuda a la feria a invitar nuevos expositores.', sim:'Sí', nao:'No', pesquisa:'¿Está hospedado aquí?', pesquisaAj:'Toma 20 segundos y ayuda a la ciudad a prepararse para la próxima feria. Las respuestas son anónimas.', noites:'¿Cuántas noches?', pessoas:'¿Cuántas personas en la habitación?', diaria:'Valor de la noche', antecedencia:'¿Con cuánta anticipación reservó?', motivo:'Motivo del viaje', satisf:'¿Cómo está la estadía?', falta:'Responda las cinco primeras preguntas.', hospedeOk:'Respuesta registrada. ¡Gracias!', refazer:'Corregir mi respuesta', tipo:{bar:'Bar', restaurante:'Restaurante', hotel:'Hotel', loja:'Tienda', servico:'Servicio', turismo:'Turismo', outro:'Socio'}, diarias:{d1:'Hasta R$ 150', d2:'R$ 151–250', d3:'R$ 251–400', d4:'R$ 401–600', d5:'Más de R$ 600'}, antecedencias:{a0:'Menos de 1 semana', a1:'Hasta 1 mes', a2:'1 a 3 meses', a3:'Más de 3 meses'}, motivos:{feira:'Tecnoshow', negocios:'Negocios', turismo:'Turismo', familia:'Familia', outro:'Otro'}}}
   };
   const CULT = {soja:['Soja','Soybean','Soja'], milho:['Milho','Corn','Maíz'], algodao:['Algodão','Cotton','Algodón'], cana:['Cana','Sugarcane','Caña'], cafe:['Café','Coffee','Café'],
@@ -2766,6 +2791,7 @@ const Visit = (() => {
       ${s.menor ? '' : `<div class="vis-card"><button class="btn" id="vp-contato" ${s.contato?'disabled':''}>${esc(s.contato?t.contatoOk:t.contato)}</button><p class="sub" style="font-size:.85rem">${esc(t.contatoAj)}</p></div>`}
       <div class="vis-card" id="vp-trilhas" hidden></div>
       ${s.menor ? '' : '<div class="vis-card" id="vp-mural"></div>'}
+      <a class="ghost" href="#agora" style="justify-self:start">⚡ ${esc(t.agoraTit)}</a>
       <button class="ghost" id="vp-share">${esc(t.compartilhar)}</button>
       ${fila().length ? `<p class="vis-msg">⏳ ${fila().length} ${esc(t.pendentes)}</p>` : ''}
       <p class="vis-msg" id="vp-msg" hidden></p>`;
@@ -2819,7 +2845,7 @@ const Visit = (() => {
     if (!tok){ aviso(L().comecar); return; }
     corpo().innerHTML = topo() + `<p class="sub">${esc(L().carregando)}</p>`;
     let l; try{ l = await Base.vis.trilhas(tok); }catch(e){ aviso(e.code==='rede' ? L().semRede : L().erro); return; }
-    corpo().innerHTML = topo() + `<h1>${esc(L().trilhas)}</h1>` + (l.length ? `<div class="vis-card">${l.map(resumoTrilha).join('')}</div>` : `<div class="vis-card"><p class="sub">${esc(L().semTrilhas)}</p></div>`);
+    corpo().innerHTML = topo() + `<h1>${esc(L().trilhas)}</h1><a class="ghost" href="#agora" style="justify-self:start">⚡ ${esc(L().agoraTit)}</a>` + (l.length ? `<div class="vis-card">${l.map(resumoTrilha).join('')}</div>` : `<div class="vis-card"><p class="sub">${esc(L().semTrilhas)}</p></div>`);
     ligarIdioma();
   }
   async function trilha(id){
@@ -2831,11 +2857,11 @@ const Visit = (() => {
     let l; try{ l = await Base.vis.trilhas(tok); }catch(e){ aviso(e.code==='rede' ? t.semRede : t.erro); return; }
     const tr = (l||[]).find(x=>x.id===id);
     if (!tr){ aviso(t.semTrilha); return; }
-    const etapa = e => `<li class="${e.feita?'ok':''}"><span class="mk">${e.feita?'✓':'○'}</span><span><b>${esc(e.nome||'–')}</b><br><span class="sub">${e.tipo==='palestra' ? esc(t.palestra)+(e.inicio?' · '+esc(fmtHora(e.inicio)):'')+(e.local?' · '+esc(e.local):'') : esc(t.estande)+(e.lotes&&e.lotes.length?' · '+esc(t.lote)+' '+esc(e.lotes.join(', ')):'')}</span></span></li>`;
+    const etapa = e => `<li class="${e.feita?'ok':''}"><span class="mk">${e.feita?'✓':'○'}</span><span><b>${esc(e.nome||'–')}</b><br><span class="sub">${e.tipo==='palestra' ? esc(t.palestra)+(e.inicio?' · '+esc(fmtHora(e.inicio)):'')+(e.local?' · '+esc(e.local):'') : e.tipo==='cidade' ? esc(t.cid.tipo[e.tipo_estab]||t.cid.parceiro)+(e.municipio&&MUN.has(e.municipio)?' · '+esc(MUN.get(e.municipio)[0]):'') : esc(t.estande)+(e.lotes&&e.lotes.length?' · '+esc(t.lote)+' '+esc(e.lotes.join(', ')):'')}</span></span></li>`;
     const doador = tr.doador ? tr.doador.nome : null;
     let cupom = '';
     if (tr.cupom) cupom = `<div class="vis-card vis-cupom"><h2>🎁 ${esc(t.ganhou)}</h2><div class="cod">${esc(tr.cupom.codigo)}</div>
-        <p class="sub">${tr.cupom.resgatado ? esc(t.retirado) : esc(doador ? t.mostreCupom.replace('{x}', doador) : t.mostreCupomOrg)}</p></div>`;
+        <p class="sub">${tr.cupom.resgatado ? esc(t.retirado) : esc(doador ? (tr.doador.estab ? t.mostreCupomCid : t.mostreCupom).replace('{x}', doador) : t.mostreCupomOrg)}</p></div>`;
     else if (tr.feitas===tr.total) cupom = `<div class="vis-card"><p class="sub">${esc(tr.encerrada ? t.encerrada : t.esgotada)}</p></div>`;
     else if (tr.encerrada || tr.esgotada) cupom = `<div class="vis-card"><p class="sub">${esc(tr.encerrada ? t.encerrada : t.esgotada)}</p></div>`;
     corpo().innerHTML = topo() + `<h1>🏁 ${esc(tr.titulo)}</h1>${tr.descricao?`<p class="sub">${esc(tr.descricao)}</p>`:''}
@@ -2927,9 +2953,10 @@ const Visit = (() => {
             <button class="btn" id="vc-enviar">${esc(t.enviar)}</button></div>`)
           : `<div class="vis-card"><h2>${esc(C.comoFoi)}</h2><div class="vis-acts"><button class="vis-bt ${car==='bom'?'on':''}" data-cc="bom"><b>😀</b>${esc(t.bom)}</button><button class="vis-bt ${car==='neutro'?'on':''}" data-cc="neutro"><b>😐</b>${esc(t.neutro)}</button><button class="vis-bt ${car==='ruim'?'on':''}" data-cc="ruim"><b>☹️</b>${esc(t.ruim)}</button></div></div>
             <div class="vis-card"><h2>${esc(C.naFeira)}</h2><p class="sub">${esc(C.naFeiraAj)}</p><div class="vis-acts"><button class="vis-bt ${st.quer_na_feira===true?'on':''}" data-qf="sim"><b>🙋</b>${esc(C.sim)}</button><button class="vis-bt ${st.quer_na_feira===false?'on':''}" data-qf="nao"><b>🤷</b>${esc(C.nao)}</button></div></div>`}
-        <a class="ghost" href="#trilhas" style="justify-self:start">${esc(t.verTodas)}</a>
+        <div class="vis-card" id="vp-trilhas" hidden></div>
+        <a class="ghost" href="#agora" style="justify-self:start">⚡ ${esc(t.agoraTit)}</a>
         <p class="vis-msg" id="vp-msg" hidden></p>`;
-      ligarIdioma();
+      ligarIdioma(); trilhasAqui('cidade', id, tok);
       const msgv = (x, k) => { const m=$('vp-msg'); m.hidden=!x; m.textContent=x||''; m.className='vis-msg'+(k?' '+k:''); };
       const falha = err => msgv(err.code==='rede' ? L().semRede : L().erro, 'erro');
       corpo().querySelectorAll('[data-cc]').forEach(b=>b.onclick=async()=>{ try{ st = await Base.vis.agirCidade(tok, id, 'carinha', b.dataset.cc); pag(); msgv(L().obrigado,'ok'); }catch(err){ falha(err); } });
@@ -2943,6 +2970,50 @@ const Visit = (() => {
       };
     };
     atual = pag; pag();
+  }
+
+  /* ---------- perguntas ao vivo (dentro da página da palestra) ---------- */
+  function perguntasAqui(id, tok, menor){
+    const box = $('vp-perg'); if (!box) return;
+    const t = L();
+    const desenhar = l => {
+      if (!$('vp-perg')) return;
+      box.innerHTML = `<h2>❓ ${esc(t.perguntas)}</h2>
+        ${menor ? '' : `<textarea class="vis-in" id="pq-txt" rows="2" maxlength="200" aria-label="${esc(t.suaPergunta)}" placeholder="${esc(t.suaPergunta)}"></textarea><button class="btn sec" id="pq-enviar">${esc(t.perguntar)}</button>`}
+        ${l.length ? `<div class="vis-pergs">${l.map(q=>`<div class="vis-perg ${q.status}"><p>${esc(q.texto)}</p>${q.status==='pendente' ? `<span class="sub">${esc(t.aguardando)}</span>` : q.status==='respondida' ? `<span class="sub">✓ ${esc(t.respondida)}</span>` : `<button class="vis-chip ${q.votei?'sel':''}" data-voto="${q.id}" aria-label="${esc(t.votar)}">▲ ${q.votos}</button>`}</div>`).join('')}</div>` : `<p class="sub">${esc(t.semPerguntas)}</p>`}
+        <p class="vis-msg" id="pq-msg" hidden></p>`;
+      const msg = (x, k) => { const m=$('pq-msg'); m.hidden=!x; m.textContent=x||''; m.className='vis-msg'+(k?' '+k:''); };
+      box.querySelectorAll('[data-voto]').forEach(b=>b.onclick=async()=>{ try{ desenhar(await Base.vis.votar(tok, +b.dataset.voto)); }catch(e){ msg(e.code==='rede'?L().semRede:L().erro,'erro'); } });
+      if ($('pq-enviar')) $('pq-enviar').onclick = async () => {
+        const tx = $('pq-txt').value.trim(); if (tx.length<3) return;
+        try{ desenhar(await Base.vis.perguntar(tok, id, tx)); msg(L().perguntaOk,'ok'); }
+        catch(e){ msg(e.code==='limite' ? L().perguntaLimite : e.code==='rede' ? L().semRede : L().erro, 'erro'); }
+      };
+    };
+    const carregar = async () => { if (!$('vp-perg')) return; if ($('pq-txt') && $('pq-txt').value) return;   // não apaga o que a pessoa está digitando
+      try{ desenhar(await Base.vis.perguntas(tok, id)); }catch(e){} };
+    carregar();
+    const tm = setInterval(()=>{ if (!$('vp-perg') || location.hash!=='#p-'+id){ clearInterval(tm); return; } carregar(); }, 20000);
+  }
+
+  /* ---------- acontecendo agora (#agora) ---------- */
+  async function agora(auto){
+    if (auto!==true) window.scrollTo(0,0); atual = agora;
+    const t = L(), ed = LS.get('tsa_vis_ed', null) || edSlug();
+    if (!Base.vis.disponivel()){ aviso(t.indisponivel); return; }
+    corpo().innerHTML = topo() + `<p class="sub">${esc(t.carregando)}</p>`;
+    let a; try{ a = await Base.vis.agora(ed); }catch(e){ aviso(e.code==='rede' ? t.semRede : t.erro); return; }
+    if (atual!==agora) return;
+    const hora = iso => new Date(iso).toLocaleTimeString(lang==='en'?'en-US':'pt-BR',{hour:'2-digit',minute:'2-digit'});
+    const pal = p => `<a class="vis-trilha" href="#p-${esc(p.id)}"><b>${esc(p.titulo)}</b><span class="sub">${esc([hora(p.inicio)+(p.fim?'–'+hora(p.fim):''), p.local, p.palestrante].filter(Boolean).join(' · '))}</span></a>`;
+    corpo().innerHTML = topo() + `<h1>⚡ ${esc(t.agoraTit)}</h1>
+      <div class="vis-card"><h2>🎤 ${esc(t.agoraPal)}</h2>${a.agora.length ? a.agora.map(pal).join('') : `<p class="sub">${esc(t.nadaAgora)}</p>`}</div>
+      ${a.a_seguir.length ? `<div class="vis-card"><h2>⏭️ ${esc(t.aSeguir)}</h2>${a.a_seguir.map(pal).join('')}</div>` : ''}
+      ${a.em_alta.length ? `<div class="vis-card"><h2>🔥 ${esc(t.emAlta)}</h2>${a.em_alta.map(x=>`<a class="vis-trilha" href="#e-${esc(x.estande)}"><b>${esc(x.nome)}</b><span class="sub">${x.lotes&&x.lotes.length?esc(t.lote)+' '+esc(x.lotes.join(', '))+' · ':''}${x.n} ${esc(t.pessoasAgora)}</span></a>`).join('')}</div>` : ''}
+      ${a.assuntos.length ? `<div class="vis-card"><h2># ${esc(t.assuntos)}</h2><div class="vis-chips">${a.assuntos.map(x=>`<span class="vis-chip">#${esc(x.palavra)}</span>`).join('')}</div></div>` : ''}
+      ${a.trilhas.length ? `<div class="vis-card"><h2>🏁 ${esc(t.trilhas)}</h2>${a.trilhas.map(x=>`<a class="vis-trilha" href="#t-${esc(x.id)}"><b>${esc(x.titulo)}</b><span class="sub">${x.etapas} ${esc(t.etapas)} · ${esc(t.premio)}: ${esc(x.premio)}</span></a>`).join('')}</div>` : ''}`;
+    ligarIdioma();
+    setTimeout(()=>{ if (atual===agora && location.hash==='#agora') agora(true); }, 60000);
   }
 
   /* ---------- palestra (QR do telão) ---------- */
@@ -2980,18 +3051,20 @@ const Visit = (() => {
           <div class="vis-acts"><button class="vis-bt ${car==='bom'?'on':''}" data-pc="bom"><b>😀</b>${esc(t.bom)}</button><button class="vis-bt ${car==='neutro'?'on':''}" data-pc="neutro"><b>😐</b>${esc(t.neutro)}</button><button class="vis-bt ${car==='ruim'?'on':''}" data-pc="ruim"><b>☹️</b>${esc(t.ruim)}</button></div>
           <label class="vis-lbl" for="pp-coment">${esc(t.comentPal)}</label><textarea class="vis-in" id="pp-coment" rows="3" maxlength="400"></textarea>
           <button class="btn sec" id="pp-enviar">${esc(t.enviar)}</button></div>` : ''}
+        ${st.presente ? '<div class="vis-card" id="vp-perg"></div>' : ''}
         <div class="vis-card" id="vp-trilhas" hidden></div>
         ${st.menor ? '' : '<div class="vis-card" id="vp-mural"></div>'}
+        <a class="ghost" href="#agora" style="justify-self:start">⚡ ${esc(t.agoraTit)}</a>
         <p class="vis-msg" id="vp-msg" hidden></p>`;
       ligarIdioma();
       const msgv = (x, tipo) => { const m=$('vp-msg'); m.hidden=!x; m.textContent=x||''; m.className='vis-msg'+(tipo?' '+tipo:''); };
       corpo().querySelectorAll('[data-pc]').forEach(b=>b.onclick=async()=>{ try{ st = await Base.vis.avaliarPalestra(tok, id, b.dataset.pc, null); aviso1=''; pag(); msgv(L().obrigado,'ok'); }catch(e){ msgv(e.code==='rede'?L().semRede:L().erro,'erro'); } });
       if ($('pp-enviar')) $('pp-enviar').onclick = async () => { const tx = $('pp-coment').value.trim(); if (!tx) return; try{ st = await Base.vis.avaliarPalestra(tok, id, null, tx); $('pp-coment').value=''; msgv(L().enviado,'ok'); }catch(e){ msgv(e.code==='rede'?L().semRede:L().erro,'erro'); } };
-      trilhasAqui('palestra', id, tok); formMural('palestra', id, tok);
+      trilhasAqui('palestra', id, tok); formMural('palestra', id, tok); if (st.presente) perguntasAqui(id, tok, st.menor);
     };
     atual = pag; pag();
   }
-  return {estande, palestra, trilha, trilhas, cidade, CULT};
+  return {estande, palestra, trilha, trilhas, cidade, agora, CULT};
 })();
 
 /* ================== TELÃO DE PRESENÇA (auditório) ==================
@@ -3048,12 +3121,13 @@ const Mural = (() => {
     if (!ok){ corpo.innerHTML = top + '<p class="tl-sub">O telão social precisa de uma conta da equipe.</p>'; return; }
     manterTelaLigada();
     corpo.innerHTML = top + `<div class="mu-grid"><div class="mu-mapa" id="mu-mapa"></div><div class="mu-lado"><div id="mu-dest"></div>
-      <div class="mu-alta"><h2>🔥 Em alta agora</h2><ol id="mu-alta"></ol></div></div></div>`;
+      <div class="mu-alta"><h2>🔥 Em alta agora</h2><ol id="mu-alta"></ol></div><div class="mu-alta" id="mu-ass-box" hidden><h2># Assuntos em alta</h2><div class="mu-assuntos" id="mu-ass"></div></div></div></div>`;
     const passo = async () => {
       if (meu!==run || location.hash!=='#mural') return;
       try{
         const r = await Base.mural.telao(edSlug(), ult); if (meu!==run) return;
         mapa = {planta:r.planta, lotes:r.lotes}; alta = r.em_alta || [];
+        const ass = r.assuntos || []; $('mu-ass-box').hidden = !ass.length; $('mu-ass').innerHTML = ass.map(x=>`<span>#${esc(x.palavra)}</span>`).join('');
         if (r.publicacoes.length){ posts = posts.concat(r.publicacoes).slice(-40); ult = posts[posts.length-1].id; idx = posts.length-1; destaque(); }
         else if (!posts.length) destaque();
         $('mu-mapa').innerHTML = svgMapa(); lateral();
@@ -3072,7 +3146,7 @@ const Mural = (() => {
 const Parceiro = (() => {
   const $ = id => document.getElementById(id);
   const corpo = () => $('pc-corpo');
-  let run = 0, meus = [], estId = null, d = null;
+  let run = 0, meus = [], estId = null, d = null, tri = [];
   const n = v => (v||0).toLocaleString('pt-BR');
   const topo = (titulo, sub) => `<div class="adm-top"><div class="com-voltar"><button class="voltar" data-voltar aria-label="Voltar">←</button><div><div class="k">Área do parceiro${sub?' · '+esc(sub):''}</div><h1>${esc(titulo)}</h1></div></div>
     <div class="adm-acts">${d&&estId?'<button class="btn sm" id="pc-atualizar">Atualizar</button>':''}${meus.length>1&&estId?'<button class="ghost sm" id="pc-trocar">Trocar</button>':''}<button class="ghost sm" id="pc-sair">Sair</button></div></div>`;
@@ -3098,13 +3172,17 @@ const Parceiro = (() => {
     ligar(); corpo().querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{ estId=b.dataset.e; carregar(run); });
   }
   async function carregar(meu){
-    try{ d = await Base.parceiro.painel(estId); }catch(e){ if (meu===run) aviso(e.code==='sem_permissao'?'Esta conta não tem acesso a este estabelecimento.':'Não foi possível carregar agora. Confira a internet e tente de novo.'); return; }
+    try{ [d, tri] = await Promise.all([Base.parceiro.painel(estId), Base.parceiro.trilhas(estId).catch(()=>[])]); }catch(e){ if (meu===run) aviso(e.code==='sem_permissao'?'Esta conta não tem acesso a este estabelecimento.':'Não foi possível carregar agora. Confira a internet e tente de novo.'); return; }
     if (meu!==run) return; render();
   }
   function render(){
     const e = d.estab, hotel = e.tipo==='hotel', s = d.satisfacao||{}, hoje = diaLocal(Date.now());
     const pd = d.por_dia||[], maxDia = Math.max(1, ...pd.map(x=>x.n));
     corpo().innerHTML = topo(e.nome, (CID.tipo[e.tipo]||e.tipo)+' · '+CID.mun(e.municipio)) + `
+      ${tri.length ? `<section class="adm-sec"><h3>Prêmios do Passaporte</h3><p class="adm-p">O visitante que completa a trilha mostra um código no celular. Digite o código para dar baixa e entregue o prêmio. Cada código vale uma vez.</p>
+        <form class="adm-acts" id="pc-cupom-f"><label class="fld" for="pc-cupom">Código do cupom<input id="pc-cupom" class="cupom-in" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false"></label><button class="btn sm" style="align-self:end">Dar baixa</button></form>
+        <p class="adm-msg" id="pc-cupom-msg" hidden></p>
+        <div class="tw"><table class="adm-tab"><thead><tr><th>Trilha</th><th>Prêmio</th><th>Começaram</th><th>Completaram</th><th>Retiraram</th><th>Restam</th></tr></thead><tbody>${tri.map(m=>`<tr><td>${esc(m.titulo)}</td><td>${esc(m.premio)}</td><td class="tabnum">${n(m.comecaram)}</td><td class="tabnum">${n(m.cupons)}</td><td class="tabnum">${n(m.resgatados)}</td><td class="tabnum">${n(Math.max(0,m.estoque-m.cupons))}</td></tr>`).join('')}</tbody></table></div></section>` : ''}
       <p class="adm-msg">Estes números são só do seu estabelecimento. Eles vêm dos visitantes da Tecnoshow que leram o QR do balcão, com o perfil anônimo da feira.</p>
       <div class="loja-kpis"><div class="loja-kpi"><b>${n(d.visitantes)}</b><span>visitantes da feira</span></div><div class="loja-kpi"><b>${n(d.checkins)}</b><span>check-ins</span></div>
         <div class="loja-kpi"><b>${n(s.total)}</b><span>avaliações</span></div>${hotel?`<div class="loja-kpi"><b>${n(d.hospedes_n)}</b><span>hóspedes responderam</span></div>`:`<div class="loja-kpi"><b>${n(d.quer_na_feira)}</b><span>querem ver vocês na feira</span></div>`}</div>
@@ -3128,6 +3206,15 @@ const Parceiro = (() => {
           ${(d.origem||[]).length?`<span class="vis-lbl">De onde vieram (grupos de 3 ou mais pessoas)</span>${hbarsC(d.origem.map(o=>[o.mun?CID.mun(o.mun):(o.pais&&PAIS.has(o.pais)?PAIS.get(o.pais)[2]:'–'), o.n]), d.visitantes)}`:''}`
         : '<p class="adm-p">O perfil aparece a partir de 5 visitantes.</p>'}</section>`;
     ligar();
+    if ($('pc-cupom-f')) $('pc-cupom-f').onsubmit = async ev => {
+      ev.preventDefault(); const m = $('pc-cupom-msg'), cod = $('pc-cupom').value.trim(); if (!cod) return;
+      const dz = (t, k) => { m.hidden=false; m.textContent=t; m.className='adm-msg '+k; };
+      try{ const r = await Base.parceiro.resgatar(cod);
+        if (r.ok){ dz(`Cupom válido: entregue "${r.premio}" (${r.trilha}).`, 'ok'); $('pc-cupom').value=''; }
+        else if (r.motivo==='ja_resgatado') dz(`Este cupom já foi usado em ${new Date(r.resgatado_em).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}. Não entregue o prêmio de novo.`, 'erro');
+        else dz('Código não encontrado. Confira as letras e os números.', 'erro');
+      }catch(e){ dz(e.code==='limite' ? 'Muitas tentativas seguidas. Aguarde alguns minutos.' : 'Não foi possível conferir agora.', 'erro'); }
+    };
     if ($('pc-oc')) $('pc-oc').onsubmit = async ev => {
       ev.preventDefault(); const m = $('pc-oc-msg'), dz = (t, k) => { m.hidden=false; m.textContent=t; m.className='adm-msg '+k; };
       const q = parseInt($('pc-q').value,10), o = parseInt($('pc-o').value,10), dm = $('pc-dm').value ? parseFloat($('pc-dm').value) : null;
@@ -3135,6 +3222,36 @@ const Parceiro = (() => {
       try{ await Base.parceiro.ocupacao(estId, $('pc-dia').value, q, o, dm); dz('Ocupação salva. Obrigado!', 'ok'); setTimeout(()=>carregar(run), 600); }
       catch(err){ dz(err.code==='data_invalida' ? 'Escolha um dia válido (até hoje).' : 'Não foi possível salvar agora.', 'erro'); }
     };
+  }
+  return {start};
+})();
+
+/* ================== MEDIAÇÃO DAS PERGUNTAS AO VIVO (#mediar-<palestra>) ==================
+   Celular ou notebook de quem media a palestra, com conta da equipe. */
+const Mediar = (() => {
+  const $ = id => document.getElementById(id);
+  let run = 0, timer = null;
+  const ST = {pendente:'Aguardando', exibida:'No ar', respondida:'Respondida', oculta:'Oculta'};
+  async function start(id){
+    const meu = ++run; clearTimeout(timer);
+    const box = $('md-corpo'), topo = t => `<div class="adm-top"><div class="com-voltar"><button class="voltar" data-voltar aria-label="Voltar">←</button><div><div class="k">Perguntas ao vivo · mediação</div><h1>${esc(t)}</h1></div></div><a class="ghost sm" href="#telao-${esc(id)}" target="_blank" rel="noopener">Abrir telão</a></div>`;
+    if (Base.kind!=='supabase'){ box.innerHTML = topo('Mediação') + '<p class="adm-p">Funciona no site oficial da plataforma.</p>'; return; }
+    box.innerHTML = topo('Carregando…');
+    if (!(await Base.garantirAcesso('equipe'))){ if (meu===run) box.innerHTML = topo('Mediação') + '<p class="adm-p">A mediação precisa de uma conta da equipe.</p>'; return; }
+    let titulo = 'Palestra'; try{ titulo = (await Base.vis.palestra(id)||{}).titulo || titulo; }catch(e){}
+    const passo = async () => {
+      if (meu!==run || location.hash!=='#mediar-'+id) return;
+      let l; try{ l = await Base.agenda.perguntas(id); }catch(e){ l = null; }
+      if (meu!==run) return;
+      if (l){
+        const grupo = (st, bts) => { const g = l.filter(q=>q.status===st); return `<section class="adm-sec"><h3>${ST[st]} (${g.length})</h3>${g.length ? g.map(q=>`<div class="mod-item"><div class="meta"><span class="pill ${st==='exibida'?'ok':'mut'}">▲ ${q.votos}</span><span>${esc(new Date(q.quando).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}))}</span></div><p>${esc(q.texto)}</p><div class="adm-acts">${bts.map(([s,t,c])=>`<button class="${c||'ghost'} sm" data-q="${q.id}" data-st="${s}">${t}</button>`).join('')}</div></div>`).join('') : '<p class="nota">Nenhuma.</p>'}</section>`; };
+        box.innerHTML = topo(titulo) + `<p class="adm-p">Aprove as perguntas para o público ver e votar. As mais votadas aparecem no telão. Marque como respondida depois de ler para o palestrante.</p><p class="adm-msg" id="md-msg" hidden></p>`
+          + grupo('pendente', [['exibida','Aprovar','btn'],['oculta','Ocultar']]) + grupo('exibida', [['respondida','Respondida','btn'],['oculta','Ocultar']]) + grupo('respondida', [['exibida','Voltar ao ar']]);
+        box.querySelectorAll('[data-q]').forEach(b=>b.onclick=async()=>{ b.disabled=true; try{ await Base.agenda.mediar(+b.dataset.q, b.dataset.st); clearTimeout(timer); passo(); }catch(e){ b.disabled=false; const m=$('md-msg'); m.hidden=false; m.className='adm-msg erro'; m.textContent='Não foi possível registrar agora.'; } });
+      }
+      timer = setTimeout(passo, 8000);
+    };
+    passo();
   }
   return {start};
 })();
@@ -3162,12 +3279,14 @@ const Telao = (() => {
               <div class="k">${esc(c.local||'Palestra')} · ${esc(hora(c.inicio))}${c.fim?' – '+esc(hora(c.fim)):''}</div>
               <h1>${esc(c.titulo)}</h1>${c.palestrante?`<p class="tl-sub">${esc(c.palestrante)}</p>`:''}
               <div class="tl-cont"><b id="tl-n" class="tabnum">${(c.presentes||0).toLocaleString('pt-BR')}</b><span>presenças registradas</span></div>
-              <p class="tl-sub" id="tl-st"></p></div>
+              <p class="tl-sub" id="tl-st"></p><div class="tl-pergs" id="tl-pergs"></div></div>
             <div class="tl-qrbox"><img id="tl-qr" alt="QR de presença da palestra" src="${qrURL(url, 10)}"><p>Aponte a câmera do celular para registrar presença</p></div></div>`);
         }
         $('tl-n').textContent = (c.presentes||0).toLocaleString('pt-BR');
         $('tl-st').textContent = c.aberta ? 'O QR muda a cada minuto: só vale para quem está aqui.' : 'A presença abre 15 minutos antes do início e fecha 15 minutos depois do fim.';
         $('tl-qr').style.opacity = c.aberta ? '1' : '.25';
+        Base.agenda.perguntas(id).then(l=>{ const box=$('tl-pergs'); if (!box) return; const no = l.filter(q=>q.status==='exibida').slice(0,3);
+          box.innerHTML = no.length ? '<h2>❓ Perguntas mais votadas</h2>' + no.map(q=>`<div class="tl-perg"><b>▲ ${q.votos}</b><span>${esc(q.texto)}</span></div>`).join('') : ''; }).catch(()=>{});
       }catch(e){ if ($('tl-st')) $('tl-st').textContent = 'Sem conexão: tentando de novo…'; else tela('<p class="tl-sub">'+(e.code==='agenda_invalida'?'Palestra não encontrada.':e.code==='sem_permissao'?'Sua conta não é da equipe.':'Sem conexão: tentando de novo…')+'</p>'); }
       timer = setTimeout(passo, 15000);
     };

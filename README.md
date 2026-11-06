@@ -25,7 +25,7 @@ As respostas ficam num banco **Supabase** do próprio projeto. Uma versão alter
 ## 1. Configurar o Supabase (uma vez)
 
 1. Crie um projeto em <https://supabase.com> (região São Paulo, `sa-east-1`).
-2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`, `003_visitante_estande.sql`, `004_moderacao_painel_expositor.sql`, `005_saida_tablets.sql`, `006_presenca_trilhas.sql`, `007_mural.sql` e `008_cidade.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
+2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`, `003_visitante_estande.sql`, `004_moderacao_painel_expositor.sql`, `005_saida_tablets.sql`, `006_presenca_trilhas.sql`, `007_mural.sql`, `008_cidade.sql` e `009_passaporte_ao_vivo.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
 3. Em **Authentication → Sign In / Providers**, deixe **ligado** "Allow new users to sign up" (a equipe se cadastra pelo link de convite; uma conta criada sem convite não acessa nada) e mantenha "Confirm email" ligado.
    Em **Authentication → URL Configuration**, coloque o endereço do site em **Site URL** e em **Redirect URLs** (ex.: `https://danilo-rv.github.io/Painel-Tecnoshow/**`), para o e-mail de confirmação voltar ao app.
 4. Gere a chave da coleta: no SQL Editor, rode `select replace(gen_random_uuid()::text, '-', '') as chave_da_coleta;` e guarde o resultado.
@@ -249,6 +249,25 @@ Cada estande tem um QR (em **Administração → Cadastros → Expositores**, ab
   - transbordamento por município do hotel (municípios com menos de 3 hotéis entram em "outras cidades");
   - ocupação média da cidade;
   - tabela dos parceiros.
+
+## 13. Ao vivo: perguntas, assuntos em alta e "acontecendo agora"
+
+- **Perguntas ao vivo:**
+  - na página da palestra, quem registrou presença envia até 3 perguntas (menores de 18 anos não perguntam);
+  - a pessoa da equipe que media abre **Cadastros → Agenda → (palestra) → Mediar perguntas ao vivo** (`…/#mediar-<id>`), de preferência no celular, e aprova, oculta ou marca como respondida;
+  - as perguntas aprovadas aparecem para o público, que vota (▲), e as 3 mais votadas aparecem no telão de presença do auditório.
+- **Assuntos em alta:** palavras citadas por 3 ou mais pessoas nas últimas 3 horas, só em textos públicos já aprovados (comentários públicos, mural e perguntas no ar). Palavras comuns são ignoradas. Aparecem no telão social e na página "Acontecendo agora".
+- **Acontecendo agora** (`…/#agora`, com atalho nas páginas do estande, da palestra, da cidade e das trilhas): página aberta, que se atualiza sozinha a cada minuto, com:
+  - palestras em andamento e nas próximas 3 horas;
+  - estandes em alta (3 ou mais pessoas na última meia hora);
+  - assuntos em alta;
+  - trilhas abertas.
+
+## 14. Passaporte da Cidade
+
+- Em **Cadastros → Trilhas**, as etapas podem incluir estabelecimentos da cidade (grupo "Cidade (Passaporte)"), e o prêmio pode ser entregue por um parceiro da cidade (campo "Ou: parceiro da cidade que entrega o prêmio").
+- O visitante cumpre a etapa da cidade fazendo check-in pelo QR do balcão, e vê as trilhas que passam por ali na própria página do estabelecimento.
+- O parceiro doador dá baixa no cupom em **Área do parceiro → Prêmios do Passaporte**, onde também vê quantos começaram, completaram e retiraram o prêmio.
 
 ## Proteção de dados (LGPD)
 
