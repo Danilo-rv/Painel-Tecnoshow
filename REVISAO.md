@@ -181,3 +181,29 @@ Testes:
   - o check-in no estande completa a trilha e gera o cupom;
   - o estande doador dá baixa, e a segunda baixa é recusada.
 - Os testes anteriores continuam passando.
+
+## Telão social (oitava etapa)
+
+| Item | Como funciona | Proteção |
+|---|---|---|
+| Publicação | `publicar_mural` confere a credencial, a edição e o estande ou a palestra | Menor de idade recusado; texto até 140 caracteres; até 5 por hora; texto ou foto obrigatórios |
+| Foto | Reduzida e regravada em JPEG no celular (lado maior até 1080 px) | O banco aceita só JPEG ou WebP (conferidos pelos primeiros bytes) até 350 KB; regravar apaga o EXIF e o GPS (testado com um EXIF falso de GPS) |
+| Moderação | Tudo entra como pendente; aprovar e recusar ficam na auditoria (só a decisão, sem a foto) | Só administração, coordenação, organização e moderação |
+| Leitura | A foto pendente só a moderação vê; a aprovada, também o telão (equipe) | A tabela não é lida pela API; não há endereço público da foto |
+| Em alta agora | Contagem de pessoas diferentes por estande nos últimos 30 minutos | Só contagens, a partir de 3 pessoas |
+
+Testes:
+- **Banco local:**
+  - menor de idade;
+  - foto PNG;
+  - foto grande demais;
+  - publicação vazia;
+  - estande de outra edição;
+  - texto longo;
+  - usuário anônimo ou conta de estande lendo o mural.
+- **Navegador:**
+  - foto de 457 KB com EXIF de GPS chegando ao banco com 112 KB e sem EXIF;
+  - menor sem o botão;
+  - moderação com a foto à vista;
+  - telão com destaque, alternância e "em alta".
+- Os testes anteriores continuam passando.

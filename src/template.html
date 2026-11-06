@@ -347,6 +347,28 @@ details.vis-card summary{cursor:pointer;font-weight:600}
 .tl-qrbox img{width:min(62vh,100%);max-width:560px;aspect-ratio:1;background:#fff;border-radius:16px;padding:14px;image-rendering:pixelated;transition:opacity .3s}
 .tl-qrbox p{margin:0;font-size:clamp(1rem,1.8vw,1.4rem)}
 .cupom-in{font-family:var(--f-mono);font-size:1.3rem;letter-spacing:.2em;text-transform:uppercase}
+.mu{min-height:100vh;display:grid;align-content:start;gap:18px;padding:20px max(20px,env(safe-area-inset-left,0px))}
+.mu-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(320px,1fr);gap:20px;align-items:start}
+@media (max-width:900px){.mu-grid{grid-template-columns:minmax(0,1fr)}}
+.mu-mapa svg{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:14px;background:#071637}
+.mu-pulso{animation:mupulso 1.6s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes mupulso{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(3)}}
+.mu-lado{display:grid;gap:18px}
+.mu-card{position:relative;display:grid;gap:12px;background:linear-gradient(160deg,var(--panel),var(--deep));border:1px solid var(--glow);border-radius:16px;padding:16px;overflow:hidden}
+.mu-card img{width:100%;max-height:52vh;object-fit:cover;border-radius:10px;display:block}
+.mu-card.vazio p{font-size:1.3rem;line-height:1.45;margin:0;color:var(--muted)}
+.mu-txt{font-family:var(--f-display);font-size:clamp(1.3rem,2.2vw,2rem);line-height:1.2;margin:0}
+.mu-onde{color:var(--glow2);font-family:var(--f-mono);font-size:.95rem}
+.mu-marca{justify-self:end;font-family:var(--f-display);font-weight:800;letter-spacing:.08em;font-size:.95rem;padding:4px 12px;border-radius:999px;background:rgba(4,11,31,.85);border:1px solid var(--line)}
+.mu-marca i{font-style:normal;color:var(--glow)}
+.mu-alta{background:var(--deep);border:1px solid var(--line);border-radius:14px;padding:14px}
+.mu-alta h2{margin:0 0 8px;font-family:var(--f-display);font-size:1.3rem}
+.mu-alta ol{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.mu-alta li{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;font-size:1.1rem}
+.mu-alta .n{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:rgba(255,200,97,.15);color:var(--gold);font-weight:700;font-size:.9rem}
+.mu-alta b{color:var(--gold)}
+.vis-foto-prev{max-width:100%;max-height:260px;border-radius:10px;display:block}
+.mod-foto{max-width:min(100%,360px);max-height:280px;border-radius:10px;display:block;background:var(--night)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -481,6 +503,7 @@ details.vis-card summary{cursor:pointer;font-weight:600}
         </div>
       </section>
       <section id="a-moderacao" class="adm" hidden>
+        <div class="adm-bar"><div class="seg-s" id="mo-tipo"><button class="chip on" data-tp="comentarios">Comentários</button><button class="chip" data-tp="mural">Mural (fotos e mensagens)</button></div><a class="ghost sm" href="#mural" target="_blank" rel="noopener">Abrir telão social</a></div>
         <div class="adm-bar"><div class="seg-s" id="mo-filtro"><button class="chip on" data-st="pendente">Pendentes</button><button class="chip" data-st="aprovado">Aprovados</button><button class="chip" data-st="recusado">Recusados</button></div><button class="ghost sm" id="mo-atualizar">Atualizar</button></div>
         <p class="adm-p">Aqui chegam só os comentários que o visitante marcou como públicos. Comentários "só para a loja" e avaliações negativas nunca são publicados: eles aparecem apenas no painel do estande e para a organização.</p>
         <p class="adm-msg" id="mo-msg" hidden></p>
@@ -500,6 +523,8 @@ details.vis-card summary{cursor:pointer;font-weight:600}
 <div id="v-expositor" class="view" hidden><div class="loja" id="lj-corpo"></div></div>
 
 <div id="v-telao" class="view" hidden><div class="tl" id="tl-corpo"></div></div>
+
+<div id="v-mural" class="view" hidden><div class="mu" id="mu-corpo"></div></div>
 
 <div id="v-convite" class="view" hidden>
   <div class="conv"><form class="login-box" id="c-form" autocomplete="on">
@@ -976,6 +1001,7 @@ const Base = (() => {
     presenca: (token, id, cod) => rpc('presenca_palestra', {p_token:token, p_agenda:id, p_codigo:cod}),
     avaliarPalestra: (token, id, car, txt) => rpc('avaliar_palestra', {p_token:token, p_agenda:id, p_carinha:car, p_texto:txt}),
     trilhas: token => rpc('trilhas_visitante', {p_token:token}),
+    publicar: (token, tipo, id, texto, foto) => rpc('publicar_mural', {p_token:token, p_alvo_tipo:tipo, p_alvo_id:id, p_texto:texto, p_foto:foto||null}),
     agir: (token, est, acao, extra={}) => rpc('interagir', {p_token:token, p_estande:est, p_acao:acao, p_produto:extra.produto||null, p_valor:extra.valor||null, p_texto:extra.texto||null, p_publico:!!extra.publico})
   };
   /* Agenda: telão de presença e números por palestra; trilhas */
@@ -988,8 +1014,11 @@ const Base = (() => {
   /* Moderação dos comentários públicos */
   const mod = {
     listar: (ed, st) => rpc('listar_moderacao', {p_ed:ed, p_status:st||'pendente'}),
-    decidir: (id, d) => rpc('moderar_comentario', {p_id:id, p_decisao:d})
+    decidir: (id, d) => rpc('moderar_comentario', {p_id:id, p_decisao:d}),
+    mural: (ed, st) => rpc('listar_mural', {p_ed:ed, p_status:st||'pendente'}),
+    decidirMural: (id, d) => rpc('moderar_mural', {p_id:id, p_decisao:d})
   };
+  const mural = { telao: (ed, depois) => rpc('mural_telao', {p_ed:ed, p_depois:depois||0}), foto: id => rpc('foto_mural', {p_id:id}) };
   /* Área do expositor: contas convidadas para UM estande. Elas não entram na equipe da pesquisa. */
   const loja = {
     disponivel: () => kind==='supabase',
@@ -1010,7 +1039,7 @@ const Base = (() => {
   const rpcPublica = (nome, args) => kind==='supabase' ? rpc(nome, args) : Promise.reject(erro('sem_base'));
   const saida = { definir: (ed, cod) => rpc('definir_codigo_saida', {p_ed:ed, p_codigo:cod}), info: ed => rpc('info_codigo_saida', {p_ed:ed}) };
   return {kind, rpcPublica, saida, enviar, ler, acompanhar, precisaLogin, garantirAcesso, sair, entrar, cadastrar, temSessao, souCoordenador, meuPapel,
-          instrumentoAtual, publicarInstrumento, historico, equipe, cad, vis, mod, loja, agenda, EDITORES, MODERADORES};
+          instrumentoAtual, publicarInstrumento, historico, equipe, cad, vis, mod, mural, loja, agenda, EDITORES, MODERADORES};
 })();
 
 /* Questionário em uso neste aparelho: a última versão publicada da edição, guardada para uso offline. */
@@ -1106,7 +1135,7 @@ const Saida = (() => {
 })();
 
 /* ================== ROTEAMENTO ================== */
-const VIEWS = ['inicio','coleta','painel','relatorio','admin','convite','visitante','expositor','telao'];
+const VIEWS = ['inicio','coleta','painel','relatorio','admin','convite','visitante','expositor','telao','mural'];
 let current = null;
 function route(){
   let h = (location.hash||'').replace('#','');
@@ -1135,6 +1164,7 @@ function route(){
     else Visit.trilhas();
   }
   if (v==='telao') Telao.start(h.slice(6));
+  if (v==='mural') Mural.start();
   if (v==='expositor') Loja.start(h.slice(10));
 }
 /* Seta de voltar: volta para a tela anterior do app; se a pessoa chegou direto (link ou QR), vai para o início. */
@@ -1885,27 +1915,32 @@ const Admin = (() => {
   }
   function aba(n){ document.querySelectorAll('.adm-tabs .chip').forEach(b=>b.classList.toggle('on', b.dataset.aba===n)); ['form','equipe','cadastros','mapa','pendencias','moderacao'].forEach(x=>{ $('a-'+x).hidden = n!==x; }); if (['cadastros','mapa','pendencias'].includes(n)) Cad.abrir(n); if (n==='equipe') equipe(); if (n==='moderacao') moderacao(); }
   /* ---- moderação dos comentários públicos ---- */
-  let moSt = 'pendente', moLigado = false;
+  let moSt = 'pendente', moLigado = false, moTipo = 'comentarios';
   const DEC = {aprovado:'Aprovado', recusado:'Recusado', pendente:'Pendente'};
   const ALVO = {estande:'Estande', produto:'Produto', local:'Local', palestra:'Palestra'};
   async function moderacao(){
     const box=$('mo-lista'), em=(t,tipo)=>{ const x=$('mo-msg'); x.hidden=!t; x.textContent=t||''; x.className='adm-msg'+(tipo?' '+tipo:''); };
     if (!moLigado){ moLigado=true;
+      document.querySelectorAll('#mo-tipo .chip').forEach(b=>b.onclick=()=>{ moTipo=b.dataset.tp; document.querySelectorAll('#mo-tipo .chip').forEach(x=>x.classList.toggle('on', x===b)); em(''); moderacao(); });
       document.querySelectorAll('#mo-filtro .chip').forEach(b=>b.onclick=()=>{ moSt=b.dataset.st; document.querySelectorAll('#mo-filtro .chip').forEach(x=>x.classList.toggle('on', x===b)); em(''); moderacao(); });
       $('mo-atualizar').onclick = () => { em(''); moderacao(); };
     }
     if (Base.kind!=='supabase'){ box.innerHTML='<p class="adm-p">A moderação funciona no site oficial da plataforma, com o Supabase.</p>'; return; }
     box.innerHTML='<p class="adm-p">Carregando…</p>';
     let l;
-    try{ l = await Base.mod.listar(ed, moSt); }catch(e){ box.innerHTML='<p class="adm-msg erro">Não foi possível carregar os comentários. Confira a internet e tente de novo.</p>'; return; }
+    try{ l = moTipo==='mural' ? await Base.mod.mural(ed, moSt) : await Base.mod.listar(ed, moSt); }catch(e){ box.innerHTML='<p class="adm-msg erro">Não foi possível carregar os comentários. Confira a internet e tente de novo.</p>'; return; }
     const chip = document.querySelector('#mo-filtro [data-st="pendente"]'); if (moSt==='pendente') chip.textContent = 'Pendentes ('+l.length+')';
     if (!l.length){ box.innerHTML = `<p class="adm-p">${moSt==='pendente' ? 'Nenhum comentário esperando moderação.' : 'Nenhum comentário nesta situação.'}</p>`; return; }
     const bts = x => moSt==='pendente' ? `<button class="btn sm" data-dec="aprovado" data-id="${x.id}">Aprovar</button><button class="ghost sm" data-dec="recusado" data-id="${x.id}">Recusar</button>`
       : moSt==='aprovado' ? `<button class="ghost sm" data-dec="recusado" data-id="${x.id}">Retirar do ar</button>` : `<button class="ghost sm" data-dec="aprovado" data-id="${x.id}">Aprovar</button>`;
-    box.innerHTML = l.map(x=>`<div class="mod-item"><div class="meta"><span class="pill mut">${esc(ALVO[x.alvo_tipo]||x.alvo_tipo)}</span><b style="color:var(--ink)">${esc(x.alvo)}</b><span>${esc(quando(x.quando))}</span></div><p>${esc(x.texto)}</p><div class="adm-acts">${bts(x)}</div></div>`).join('');
+    box.innerHTML = l.map(x=>`<div class="mod-item"><div class="meta"><span class="pill mut">${esc(ALVO[x.alvo_tipo]||x.alvo_tipo)}</span><b style="color:var(--ink)">${esc(x.alvo||'–')}</b><span>${esc(quando(x.quando))}</span></div>${x.tem_foto?`<img class="mod-foto" data-foto="${x.id}" alt="Foto enviada pelo visitante">`:''}${x.texto?`<p>${esc(x.texto)}</p>`:''}<div class="adm-acts">${bts(x)}</div></div>`).join('');
+    box.querySelectorAll('[data-foto]').forEach(async img=>{ try{ const f = await Base.mural.foto(+img.dataset.foto); if (f) img.src = `data:${f.tipo};base64,${f.dados}`; }catch(e){} });
     box.querySelectorAll('[data-dec]').forEach(b=>b.onclick=async()=>{
       b.disabled=true;
-      try{ await Base.mod.decidir(+b.dataset.id, b.dataset.dec); em(b.dataset.dec==='aprovado' ? 'Comentário aprovado.' : 'Comentário recusado. Ele continua visível para o estande, como comentário privado.', 'ok'); moderacao(); }
+      try{
+        if (moTipo==='mural'){ await Base.mod.decidirMural(+b.dataset.id, b.dataset.dec); em(b.dataset.dec==='aprovado' ? 'Publicação aprovada: ela entra no telão social.' : 'Publicação recusada: ela não aparece no telão.', 'ok'); }
+        else { await Base.mod.decidir(+b.dataset.id, b.dataset.dec); em(b.dataset.dec==='aprovado' ? 'Comentário aprovado.' : 'Comentário recusado. Ele continua visível para o estande, como comentário privado.', 'ok'); }
+        moderacao(); }
       catch(e){ b.disabled=false; em('Não foi possível registrar a decisão agora. Tente de novo.','erro'); }
     });
   }
@@ -2451,7 +2486,8 @@ const Visit = (() => {
         compartilhar:'Compartilhar', copiado:'Link copiado.', obrigado:'Registrado!', erro:'Não foi possível registrar agora. Confira a internet e tente de novo.',
         naoAchado:'Estande não encontrado. Confira o QR code ou procure a equipe da feira.', indisponivel:'A interatividade ao vivo funciona no site oficial da plataforma.', carregando:'Carregando…',
         semRede:'Sem internet agora. Abra este QR de novo quando o sinal voltar.', naFila:'Sem internet: guardamos aqui e enviamos sozinhos quando o sinal voltar.', pendentes:'ações esperando internet',
-        trilhas:'Trilhas', etapas:'etapas', premio:'Prêmio', oferecido:'Oferecido por', verTodas:'Ver todas as trilhas', ganhou:'Você completou a trilha!', mostreCupom:'Mostre este código no estande {x} para retirar o prêmio.', mostreCupomOrg:'Mostre este código à organização da feira para retirar o prêmio.', retirado:'Prêmio já retirado.', esgotada:'Os prêmios desta trilha acabaram.', encerrada:'Esta trilha já foi encerrada.', prazo:'Até', regulamento:'Regulamento', semTrilhas:'Nenhuma trilha aberta agora.', semTrilha:'Trilha não encontrada ou encerrada.', comecar:'Leia o QR de um estande ou de uma palestra para começar.', palestra:'Palestra', estande:'Estande', presencaOk:'Presença registrada ✓', presencaSem:'Para registrar presença, leia o QR do telão durante a palestra.', foraHorario:'A presença só pode ser registrada durante a palestra.', expirado:'Este QR já mudou. Leia de novo o QR do telão.', avalPal:'O que achou da palestra?', comentPal:'Comentário para a organização (não é publicado)'},
+        trilhas:'Trilhas', etapas:'etapas', premio:'Prêmio', oferecido:'Oferecido por', verTodas:'Ver todas as trilhas', ganhou:'Você completou a trilha!', mostreCupom:'Mostre este código no estande {x} para retirar o prêmio.', mostreCupomOrg:'Mostre este código à organização da feira para retirar o prêmio.', retirado:'Prêmio já retirado.', esgotada:'Os prêmios desta trilha acabaram.', encerrada:'Esta trilha já foi encerrada.', prazo:'Até', regulamento:'Regulamento', semTrilhas:'Nenhuma trilha aberta agora.', semTrilha:'Trilha não encontrada ou encerrada.', comecar:'Leia o QR de um estande ou de uma palestra para começar.', palestra:'Palestra', estande:'Estande', presencaOk:'Presença registrada ✓', presencaSem:'Para registrar presença, leia o QR do telão durante a palestra.', foraHorario:'A presença só pode ser registrada durante a palestra.', expirado:'Este QR já mudou. Leia de novo o QR do telão.', avalPal:'O que achou da palestra?', comentPal:'Comentário para a organização (não é publicado)',
+        publicar:'Publicar no telão', mensagem:'Mensagem (até 140 caracteres)', foto:'Adicionar foto', publicarAj:'Sua publicação passa pela moderação antes de aparecer no telão da feira, com a marca da plataforma. Não publique fotos de outras pessoas sem a permissão delas.', publicado:'Enviado! Sua publicação aparece no telão depois da moderação.', muitas:'Você já publicou muitas vezes na última hora. Tente mais tarde.', fotoErro:'Não foi possível ler esta foto. Tente outra.', fotoOuTexto:'Escreva uma mensagem ou escolha uma foto.'},
     en:{entrar:'Before you interact, tell us a little about yourself', entrarSub:'It takes about 40 seconds and covers the whole fair. We do not ask for your name or ID.',
         idioma:'Language', origem:'Where did you come from?', cidade:'Type your city', pais:'Type your country', perfil:'Which best describes you?', idade:'Age group',
         culturas:'Crops and activities of interest', prim:'Is this your first time at the fair?', dias:'How many days are you attending?', pern:'Are you staying overnight because of the fair?',
@@ -2465,7 +2501,8 @@ const Visit = (() => {
         compartilhar:'Share', copiado:'Link copied.', obrigado:'Saved!', erro:'Could not save right now. Check your connection and try again.',
         naoAchado:'Exhibitor not found. Check the QR code or ask the fair staff.', indisponivel:'Live interaction works on the platform website.', carregando:'Loading…',
         semRede:'No internet right now. Open this QR code again when you have signal.', naFila:'No internet: saved on this phone and sent automatically when the signal returns.', pendentes:'actions waiting for internet',
-        trilhas:'Trails', etapas:'steps', premio:'Prize', oferecido:'Offered by', verTodas:'See all trails', ganhou:'You completed the trail!', mostreCupom:'Show this code at the {x} booth to collect your prize.', mostreCupomOrg:'Show this code to the fair staff to collect your prize.', retirado:'Prize already collected.', esgotada:'The prizes for this trail have run out.', encerrada:'This trail has ended.', prazo:'Until', regulamento:'Rules', semTrilhas:'No open trails right now.', semTrilha:'Trail not found or ended.', comecar:'Scan the QR code of a booth or a talk to start.', palestra:'Talk', estande:'Booth', presencaOk:'Attendance recorded ✓', presencaSem:'To record attendance, scan the QR code on the screen during the talk.', foraHorario:'Attendance can only be recorded during the talk.', expirado:'This QR code has changed. Scan the screen again.', avalPal:'How was the talk?', comentPal:'Comment for the organizers (not published)'},
+        trilhas:'Trails', etapas:'steps', premio:'Prize', oferecido:'Offered by', verTodas:'See all trails', ganhou:'You completed the trail!', mostreCupom:'Show this code at the {x} booth to collect your prize.', mostreCupomOrg:'Show this code to the fair staff to collect your prize.', retirado:'Prize already collected.', esgotada:'The prizes for this trail have run out.', encerrada:'This trail has ended.', prazo:'Until', regulamento:'Rules', semTrilhas:'No open trails right now.', semTrilha:'Trail not found or ended.', comecar:'Scan the QR code of a booth or a talk to start.', palestra:'Talk', estande:'Booth', presencaOk:'Attendance recorded ✓', presencaSem:'To record attendance, scan the QR code on the screen during the talk.', foraHorario:'Attendance can only be recorded during the talk.', expirado:'This QR code has changed. Scan the screen again.', avalPal:'How was the talk?', comentPal:'Comment for the organizers (not published)',
+        publicar:'Post to the big screen', mensagem:'Message (up to 140 characters)', foto:'Add photo', publicarAj:'Your post is reviewed before it appears on the fair screen, with the platform logo. Do not post photos of other people without their permission.', publicado:'Sent! Your post will appear on the screen after review.', muitas:'You have posted many times in the last hour. Try again later.', fotoErro:'This photo could not be read. Try another one.', fotoOuTexto:'Write a message or choose a photo.'},
     es:{entrar:'Antes de interactuar, cuéntenos un poco sobre usted', entrarSub:'Toma unos 40 segundos y vale para toda la feria. No pedimos nombre ni documento.',
         idioma:'Idioma', origem:'¿De dónde viene?', cidade:'Escriba su ciudad', pais:'Escriba su país', perfil:'¿Cuál es su perfil?', idade:'Rango de edad',
         culturas:'Cultivos y actividades de interés', prim:'¿Es su primera vez en la feria?', dias:'¿Cuántos días viene?', pern:'¿Va a pasar la noche fuera de casa por la feria?',
@@ -2479,7 +2516,8 @@ const Visit = (() => {
         compartilhar:'Compartir', copiado:'Enlace copiado.', obrigado:'¡Registrado!', erro:'No fue posible registrar ahora. Revise su conexión e intente de nuevo.',
         naoAchado:'Expositor no encontrado. Revise el código QR o busque al personal de la feria.', indisponivel:'La interacción en vivo funciona en el sitio de la plataforma.', carregando:'Cargando…',
         semRede:'Sin internet ahora. Abra este código QR de nuevo cuando vuelva la señal.', naFila:'Sin internet: lo guardamos aquí y lo enviamos solo cuando vuelva la señal.', pendentes:'acciones esperando internet',
-        trilhas:'Rutas', etapas:'etapas', premio:'Premio', oferecido:'Ofrecido por', verTodas:'Ver todas las rutas', ganhou:'¡Completó la ruta!', mostreCupom:'Muestre este código en el stand {x} para retirar el premio.', mostreCupomOrg:'Muestre este código a la organización de la feria para retirar el premio.', retirado:'Premio ya retirado.', esgotada:'Se agotaron los premios de esta ruta.', encerrada:'Esta ruta ya terminó.', prazo:'Hasta', regulamento:'Reglamento', semTrilhas:'No hay rutas abiertas ahora.', semTrilha:'Ruta no encontrada o terminada.', comecar:'Lea el código QR de un stand o de una charla para empezar.', palestra:'Charla', estande:'Stand', presencaOk:'Asistencia registrada ✓', presencaSem:'Para registrar asistencia, lea el código QR de la pantalla durante la charla.', foraHorario:'La asistencia solo se registra durante la charla.', expirado:'Este código QR ya cambió. Léalo de nuevo en la pantalla.', avalPal:'¿Qué le pareció la charla?', comentPal:'Comentario para la organización (no se publica)'}
+        trilhas:'Rutas', etapas:'etapas', premio:'Premio', oferecido:'Ofrecido por', verTodas:'Ver todas las rutas', ganhou:'¡Completó la ruta!', mostreCupom:'Muestre este código en el stand {x} para retirar el premio.', mostreCupomOrg:'Muestre este código a la organización de la feria para retirar el premio.', retirado:'Premio ya retirado.', esgotada:'Se agotaron los premios de esta ruta.', encerrada:'Esta ruta ya terminó.', prazo:'Hasta', regulamento:'Reglamento', semTrilhas:'No hay rutas abiertas ahora.', semTrilha:'Ruta no encontrada o terminada.', comecar:'Lea el código QR de un stand o de una charla para empezar.', palestra:'Charla', estande:'Stand', presencaOk:'Asistencia registrada ✓', presencaSem:'Para registrar asistencia, lea el código QR de la pantalla durante la charla.', foraHorario:'La asistencia solo se registra durante la charla.', expirado:'Este código QR ya cambió. Léalo de nuevo en la pantalla.', avalPal:'¿Qué le pareció la charla?', comentPal:'Comentario para la organización (no se publica)',
+        publicar:'Publicar en la pantalla', mensagem:'Mensaje (hasta 140 caracteres)', foto:'Agregar foto', publicarAj:'Su publicación pasa por moderación antes de aparecer en la pantalla de la feria, con la marca de la plataforma. No publique fotos de otras personas sin su permiso.', publicado:'¡Enviado! Su publicación aparece en la pantalla después de la moderación.', muitas:'Ya publicó muchas veces en la última hora. Intente más tarde.', fotoErro:'No fue posible leer esta foto. Pruebe otra.', fotoOuTexto:'Escriba un mensaje o elija una foto.'}
   };
   const CULT = {soja:['Soja','Soybean','Soja'], milho:['Milho','Corn','Maíz'], algodao:['Algodão','Cotton','Algodón'], cana:['Cana','Sugarcane','Caña'], cafe:['Café','Coffee','Café'],
     feijao:['Feijão','Beans','Frijol'], sorgo:['Sorgo','Sorghum','Sorgo'], trigo:['Trigo','Wheat','Trigo'], pecuaria_corte:['Pecuária de corte','Beef cattle','Ganadería de carne'],
@@ -2638,6 +2676,7 @@ const Visit = (() => {
       </div>
       ${s.menor ? '' : `<div class="vis-card"><button class="btn" id="vp-contato" ${s.contato?'disabled':''}>${esc(s.contato?t.contatoOk:t.contato)}</button><p class="sub" style="font-size:.85rem">${esc(t.contatoAj)}</p></div>`}
       <div class="vis-card" id="vp-trilhas" hidden></div>
+      ${s.menor ? '' : '<div class="vis-card" id="vp-mural"></div>'}
       <button class="ghost" id="vp-share">${esc(t.compartilhar)}</button>
       ${fila().length ? `<p class="vis-msg">⏳ ${fila().length} ${esc(t.pendentes)}</p>` : ''}
       <p class="vis-msg" id="vp-msg" hidden></p>`;
@@ -2661,6 +2700,7 @@ const Visit = (() => {
     let pub = false;
     corpo().querySelectorAll('[data-pub]').forEach(b=>b.onclick=()=>{ pub = b.dataset.pub==='1'; corpo().querySelectorAll('[data-pub]').forEach(x=>x.classList.toggle('sel', x===b)); });
     $('vp-enviar').onclick = async () => { const tx=$('vp-coment').value.trim(); if (!tx) return; if (await agir('comentario', {texto:tx, publico:pub})){ $('vp-coment').value=''; msgv(L().enviado,'ok'); } };
+    formMural('estande', e.id, tok);
     if ($('vp-contato')) $('vp-contato').onclick = async () => { if (await agir('contato')){ pagina(); msgv(L().contatoOk,'ok'); } };
     $('vp-share').onclick = async () => {
       const url = location.origin + location.pathname + '#e-' + e.id;
@@ -2718,6 +2758,54 @@ const Visit = (() => {
     ligarIdioma();
   }
 
+  /* ---------- publicar no telão social ----------
+     A foto é redimensionada no próprio celular (lado maior até 1080 px) e regravada em JPEG:
+     isso apaga os dados EXIF, inclusive a localização do GPS. */
+  function reduzirFoto(arq){
+    return new Promise((ok, falha) => {
+      const url = URL.createObjectURL(arq), img = new Image();
+      img.onload = () => {
+        const tentar = (lado, q) => {
+          const k = Math.min(1, lado/Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement('canvas');
+          c.width = Math.round(img.naturalWidth*k); c.height = Math.round(img.naturalHeight*k);
+          c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+          const b64 = c.toDataURL('image/jpeg', q).split(',')[1];
+          if (b64.length*0.75 > 300000 && lado > 600) return tentar(lado-240, Math.max(.6, q-.08));
+          URL.revokeObjectURL(url); ok(b64);
+        };
+        tentar(1080, .82);
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); falha(new Error('foto')); };
+      img.src = url;
+    });
+  }
+  function formMural(tipo, id, tok){
+    const box = $('vp-mural'); if (!box) return;
+    const t = L(); let foto = null;
+    box.innerHTML = `<button class="btn sec" id="vm-abrir">📷 ${esc(t.publicar)}</button>`;
+    $('vm-abrir').onclick = () => {
+      box.innerHTML = `<h2>📷 ${esc(t.publicar)}</h2>
+        <label class="vis-lbl" for="vm-txt">${esc(t.mensagem)}</label><textarea class="vis-in" id="vm-txt" rows="2" maxlength="140"></textarea><span class="sub" id="vm-cont" style="font-size:.8rem">0/140</span>
+        <label class="btn sec" for="vm-arq" style="text-align:center;cursor:pointer">${esc(t.foto)}</label><input type="file" id="vm-arq" accept="image/*" hidden>
+        <img id="vm-prev" class="vis-foto-prev" alt="" hidden>
+        <p class="sub" style="font-size:.85rem">${esc(t.publicarAj)}</p>
+        <button class="btn" id="vm-enviar">${esc(t.enviar)}</button><p class="vis-msg" id="vm-msg" hidden></p>`;
+      const msg = (x, tipo2) => { const m=$('vm-msg'); m.hidden=!x; m.textContent=x||''; m.className='vis-msg'+(tipo2?' '+tipo2:''); };
+      $('vm-txt').oninput = () => { $('vm-cont').textContent = $('vm-txt').value.length+'/140'; };
+      $('vm-arq').onchange = async () => {
+        const f = $('vm-arq').files[0]; if (!f) return;
+        try{ foto = await reduzirFoto(f); const pv=$('vm-prev'); pv.src = 'data:image/jpeg;base64,'+foto; pv.alt = t.foto; pv.hidden = false; msg(''); }
+        catch(e){ foto = null; msg(t.fotoErro, 'erro'); }
+      };
+      $('vm-enviar').onclick = async () => {
+        const tx = $('vm-txt').value.trim(); if (!tx && !foto){ msg(t.fotoOuTexto, 'erro'); return; }
+        const b = $('vm-enviar'); b.disabled = true;
+        try{ await Base.vis.publicar(tok, tipo, id, tx, foto); box.innerHTML = `<p class="vis-msg ok">${esc(t.publicado)}</p>`; }
+        catch(e){ b.disabled = false; msg(e.code==='limite' ? t.muitas : e.code==='rede' ? t.semRede : t.erro, 'erro'); }
+      };
+    };
+  }
+
   /* ---------- palestra (QR do telão) ---------- */
   async function palestra(id, cod){
     window.scrollTo(0,0);
@@ -2754,12 +2842,13 @@ const Visit = (() => {
           <label class="vis-lbl" for="pp-coment">${esc(t.comentPal)}</label><textarea class="vis-in" id="pp-coment" rows="3" maxlength="400"></textarea>
           <button class="btn sec" id="pp-enviar">${esc(t.enviar)}</button></div>` : ''}
         <div class="vis-card" id="vp-trilhas" hidden></div>
+        ${st.menor ? '' : '<div class="vis-card" id="vp-mural"></div>'}
         <p class="vis-msg" id="vp-msg" hidden></p>`;
       ligarIdioma();
       const msgv = (x, tipo) => { const m=$('vp-msg'); m.hidden=!x; m.textContent=x||''; m.className='vis-msg'+(tipo?' '+tipo:''); };
       corpo().querySelectorAll('[data-pc]').forEach(b=>b.onclick=async()=>{ try{ st = await Base.vis.avaliarPalestra(tok, id, b.dataset.pc, null); aviso1=''; pag(); msgv(L().obrigado,'ok'); }catch(e){ msgv(e.code==='rede'?L().semRede:L().erro,'erro'); } });
       if ($('pp-enviar')) $('pp-enviar').onclick = async () => { const tx = $('pp-coment').value.trim(); if (!tx) return; try{ st = await Base.vis.avaliarPalestra(tok, id, null, tx); $('pp-coment').value=''; msgv(L().enviado,'ok'); }catch(e){ msgv(e.code==='rede'?L().semRede:L().erro,'erro'); } };
-      trilhasAqui('palestra', id, tok);
+      trilhasAqui('palestra', id, tok); formMural('palestra', id, tok);
     };
     atual = pag; pag();
   }
@@ -2773,6 +2862,71 @@ function qrURL(texto, celula=4){
   if (typeof qrcode!=='function') return '';
   const q = qrcode(0, 'M'); q.addData(texto); q.make(); return q.createDataURL(celula, 2);
 }
+/* ================== TELÃO SOCIAL (#mural) ==================
+   Computador ou TV da organização, com conta da equipe. Mapa da feira com as publicações aprovadas
+   aparecendo no estande de onde vieram, um destaque que alterna entre as mais recentes e o "em alta agora". */
+const Mural = (() => {
+  const $ = id => document.getElementById(id);
+  let run = 0, timer = null, giro = null, ult = 0, posts = [], alta = [], mapa = null, idx = 0;
+  const fotos = new Map();                                 // id -> data URL (só aprovadas)
+  const W = 1000;
+  const marca = '<div class="mu-marca"><span>TECNOSHOW <i>AO VIVO</i></span></div>';
+  async function foto(id){
+    if (fotos.has(id)) return fotos.get(id);
+    try{ const f = await Base.mural.foto(id); const u = f ? `data:${f.tipo};base64,${f.dados}` : null; fotos.set(id, u); return u; }catch(e){ return null; }
+  }
+  function svgMapa(){
+    const p = mapa && mapa.planta, H = p && p.largura ? Math.round(W*p.altura/p.largura) : 700;
+    const fundo = p ? `<image href="${esc(p.url)}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none" opacity=".55"/>` : `<rect width="${W}" height="${H}" fill="#071637"/>`
+      + (p || ((mapa && mapa.lotes) || []).length ? '' : `<text x="${W/2}" y="${H/2}" text-anchor="middle" font-size="22" fill="#8fa6d1">Envie a planta e desenhe os lotes em Administração › Mapa</text>`);
+    const lotes = ((mapa && mapa.lotes) || []).map(pg=>`<polygon points="${pg.map(([x,y])=>`${(x*W).toFixed(1)},${(y*H).toFixed(1)}`).join(' ')}" fill="#5fd0ff" fill-opacity=".08" stroke="#1d3b7a" stroke-width="1"/>`).join('');
+    const quentes = alta.filter(a=>a.pos).map(a=>`<circle cx="${(a.pos.x*W).toFixed(1)}" cy="${(a.pos.y*H).toFixed(1)}" r="${Math.min(60, 14+a.n*3)}" fill="#ffc861" fill-opacity=".18" stroke="#ffc861" stroke-opacity=".6"/>`).join('');
+    const atual = posts[idx];
+    const pinos = posts.filter(x=>x.pos).map(x=>{ const cx=(x.pos.x*W).toFixed(1), cy=(x.pos.y*H).toFixed(1), on = atual && atual.id===x.id;
+      return `<g><circle cx="${cx}" cy="${cy}" r="${on?11:6}" fill="${on?'#9ef0ff':'#5fd0ff'}" stroke="#040b1f" stroke-width="2"/>${on?`<circle class="mu-pulso" cx="${cx}" cy="${cy}" r="11" fill="none" stroke="#9ef0ff" stroke-width="3"/>`:''}</g>`; }).join('');
+    return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Mapa da feira com as publicações dos visitantes">${fundo}${lotes}${quentes}${pinos}</svg>`;
+  }
+  async function destaque(){
+    const box = $('mu-dest'); if (!box) return;
+    if (!posts.length){ box.innerHTML = `<div class="mu-card vazio">${marca}<p>Leia o QR de um estande, toque em <b>Publicar no telão</b> e sua foto ou mensagem aparece aqui.</p></div>`; return; }
+    const x = posts[idx], u = x.tem_foto ? await foto(x.id) : null;
+    if (!$('mu-dest') || posts[idx]!==x) return;
+    box.innerHTML = `<div class="mu-card">${u?`<img src="${u}" alt="Foto publicada por um visitante em ${esc(x.alvo||'')}">`:''}${x.texto?`<p class="mu-txt">“${esc(x.texto)}”</p>`:''}
+      <div class="mu-onde">📍 ${esc(x.alvo||'')} · ${esc(new Date(x.quando).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}))}</div>${marca}</div>`;
+    $('mu-mapa').innerHTML = svgMapa();
+  }
+  function lateral(){
+    const box = $('mu-alta'); if (!box) return;
+    box.innerHTML = alta.length ? alta.map((a,i)=>`<li><span class="n">${i+1}</span><span>${esc(a.nome)}</span><b class="tabnum">${a.n}</b></li>`).join('') : '<li class="nota">Os estandes mais visitados na última meia hora aparecem aqui.</li>';
+  }
+  async function start(){
+    const meu = ++run; clearTimeout(timer); clearInterval(giro); ult = 0; posts = []; alta = []; idx = 0;
+    const corpo = $('mu-corpo');
+    const top = `<div class="tl-top"><button class="voltar" data-voltar aria-label="Voltar">←</button><span class="brand">TECNOSHOW <i>AO VIVO</i></span><span class="nota">Mural dos visitantes · ${esc(cfg.edicao)}</span></div>`;
+    if (Base.kind!=='supabase'){ corpo.innerHTML = top + '<p class="tl-sub">O telão social funciona no site oficial da plataforma.</p>'; return; }
+    corpo.innerHTML = top + '<p class="tl-sub">Carregando…</p>';
+    const ok = await Base.garantirAcesso('equipe'); if (meu!==run) return;
+    if (!ok){ corpo.innerHTML = top + '<p class="tl-sub">O telão social precisa de uma conta da equipe.</p>'; return; }
+    manterTelaLigada();
+    corpo.innerHTML = top + `<div class="mu-grid"><div class="mu-mapa" id="mu-mapa"></div><div class="mu-lado"><div id="mu-dest"></div>
+      <div class="mu-alta"><h2>🔥 Em alta agora</h2><ol id="mu-alta"></ol></div></div></div>`;
+    const passo = async () => {
+      if (meu!==run || location.hash!=='#mural') return;
+      try{
+        const r = await Base.mural.telao(edSlug(), ult); if (meu!==run) return;
+        mapa = {planta:r.planta, lotes:r.lotes}; alta = r.em_alta || [];
+        if (r.publicacoes.length){ posts = posts.concat(r.publicacoes).slice(-40); ult = posts[posts.length-1].id; idx = posts.length-1; destaque(); }
+        else if (!posts.length) destaque();
+        $('mu-mapa').innerHTML = svgMapa(); lateral();
+      }catch(e){}
+      timer = setTimeout(passo, 15000);
+    };
+    passo();
+    giro = setInterval(()=>{ if (meu!==run || location.hash!=='#mural'){ clearInterval(giro); return; } if (posts.length>1){ idx = (idx+1) % posts.length; destaque(); } }, 8000);
+  }
+  return {start};
+})();
+
 const Telao = (() => {
   const $ = id => document.getElementById(id);
   let run = 0, timer = null, ultimo = '';

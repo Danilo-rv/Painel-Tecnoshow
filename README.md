@@ -25,7 +25,7 @@ As respostas ficam num banco **Supabase** do próprio projeto. Uma versão alter
 ## 1. Configurar o Supabase (uma vez)
 
 1. Crie um projeto em <https://supabase.com> (região São Paulo, `sa-east-1`).
-2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`, `003_visitante_estande.sql`, `004_moderacao_painel_expositor.sql`, `005_saida_tablets.sql` e `006_presenca_trilhas.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
+2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`, `003_visitante_estande.sql`, `004_moderacao_painel_expositor.sql`, `005_saida_tablets.sql`, `006_presenca_trilhas.sql` e `007_mural.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
 3. Em **Authentication → Sign In / Providers**, deixe **ligado** "Allow new users to sign up" (a equipe se cadastra pelo link de convite; uma conta criada sem convite não acessa nada) e mantenha "Confirm email" ligado.
    Em **Authentication → URL Configuration**, coloque o endereço do site em **Site URL** e em **Redirect URLs** (ex.: `https://danilo-rv.github.io/Painel-Tecnoshow/**`), para o e-mail de confirmação voltar ao app.
 4. Gere a chave da coleta: no SQL Editor, rode `select replace(gen_random_uuid()::text, '-', '') as chave_da_coleta;` e guarde o resultado.
@@ -212,6 +212,21 @@ Cada estande tem um QR (em **Administração → Cadastros → Expositores**, ab
 - O estande doador digita o código do cupom em **Área do expositor → Prêmios de trilhas** e entrega o prêmio. Um cupom já usado é recusado, com a data em que foi usado. A organização também pode dar baixa.
 
 **Pendente:** o aviso por WhatsApp ao completar a trilha (depende do provedor da API do WhatsApp Business) e a proposta de trilha feita pelo próprio estande para aprovação da organização.
+
+## 11. Telão social (mural dos visitantes)
+
+- **Visitante:**
+  - na página do estande ou da palestra, toca em **Publicar no telão** e escreve uma mensagem de até 140 caracteres, com uma foto se quiser;
+  - o celular reduz a foto e a regrava antes de enviar, o que apaga os dados embutidos, inclusive a localização do GPS;
+  - menores de 18 anos não veem o botão;
+  - cada visitante publica no máximo 5 vezes por hora.
+- **Moderação:** em **Administração → Moderação → Mural**, aprove ou recuse cada publicação, com a foto à vista (decisão 4). Nada aparece sem aprovação.
+- **Telão:** abra `…/#mural` numa TV ou num computador da organização, com uma conta da equipe (há um atalho na aba Moderação). Ele mostra:
+  - o mapa da feira, com cada publicação no lote do estande ou no local da palestra;
+  - um destaque que troca a cada 8 segundos, sempre com a marca da plataforma;
+  - "Em alta agora": os estandes com mais pessoas diferentes nos últimos 30 minutos, a partir de 3 pessoas.
+  O mapa usa a planta e os lotes desenhados em Administração → Mapa.
+- **Onde a foto fica:** no banco, sem endereço público. Só a moderação e o telão a leem. No piloto, cada foto ocupa cerca de 100 KB; para volumes maiores, o plano é passar as fotos para o Storage.
 
 ## Proteção de dados (LGPD)
 
