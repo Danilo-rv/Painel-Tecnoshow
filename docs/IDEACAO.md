@@ -452,9 +452,64 @@ Base teórica: escalas de satisfação com carinhas (CSAT), resposta afetiva ao 
 - **Comentários públicos passam pela moderação** (filtro automático + fila), como no telão social.
 - **Imagem:** a selfie com moldura segue o termo de uso de imagem. Fotos com menores não vão ao telão.
 
+## 18. Administração geral, papéis e habilitação de aparelhos
+
+### 18.1 Tela de login do administrador geral
+- Entrada própria (por exemplo, `#admin-geral`), separada do app do visitante.
+- **Verificação em duas etapas obrigatória** (aplicativo autenticador) para o administrador geral e para a organização. São as contas mais sensíveis da plataforma.
+- Sessão com tempo limite e encerramento remoto ("sair de todos os aparelhos").
+
+### 18.2 Hierarquia de papéis (controle de acesso por papel)
+
+| Papel | Pode | Não pode |
+|---|---|---|
+| **Administrador geral** | Inserir, editar e excluir tudo: edições, expositores, segmentos, mapa, agenda, desafios, prêmios, parceiros da cidade, usuários e papéis; configurar aparelhos; ver auditoria | Ver dados pessoais de visitantes além do necessário (acesso registrado e justificado) |
+| **Coordenação de pesquisa (ITA)** | Questionário, relatórios, base anonimizada, dados abertos | Alterar expositores, prêmios e aparelhos |
+| **Organização da feira** | Expositores, mapa, agenda, desafios, moderação, sala de controle | Alterar papéis de outros administradores |
+| **Equipe operacional treinada** | **Habilitar e desabilitar aparelhos** (tablets de coleta, painel central, painéis de estande), ver o estado deles, dar suporte no local | Editar conteúdo, ver respostas individuais |
+| **Moderador** | Aprovar ou recusar fotos, mensagens e comentários públicos | Todo o resto |
+| **Expositor (gestor da loja)** | Perfil da loja, produtos, ofertas, sua equipe de atendentes, seu painel e seus leads | Dados de outras lojas |
+| **Atendente do estande** | Ver o painel da loja durante a feira, registrar atendimento | Editar a loja |
+| **Parceiro da cidade** | Perfil do estabelecimento, seu painel | Dados de outros parceiros |
+| **Visitante** | Interagir, gerenciar e apagar seus dados | — |
+
+Princípio do **menor privilégio**: cada pessoa recebe só o papel de que precisa. Uma pessoa pode ter mais de um papel. O papel "coordenador" do app atual vira "Coordenação de pesquisa" nessa hierarquia.
+
+### 18.3 Editar, inserir e excluir com segurança
+- **Cadastros com CRUD completo** para edições, expositores, segmentos, estandes no mapa, produtos, agenda, desafios, prêmios, parceiros, usuários, aparelhos e questionário.
+- **Exclusão vai para a lixeira** (pode ser restaurada por 30 dias). Exclusão definitiva só pelo administrador geral, com confirmação.
+- **Importação em lote** por planilha (expositores, estandes, agenda), porque cadastrar centenas de estandes um a um não é viável.
+- **Registro de auditoria:** quem fez o quê, quando e de qual aparelho. Ninguém consegue apagar esse registro, nem o administrador geral.
+
+### 18.4 Habilitação de aparelhos pela equipe treinada
+Três tipos de aparelho:
+
+| Aparelho | Função |
+|---|---|
+| **Tablet de coleta** | Questionário da sala de avaliação |
+| **Painel central (telão)** | Mapa de arcos, indicadores, telão social |
+| **Painel de estande** | Tela no estande (TV ou tablet) com os números da loja ao vivo: reações, satisfação, fila, QR para interagir |
+
+Como habilitar:
+1. A pessoa da equipe operacional entra no app com sua conta e abre **Aparelhos → Habilitar**.
+2. O aparelho novo mostra um **código de pareamento** (6 dígitos ou QR), que vale por poucos minutos.
+3. A equipe digita ou lê o código e escolhe o tipo, o número (Tablet 3) e, para painel de estande, qual estande.
+4. O aparelho recebe uma **credencial própria**, limitada à sua função. O tablet de coleta só envia respostas; o painel de estande só lê os números daquele estande. Nenhuma senha pessoal fica guardada no aparelho.
+5. O aparelho entra **travado na função** (modo quiosque). A saída exige o gesto + código da equipe (decisão 24).
+
+O administrador geral e a equipe veem a **lista de aparelhos ao vivo**: online ou offline, respostas na fila, última sincronização, versão do questionário, bateria quando disponível. Um aparelho perdido é **desabilitado com um toque**, e a credencial dele deixa de valer na hora.
+
+Isso substitui o "chave da coleta" de hoje (uma chave igual em todos os tablets) por uma credencial por aparelho, que é mais seguro e mais fácil de controlar.
+
+### 18.5 Equipe treinada
+- Só quem tem o selo **"treinado"** no cadastro pode habilitar aparelhos. O selo é dado pelo administrador geral ou pela organização depois do treinamento.
+- **Módulo de treinamento no próprio app:** vídeos curtos, um passo a passo e um teste rápido. O selo pode ser liberado automaticamente com aprovação no teste.
+- **Escala da equipe por dia e turno**, com quem está de plantão em cada setor da feira.
+- Para o ITA: o treinamento e a escala também documentam a equipe de campo da pesquisa (seção 13.2).
+
 ---
 
-## 18. Decisões pendentes (acumuladas)
+## 19. Decisões pendentes (acumuladas)
 
 Perguntas que serão feitas todas de uma vez ao final da ideação.
 
@@ -495,12 +550,18 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 24. Saída da coleta pela equipe: gesto + código numérico serve? Quem define e guarda o código?
 
 **Da etapa de interação no QR do estande**
-25. ~~Visibilidade dos negativos~~ → **decidida** (ver seção 19).
-26. Cartão de story: a logo do app já é obrigatória (seção 19). Falta decidir quem desenha a moldura, se cada estande pode ter a sua versão e se há espaço para patrocinador.
+25. ~~Visibilidade dos negativos~~ → **decidida** (ver seção 20).
+26. Cartão de story: a logo do app já é obrigatória (seção 20). Falta decidir quem desenha a moldura, se cada estande pode ter a sua versão e se há espaço para patrocinador.
+
+**Da etapa de administração geral e aparelhos**
+27. Administrador geral: quem será (uma pessoa ou mais)? Fica na organização da feira, no ITA, ou um de cada?
+28. Papéis: a hierarquia da seção 18.2 atende? Falta ou sobra algum papel?
+29. Painel de estande: é uma TV ou tablet físico no estande, a tela do celular do expositor, ou os dois? Quem fornece o aparelho?
+30. Treinamento: presencial, pelo módulo no app, ou os dois? Quem dá o selo "treinado"?
 
 ---
 
-## 19. Decisões tomadas
+## 20. Decisões tomadas
 
 | Nº | Decisão | Data | Consequência no desenho |
 |---|---|---|---|
@@ -519,3 +580,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 05/11/2026: requisito de navegação (seta de voltar em todas as telas), decisão 24.
 - 05/11/2026: interação instantânea no QR do estande (reações, carinhas, comentários, story), decisões 25 e 26.
 - 05/11/2026: decisão 25 tomada (negativos só para loja e organização); decisão 26 em parte (logo do app em toda postagem e moldura).
+- 06/11/2026: administração geral, hierarquia de papéis, habilitação de aparelhos pela equipe treinada, decisões 27 a 30.
