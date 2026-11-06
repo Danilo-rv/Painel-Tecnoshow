@@ -470,6 +470,7 @@ Base teórica: escalas de satisfação com carinhas (CSAT), resposta afetiva ao 
 | **Moderador** | Aprovar ou recusar fotos, mensagens e comentários públicos | Todo o resto |
 | **Expositor (gestor da loja)** | Perfil da loja, produtos, ofertas, sua equipe de atendentes, seu painel e seus leads | Dados de outras lojas |
 | **Atendente do estande** | Ver o painel da loja durante a feira, registrar atendimento | Editar a loja |
+| **Patrocinador** | Ver os resultados das próprias cotas: alcance, interações, desafios e molduras patrocinadas | Dados de visitantes, expositores e outros patrocinadores |
 | **Parceiro da cidade** | Perfil do estabelecimento, seu painel | Dados de outros parceiros |
 | **Visitante** | Interagir, gerenciar e apagar seus dados | — |
 
@@ -594,6 +595,7 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 | 26 | **Moldura oficial da plataforma** (logo do app + marca da feira), **com espaço reservado para a logo de cada estande**; patrocinador só em moldura especial de campanha | 06/11/2026 | Gerador de cartões com camadas fixas (logo do app e da feira) e uma camada do estande |
 | 29 | **Painel de estande no celular do expositor e dos atendentes, com exibição opcional numa TV ou tablet** do próprio expositor, habilitada pela equipe treinada | 06/11/2026 | O painel tem uma versão para celular e outra para tela grande, com o QR de interação |
 | 30 | **Treinamento pelo app (vídeos, passo a passo, teste) + uma sessão prática presencial;** o selo "treinado" é liberado pelo administrador geral ou pela organização depois das duas etapas | 06/11/2026 | Módulo de treinamento e controle do selo entram na Administração |
+| 28 | **Hierarquia com 10 papéis:** os 9 da seção 18.2 **+ Patrocinador** (vê só os resultados das próprias cotas) | 06/11/2026 | Painel do patrocinador entra junto com os relatórios de patrocínio |
 
 ---
 
@@ -611,3 +613,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 06/11/2026: decisões 1 a 14, 20 e 27 tomadas.
 - 06/11/2026: decisões 15 a 19, 21, 22 e 24 tomadas.
 - 06/11/2026: decisões 26, 29 e 30 tomadas; decisão 23 adiada para o final, com mais opções de nomes.
+- 06/11/2026: decisão 28 tomada (papel Patrocinador incluído).
