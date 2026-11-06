@@ -593,6 +593,31 @@ A agenda oficial vira a base de **trilhas**: combinações de check-ins que dão
 - Brindes da Prefeitura e de outros órgãos públicos seguem as regras de doação do próprio órgão.
 - O check-in em palestra só funciona no local e no horário, para os dados de público serem confiáveis.
 
+## 18-C. Avaliação de palestras e serviços; mecanismos do Instagram
+
+Detalhado na seção 16 do plano de implantação (documento "Plano de implantação ITex / ShowPulse"), para revisão.
+
+- **Avaliação com carinhas e comentários**, como nos estandes, também em:
+  - palestras;
+  - estacionamento (QR nas saídas e portarias);
+  - banheiros (alerta em tempo real para a limpeza);
+  - restaurantes e praças de alimentação;
+  - portarias e transporte oficial.
+- **Análise de sentimento e de temas dos comentários**, visível em detalhe **só para a organização**. Palestrantes e estandes recebem só agregados. A análise usa um modelo de linguagem com vocabulário do agro, conferido por amostra pelo ITA.
+- **Mecanismos do Instagram adaptados pelo dado que geram:**
+  - seguir o estande, que cria uma audiência própria entre edições;
+  - salvar o produto, que mede intenção de compra;
+  - perguntas e enquetes ao vivo nas palestras;
+  - stories "acontecendo agora";
+  - assuntos em alta;
+  - marcar o estande na foto;
+  - insights;
+  - destaques da edição;
+  - trilhas em colaboração;
+  - recomendações "para você".
+
+  Prioridade: seguir, salvar, perguntas e enquetes nas palestras, e assuntos em alta.
+
 ---
 
 ## 19. Decisões pendentes (acumuladas)
@@ -711,3 +736,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 06/11/2026: benchmark do app oficial da Tecnoshow 2026 (seção 18-A), decisão 31.
 - 06/11/2026: mosaico do mapa 2026 guardado e transcrito (113 lotes em `docs/mapa-2026/`); decisão 32 com as dúvidas do mapa.
 - 06/11/2026: decisão 31 tomada (ITex é camada de dados, sem app próprio nem competição); agenda como mecanismo de gamificação (seção 18-B).
+- 06/11/2026: avaliação de palestras e serviços com análise de sentimento só para a organização; mecanismos do Instagram (seção 18-C e seção 16 do plano).
