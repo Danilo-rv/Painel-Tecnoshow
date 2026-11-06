@@ -1,0 +1,114 @@
+lote;tipo;ocupantes;fileira_aprox;observacao;confianca
+1;auditorio;Auditório 1;9 (sul, leste);Perto da GO-174;alta
+2;praca;Praça das Bandeiras;9 (sul, leste);;alta
+3;expositores;Grupo Cesar | TNL Tecnal | Corpo de Bombeiros | Unimed | Librelato Libreiro;9 (sul, leste);Lote compartilhado;alta
+4;expositor;Mercedes-Benz;9 (sul);;alta
+5;expositor;Rodo Rio;9 (sul);;alta
+6;administracao;Administração · Secretaria Geral;8 (leste);Junto à Portaria principal e ao ambulatório;alta
+7;praca;Praça das Flores;8 (leste);;alta
+8;expositores;Cogny | Caixa | Scania Varella | Nasa Caminhões e Ônibus;8;Lote compartilhado;alta
+9;expositores;Somafértil | DAF Caminhões | Caiado Pneus | TKA Guindastes;8;Lote compartilhado;alta
+10;expositores;UniRV | Emater | IF Goiano;8;Lote compartilhado;alta
+11;expositores;Facchini | Multiforça | Foton Canopus;8;Lote compartilhado;alta
+12;expositores;Pastre | Grupo Vamos;8;Lote compartilhado;alta
+13;alimentacao;Área de alimentação · Point do Pastel;8;Texto pequeno;media
+14;bosque;Bosque (3.596 m²): Boutique Tecnoshow | Espaço Comigo Florestal | área de alimentação | Lanchonete AAC | Food truck (Óleo Comigo) | containers de lanches (Du Pomar, Fazendinha da Vandir, Regis Lanches, Italian Sorvetes);5-6 (leste);Ao lado do Estacionamento 1;media
+15;pavilhao;Pavilhão 1 Empresas;6 (leste);;alta
+16;expositores;Zait Weed-it | IGA | Cresol | Aprosoja GO | Rumo | OCB-GO;7;Lote compartilhado;alta
+17;expositores;Fundação Meridional | Albaugh;7;Lote compartilhado;alta
+18;expositores;Embrapa | Auditório 3;7;Auditório 3 dentro do lote;alta
+19;expositores;Biosphera | Carbom Brasil | Serra Fértil | Ademicon | Quimifol Fenix Agro | Novozymes;7;Lote compartilhado;media
+20;expositores;Ihara | Shopbus | Imavi;7;Lote compartilhado;alta
+21;alimentacao;Pamonha Boa | Estefânia Lima Gourmet | Auditório 2;7;Auditório 2 dentro do lote;media
+22;descanso;Área de descanso · Torre TI;7;;alta
+23;alimentacao;Restaurante 2 Le Petit;7 (oeste do centro);;alta
+24;expositor;Nortox;6;;alta
+25;expositor;Nuseed Brasil;6;;alta
+26;expositores;Stoller | Brasmax;6;Lote compartilhado;alta
+27;expositores;Ourofino Agrociência | Vittia;6;Lote compartilhado;alta
+28;expositor;Morgan;6;;alta
+29;expositor;Sumitomo Chemical;6;;alta
+30;expositores;Limagrain | Adama;6;Lote compartilhado (no app, Adama aparece em Sementes);alta
+31;expositores;Sipcam Nichino | Helm;6;Lote compartilhado;alta
+32;expositor;Soesp;6;;alta
+33;expositores;Comigo | Union Agro;6;Lote compartilhado;alta
+34;pavilhao;Pavilhão 2 Empresas | Pavilhão Agricultura Familiar e Artesanato;6 (oeste);;alta
+35;expositores;Malacara | Espaço Sementinhas do Agro (teatro) | Module | Mata Verde;6 (oeste);Banheiro ao lado;media
+36;pavilhao;Pavilhão 2 · Curral Bovinos;6 (oeste);;alta
+37;pavilhao;Pavilhão 3 Empresas | Restaurante 3 Casarão;6 (oeste);;alta
+38;expositor;Syngenta;5;;alta
+39;expositores;Brevant | Corteva;5;Lote compartilhado;alta
+40;expositores;Corteva | Pioneer;5;Lote compartilhado;alta
+41;expositor;UPL;5;;alta
+42;expositor;Intacta 2Xtend;5;;alta
+43;expositor;Bayer;5;;alta
+44;expositor;FMC;5;;alta
+45;expositor;Syngenta Seeds;5;;alta
+46;expositor;BASF;5;;alta
+47;expositor;Comigo;5;;alta
+48;imprensa;Imprensa | Rádio Tecnoshow | MSD Saúde Animal | Casa do (texto cortado) | Ouro Fino;5 (oeste);Nome cortado na imagem;media
+49;pavilhao;Pavilhão 4 Empresas | Loja Primos Agro;5 (oeste);;media
+50;expositor;Baldan;4 (leste);Ao lado da Portaria II;alta
+51;expositores;Banco do Brasil | Santander | Sicredi | Prefeitura Municipal de Rio Verde | Governo Estadual;4;Lote compartilhado;alta
+52;expositor;Jumil;4;;alta
+53;expositores;Tramontina | Pneu Aço | BYD | Marini | Inroda;4;Lote compartilhado;alta
+54;expositores;Pivot | CSJ Equipamentos de Ração | Save Farm | Panter Nogueira | Ravel Renault | Casale;4;Lote compartilhado;media
+55;expositores;Orion | Geo Agri | Saframax | Implemaster | Grimaldi | Husqvarna Helmaq | Mepel;4;Lote compartilhado;media
+56;expositores;Champion Volvo | Honda Haikar | Grupo Saga | Caoa Chery | Ford Regivel | Omoda/Jaecoo;4;Lote compartilhado;media
+57;expositores;Alvo Agrícola | Agrosystem | Hyundai | Volvo Suécia;4;Banheiro dentro da quadra;media
+58;expositores;Valmont | Elo Soluções Agrícolas | Kepler Weber | CASP | Sollus Agrícola;4;Lote compartilhado;alta
+59;expositores;Stihl | Ipacol | IMEP;4;Lote compartilhado;alta
+60;expositor;Loja Comigo;4;;alta
+61;expositores;Santa Izabel | Herder | Currais Itabira | TV Sucesso Band | Toledo | Azul Pack | Guardião Eletrificadores;4 (oeste);Texto pequeno;media
+62;pecuaria;Pavilhão Equinos | Selas Nogueira | Piquete Equinos | Guachuka | Cercas Zebu | Fierro Martin | Balanças Açores | Oxen Currais;4 (oeste);Texto pequeno;media
+63;expositores;Xtractor Zoomlion | Roster | Siloking | Valfran | Esseg | Belgo Arames;4 (oeste);Lote compartilhado;media
+64;expositores;Ingrax | Alternativa Cochos | Gelgás | WSA Brasil | Senagro Pecuária | Coimma;4 (oeste);Lote compartilhado;media
+65;alimentacao;Restaurante 1 Douradão;3 (leste);;alta
+66;expositores;Bradesco | Sicoob Credi-Rural;3;Lote compartilhado;alta
+67;expositores;Planti Center | Allikon | Pneuzão | Web Carretas | TV Record;3;Banheiro dentro da quadra;media
+68;expositor;Marchesan;3;;alta
+69;expositor;Massey Ferguson;3;;alta
+70;expositores;DMB | Panter | JF Máquinas;3;Lote compartilhado;alta
+71;expositores;Indutar | Triton | Menta | WK | Kamaq;3;Lote compartilhado;alta
+72;expositores;Umuarama Concessionária (Toyota, Citroën, Peugeot) | Ventura | Elmag | Cerrado Verde | JM Empilhadeiras | Bit Electronics | Marcher Brasil;3;Lote compartilhado;media
+73;expositores;Haramaq | Rimave | Metisa | Micron | Bambozzi | Fetz | Incomagri | KS;3;Lote compartilhado;media
+74;expositores;Jorge Máquinas | Bombas Andrade | Trevisan | Buffalo | Branco Briggs;3;Lote compartilhado;alta
+75;expositores;Sotreq | Siltomac | Makita | RM Pastéis (área de alimentação) | Área de descanso;3;Lote compartilhado;alta
+76;expositores;Valence JCB | Tracbel SDLG | Pagé | Itália Agro | AGI Brasil | Krebs;3 (oeste);Lote compartilhado;media
+77;expositores;Mangmax | BMC Hyundai | Sindicato Rural | Senar | FAEG | Sebrae | Pavilhão Ovinos | Pavilhão Equinos;3 (oeste);Texto pequeno;media
+78;pecuaria;Dinâmica de Pecuária | Made in Rodeio | Semad | SG Sul | Treze Tílias | Cutelaria Forja de Platina;3 (oeste);Palco "Dinâmicas de Pecuária" da agenda;media
+79;expositores;MIAC Indústrias Colombo | MFW | Rohr | Extraplast | Troncos Progresso;3 (oeste);Lote compartilhado;alta
+80;expositor;Distribuidora Água Caiapó;2 (leste);Área verde, sem estande desenhado;alta
+81;expositor;Case IH;2;;alta
+82;expositor;GM Autorio;2;;alta
+83;expositor;New Holland;2;;alta
+84;expositor;Horsch;2;;alta
+85;expositor;Civemasa;2;;alta
+86;expositor;Piccin;2;;alta
+87;expositor;Jan;2;;alta
+88;expositor;Kuhn;2;;alta
+89;expositor;Mitsubishi;2;Banheiro dentro do lote;alta
+90;expositor;Sudoeste Veículos;2;;alta
+91;expositores;Eurobike | Navesa GWM | Caixas d'água | Ambulância;2;Lote compartilhado;alta
+92;expositor;Industrial KF;2 (oeste);;alta
+93;expositor;Ravel Fiat Aventura RAM;2 (oeste);;alta
+94;expositores;Agross | DCCO;2 (oeste);Lote compartilhado;alta
+95;expositor;Grupo Osvaldo Zilli;2 (oeste);Ao lado da Portaria IV;alta
+96;expositor;Case IH;1 (norte, leste);;alta
+97;expositor;John Deere;1;Test drive GM ao norte;alta
+98;expositor;John Deere;1;Test drive Aventura RAM/Dakota ao norte;alta
+99;expositor;Jacto;1;Heliponto ao norte;alta
+100;expositor;Jacto;1;Heliponto ao norte;alta
+101;expositor;GTS do Brasil;1;Test drive GWM ao norte;alta
+102;expositores;Valtra | Fendt;1;Test drive Ford ao norte;alta
+103;expositor;Stara;1;Test drive Volkswagen ao norte;alta
+104;expositor;Stara;1;;alta
+105;expositor;Pro Solus;1;;alta
+106;expositor;Vence Tudo;1;;alta
+107;expositor;Vence Tudo;1;;alta
+108;expositores;MP Agro | Amazone;1 (oeste);Lote compartilhado;alta
+109;expositor;São José;1 (oeste);;alta
+110;expositores;Tractorgyn | Extra Máquinas;1 (oeste);Lote compartilhado;alta
+111;expositores;Turim | JV-Thor | Maxloader | ING Guindastes;3 (extremo oeste);Junto ao Estacionamento 2;alta
+112;expositores;Mahindra | Megatec | Antoniosi;4 (extremo oeste);Junto ao Estacionamento 2;alta
+113;expositores;Geoag | Agrobox | WXM Agriculture;5 (extremo oeste);Junto à Portaria III;alta

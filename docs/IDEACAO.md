@@ -602,6 +602,9 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 **Do benchmark do app oficial**
 31. Relação com o app oficial da Tecnoshow: integrar (o app oficial abre as telas ITex), substituir na edição seguinte, ou decidir depois do piloto? Quem desenvolveu o app atual e há API para importar expositores, locais e agenda?
 
+**Do mapa da feira (detalhe em `docs/mapa-2026/LEIAME.md`)**
+32. Dez dúvidas para a reconstrução do mapa: planta oficial em vetor para 2027, QR por expositor ou por lote, expositores em vários lotes, leituras incertas, categorias, palcos da agenda, georreferência, banheiros e acessibilidade, Portaria I, faixa de test drives.
+
 **Da etapa de administração geral e aparelhos**
 27. Administrador geral: quem será (uma pessoa ou mais)? Fica na organização da feira, no ITA, ou um de cada?
 28. Papéis: a hierarquia da seção 18.2 atende? Falta ou sobra algum papel?
@@ -665,3 +668,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 06/11/2026: decisão 28 tomada (papel Patrocinador incluído).
 - 06/11/2026: decisão 23 tomada (ITex + ShowPulse, pendentes de INPI). Todas as 30 decisões tomadas; ideação encerrada.
 - 06/11/2026: benchmark do app oficial da Tecnoshow 2026 (seção 18-A), decisão 31.
+- 06/11/2026: mosaico do mapa 2026 guardado e transcrito (113 lotes em `docs/mapa-2026/`); decisão 32 com as dúvidas do mapa.
