@@ -315,3 +315,29 @@ Testes:
   - administrador geral vê a prévia e limpa;
   - coordenação não vê a limpeza.
 - Os testes anteriores continuam passando.
+
+## Envio assistido da avaliação pelo WhatsApp (décima terceira etapa)
+
+| Item | Como funciona | Proteção |
+|---|---|---|
+| Fila | `fila_avaliacao` lista adultos cadastrados há N horas, sem avaliação, um por número | Só a equipe; a lista não traz números de WhatsApp |
+| Preparar envio | `preparar_envio_avaliacao` gera o código pessoal (o banco guarda o hash; vale 7 dias) e decifra o número daquela pessoa | Só a equipe; um visitante por vez; cada consulta vai para a auditoria; menores excluídos |
+| Link pessoal | `#avaliar-<código>` funciona em qualquer navegador | Código aleatório de 128 bits; inválido depois de vencido ou de respondido; mesma validação das respostas dos tablets |
+| Já respondeu no tablet | Primeira pergunta do bot; `respondi_no_tablet` tira da fila | Evita contar a mesma pessoa duas vezes |
+| Envio | O app abre `wa.me` com a mensagem pronta; a pessoa envia pelo próprio WhatsApp | Sem automação não oficial (que viola os termos do WhatsApp e leva a bloqueio do número) |
+
+Testes:
+- **Banco local:**
+  - usuário anônimo e conta de estande sem acesso à fila;
+  - menor de idade e número repetido fora da fila;
+  - o prazo de horas;
+  - link falso;
+  - segunda resposta pelo mesmo link;
+  - "já respondi no tablet".
+- **Navegador:**
+  - a equipe envia (WhatsApp aberto com número e mensagem);
+  - o visitante abre o link num navegador sem o cadastro e responde;
+  - reabre e vê "já avaliou";
+  - um segundo visitante diz que respondeu no tablet;
+  - a fila se atualiza.
+- Os testes anteriores continuam passando.

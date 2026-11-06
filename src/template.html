@@ -408,7 +408,7 @@ details.vis-card summary{cursor:pointer;font-weight:600}
       <label for="cfg-chave" id="cfg-chave-wrap" hidden>Chave da coleta (só nos tablets)
         <input id="cfg-chave" type="password" autocomplete="off" spellcheck="false" maxlength="200"></label>
       <div class="cfg-hab" id="cfg-hab" hidden><label for="cfg-hab-cod">Habilitar este tablet (código da equipe)</label><div class="lin"><input id="cfg-hab-cod" inputmode="numeric" maxlength="7" autocomplete="off" placeholder="000 000"><button class="ghost" id="cfg-hab-ok">Habilitar</button></div><span id="cfg-hab-st"></span></div>
-      <div class="demo-links"><button class="ghost" id="go-painel-demo">Ver painel com dados de demonstração</button><button class="ghost" id="go-relatorio-demo">Ver relatório de demonstração</button><button class="ghost" id="go-admin">Administração</button><button class="ghost" id="go-expositor">Área do expositor</button><button class="ghost" id="go-parceiro">Área do parceiro (cidade)</button><button class="ghost" id="go-aparelhos">Habilitar tablets (equipe)</button><button class="ghost" id="go-dados">Dados abertos</button><button class="ghost" id="cfg-sair" hidden>Sair da conta da equipe</button></div>
+      <div class="demo-links"><button class="ghost" id="go-painel-demo">Ver painel com dados de demonstração</button><button class="ghost" id="go-relatorio-demo">Ver relatório de demonstração</button><button class="ghost" id="go-admin">Administração</button><button class="ghost" id="go-expositor">Área do expositor</button><button class="ghost" id="go-parceiro">Área do parceiro (cidade)</button><button class="ghost" id="go-aparelhos">Habilitar tablets (equipe)</button><button class="ghost" id="go-envios">Avaliações a enviar (equipe)</button><button class="ghost" id="go-dados">Dados abertos</button><button class="ghost" id="cfg-sair" hidden>Sair da conta da equipe</button></div>
       <p class="cfg-aviso" id="cfg-aviso" hidden></p>
     </div>
   </div>
@@ -553,6 +553,8 @@ details.vis-card summary{cursor:pointer;font-weight:600}
 <div id="v-aparelhos" class="view" hidden><div class="loja" id="ap-corpo"></div></div>
 
 <div id="v-dados" class="view" hidden><div class="loja" id="da-corpo"></div></div>
+
+<div id="v-envios" class="view" hidden><div class="loja" id="en-corpo"></div></div>
 
 <div id="v-convite" class="view" hidden>
   <div class="conv"><form class="login-box" id="c-form" autocomplete="on">
@@ -1036,6 +1038,9 @@ const Base = (() => {
     agora: ed => rpc('agora', {p_ed:ed}),
     avaliacaoEstado: token => rpc('avaliacao_estado', {p_token:token}),
     responderAvaliacao: (token, r) => rpc('responder_avaliacao', {p_token:token, p_resp:r}),
+    avaliacaoEstadoCod: cod => rpc('avaliacao_estado_codigo', {p_codigo:cod}),
+    responderAvaliacaoCod: (cod, r) => rpc('responder_avaliacao_codigo', {p_codigo:cod, p_resp:r}),
+    respondiTablet: (token, cod) => rpc('respondi_no_tablet', {p_token:token||null, p_codigo:cod||null}),
     agirCidade: (token, id, acao, valor) => rpc('interagir_cidade', {p_token:token, p_estab:id, p_acao:acao, p_valor:valor||null}),
     hospede: (token, id, dados) => rpc('pesquisa_hospede', {p_token:token, p_estab:id, p_dados:dados}),
     publicar: (token, tipo, id, texto, foto) => rpc('publicar_mural', {p_token:token, p_alvo_tipo:tipo, p_alvo_id:id, p_texto:texto, p_foto:foto||null}),
@@ -1079,6 +1084,11 @@ const Base = (() => {
   };
   const dadosAbertos = ed => rpc('dados_abertos', {p_ed:ed});
   const limparEdicao = (ed, conf) => rpc('limpar_edicao', {p_ed:ed, p_confirmacao:conf||null});
+  const envio = {
+    fila: (ed, h, sit) => rpc('fila_avaliacao', {p_ed:ed, p_horas:h, p_situacao:sit}),
+    resumo: (ed, h) => rpc('resumo_fila_avaliacao', {p_ed:ed, p_horas:h}),
+    preparar: id => rpc('preparar_envio_avaliacao', {p_visitante:id})
+  };
   /* Moderação dos comentários públicos */
   const mod = {
     listar: (ed, st) => rpc('listar_moderacao', {p_ed:ed, p_status:st||'pendente'}),
@@ -1109,7 +1119,7 @@ const Base = (() => {
   const rpcPublica = (nome, args) => kind==='supabase' ? rpc(nome, args) : Promise.reject(erro('sem_base'));
   const saida = { definir: (ed, cod) => rpc('definir_codigo_saida', {p_ed:ed, p_codigo:cod}), info: ed => rpc('info_codigo_saida', {p_ed:ed}) };
   return {kind, rpcPublica, saida, enviar, ler, acompanhar, precisaLogin, garantirAcesso, sair, entrar, cadastrar, temSessao, souCoordenador, meuPapel,
-          instrumentoAtual, publicarInstrumento, historico, equipe, cad, vis, mod, mural, loja, agenda, parceiro, aparelhos, dadosAbertos, limparEdicao, EDITORES, MODERADORES};
+          instrumentoAtual, publicarInstrumento, historico, equipe, cad, vis, mod, mural, loja, agenda, parceiro, aparelhos, dadosAbertos, limparEdicao, envio, EDITORES, MODERADORES};
 })();
 
 /* Questionário em uso neste aparelho: a última versão publicada da edição, guardada para uso offline. */
@@ -1157,6 +1167,7 @@ const Inst = (() => {
   document.getElementById('go-expositor').onclick = () => go('expositor');
   document.getElementById('go-parceiro').onclick = () => go('parceiro');
   document.getElementById('go-aparelhos').onclick = () => go('aparelhos');
+  document.getElementById('go-envios').onclick = () => go('envios');
   document.getElementById('go-dados').onclick = () => go('dados');
   if (!Base.kind){
     aviso.hidden=false; aviso.textContent='Nenhuma base de respostas configurada: só os modos de demonstração funcionam. Veja o LEIAME para ligar o Supabase.';
@@ -1219,7 +1230,7 @@ const Saida = (() => {
 })();
 
 /* ================== ROTEAMENTO ================== */
-const VIEWS = ['inicio','coleta','painel','relatorio','admin','convite','visitante','expositor','telao','mural','parceiro','mediar','aparelhos','dados'];
+const VIEWS = ['inicio','coleta','painel','relatorio','admin','convite','visitante','expositor','telao','mural','parceiro','mediar','aparelhos','dados','envios'];
 let current = null;
 function route(){
   let h = (location.hash||'').replace('#','');
@@ -1229,7 +1240,7 @@ function route(){
   if (/^convite-/.test(base)) base='convite';
   if (/^e-[0-9a-f-]{36}$/.test(base)) base='visitante';
   if (/^expositor(-[0-9a-f-]{36})?$/.test(base)) base='expositor';
-  if (/^p-[0-9a-f-]{36}(-[0-9a-f]{10})?$/.test(base) || /^[tc]-[0-9a-f-]{36}$/.test(base) || base==='trilhas' || base==='agora' || base==='avaliar') base='visitante';
+  if (/^p-[0-9a-f-]{36}(-[0-9a-f]{10})?$/.test(base) || /^[tc]-[0-9a-f-]{36}$/.test(base) || base==='trilhas' || base==='agora' || /^avaliar(-[0-9a-f]{32})?$/.test(base)) base='visitante';
   if (/^mediar-[0-9a-f-]{36}$/.test(base)) base='mediar';
   if (/^telao-[0-9a-f-]{36}$/.test(base)) base='telao';
   let v = VIEWS.includes(base) ? base : 'inicio';
@@ -1248,7 +1259,7 @@ function route(){
     else if (h.startsWith('t-')) Visit.trilha(h.slice(2));
     else if (h.startsWith('c-')) Visit.cidade(h.slice(2));
     else if (h==='agora') Visit.agora();
-    else if (h==='avaliar') Visit.avaliar();
+    else if (h.startsWith('avaliar')) Visit.avaliar(h.slice(8));
     else Visit.trilhas();
   }
   if (v==='telao') Telao.start(h.slice(6));
@@ -1257,6 +1268,7 @@ function route(){
   if (v==='mediar') Mediar.start(h.slice(7));
   if (v==='aparelhos') Aparelhos.start();
   if (v==='dados') Dados.start();
+  if (v==='envios') Envios.start();
   if (v==='expositor') Loja.start(h.slice(10));
 }
 /* Seta de voltar: volta para a tela anterior do app; se a pessoa chegou direto (link ou QR), vai para o início. */
@@ -2669,6 +2681,7 @@ const Visit = (() => {
         semRede:'Sem internet agora. Abra este QR de novo quando o sinal voltar.', naFila:'Sem internet: guardamos aqui e enviamos sozinhos quando o sinal voltar.', pendentes:'ações esperando internet',
         trilhas:'Trilhas', etapas:'etapas', premio:'Prêmio', oferecido:'Oferecido por', verTodas:'Ver todas as trilhas', ganhou:'Você completou a trilha!', mostreCupom:'Mostre este código no estande {x} para retirar o prêmio.', mostreCupomCid:'Mostre este código em {x} para retirar o prêmio.', mostreCupomOrg:'Mostre este código à organização da feira para retirar o prêmio.', retirado:'Prêmio já retirado.', esgotada:'Os prêmios desta trilha acabaram.', encerrada:'Esta trilha já foi encerrada.', prazo:'Até', regulamento:'Regulamento', semTrilhas:'Nenhuma trilha aberta agora.', semTrilha:'Trilha não encontrada ou encerrada.', comecar:'Leia o QR de um estande ou de uma palestra para começar.', palestra:'Palestra', estande:'Estande', presencaOk:'Presença registrada ✓', presencaSem:'Para registrar presença, leia o QR do telão durante a palestra.', foraHorario:'A presença só pode ser registrada durante a palestra.', expirado:'Este QR já mudou. Leia de novo o QR do telão.', avalPal:'O que achou da palestra?', comentPal:'Comentário para a organização (não é publicado)',
         publicar:'Publicar no telão', mensagem:'Mensagem (até 140 caracteres)', foto:'Adicionar foto', publicarAj:'Sua publicação passa pela moderação antes de aparecer no telão da feira, com a marca da plataforma. Não publique fotos de outras pessoas sem a permissão delas.', publicado:'Enviado! Sua publicação aparece no telão depois da moderação.', muitas:'Você já publicou muitas vezes na última hora. Tente mais tarde.', fotoErro:'Não foi possível ler esta foto. Tente outra.', fotoOuTexto:'Escreva uma mensagem ou escolha uma foto.',
+        av_tablet:'Antes de começar: você já respondeu a pesquisa no tablet da sala de avaliação?', av_tabletSim:'Sim, já respondi', av_tabletNao:'Não, quero responder agora', av_tabletOk:'Obrigado! Sua resposta no tablet já conta. Boa feira!', av_linkInvalido:'Este link de avaliação expirou ou não é válido.',
         av_semPerfil:'Para avaliar a feira, leia antes o QR de um estande ou de uma palestra neste celular.', av_jaRespondeu:'Você já avaliou esta edição. Obrigado!', av_ola:'Olá! 👋', av_intro:'São {n} perguntas rápidas sobre a feira. Toque nas respostas; dá para pular as opcionais.', av_pular:'Pular', av_pronto:'Pronto', av_pulei:'(pulei)', av_enviando:'Enviando…', av_obrigado:'Obrigado! Sua avaliação foi registrada.', av_km:'Você percorreu {km} km até a Tecnoshow.', av_semRede:'Sem internet agora. Suas respostas ficaram guardadas neste celular.', av_tentar:'Tentar de novo', story:'Story', storyEstive:'Estive no estande', storyAvaliei:'Eu avaliei a', storyTrilha:'Completei a trilha', avaliarBtn:'Avalie a Tecnoshow', avaliarSub:'Cerca de 2 minutos, em formato de conversa.',
         perguntas:'Perguntas ao vivo', suaPergunta:'Sua pergunta para o palestrante', perguntar:'Enviar pergunta', aguardando:'Aguardando a mediação', respondida:'Respondida', votar:'Votar nesta pergunta', semPerguntas:'Nenhuma pergunta no ar ainda.', perguntaOk:'Pergunta enviada. Ela aparece para todos depois da mediação.', perguntaLimite:'Você já enviou 3 perguntas nesta palestra.', agoraTit:'Acontecendo agora', agoraPal:'Palestras agora', nadaAgora:'Nenhuma palestra neste momento.', aSeguir:'A seguir', emAlta:'Estandes em alta', pessoasAgora:'pessoas na última meia hora', assuntos:'Assuntos em alta',
         cid:{parceiro:'Parceiro Tecnoshow', obrigado:'Check-in feito. Obrigado por visitar!', comoFoi:'Como foi?', naFeira:'Gostaria de ver este lugar na Tecnoshow?', naFeiraAj:'Sua resposta ajuda a feira a convidar novos expositores.', sim:'Sim', nao:'Não', pesquisa:'Você está hospedado aqui?', pesquisaAj:'Leva 20 segundos e ajuda a cidade a se preparar para a próxima feira. As respostas são anônimas.', noites:'Quantas noites?', pessoas:'Quantas pessoas no quarto?', diaria:'Valor da diária', antecedencia:'Com que antecedência reservou?', motivo:'Motivo da viagem', satisf:'Como está a estadia?', falta:'Responda as cinco primeiras perguntas.', hospedeOk:'Resposta registrada. Obrigado!', refazer:'Corrigir minha resposta', tipo:{bar:'Bar', restaurante:'Restaurante', hotel:'Hotel', loja:'Loja', servico:'Serviço', turismo:'Turismo', outro:'Parceiro'}, diarias:{d1:'Até R$ 150', d2:'R$ 151–250', d3:'R$ 251–400', d4:'R$ 401–600', d5:'Mais de R$ 600'}, antecedencias:{a0:'Menos de 1 semana', a1:'Até 1 mês', a2:'1 a 3 meses', a3:'Mais de 3 meses'}, motivos:{feira:'Tecnoshow', negocios:'Negócios', turismo:'Turismo', familia:'Família', outro:'Outro'}}},
@@ -2687,6 +2700,7 @@ const Visit = (() => {
         semRede:'No internet right now. Open this QR code again when you have signal.', naFila:'No internet: saved on this phone and sent automatically when the signal returns.', pendentes:'actions waiting for internet',
         trilhas:'Trails', etapas:'steps', premio:'Prize', oferecido:'Offered by', verTodas:'See all trails', ganhou:'You completed the trail!', mostreCupom:'Show this code at the {x} booth to collect your prize.', mostreCupomCid:'Show this code at {x} to collect your prize.', mostreCupomOrg:'Show this code to the fair staff to collect your prize.', retirado:'Prize already collected.', esgotada:'The prizes for this trail have run out.', encerrada:'This trail has ended.', prazo:'Until', regulamento:'Rules', semTrilhas:'No open trails right now.', semTrilha:'Trail not found or ended.', comecar:'Scan the QR code of a booth or a talk to start.', palestra:'Talk', estande:'Booth', presencaOk:'Attendance recorded ✓', presencaSem:'To record attendance, scan the QR code on the screen during the talk.', foraHorario:'Attendance can only be recorded during the talk.', expirado:'This QR code has changed. Scan the screen again.', avalPal:'How was the talk?', comentPal:'Comment for the organizers (not published)',
         publicar:'Post to the big screen', mensagem:'Message (up to 140 characters)', foto:'Add photo', publicarAj:'Your post is reviewed before it appears on the fair screen, with the platform logo. Do not post photos of other people without their permission.', publicado:'Sent! Your post will appear on the screen after review.', muitas:'You have posted many times in the last hour. Try again later.', fotoErro:'This photo could not be read. Try another one.', fotoOuTexto:'Write a message or choose a photo.',
+        av_tablet:'Before we start: did you already answer the survey on the tablet in the evaluation room?', av_tabletSim:'Yes, I did', av_tabletNao:'No, I want to answer now', av_tabletOk:'Thank you! Your tablet answer already counts. Enjoy the fair!', av_linkInvalido:'This evaluation link has expired or is not valid.',
         av_semPerfil:'To rate the fair, first scan the QR code of a booth or talk on this phone.', av_jaRespondeu:'You have already rated this edition. Thank you!', av_ola:'Hi! 👋', av_intro:'{n} quick questions about the fair. Tap your answers; optional ones can be skipped.', av_pular:'Skip', av_pronto:'Done', av_pulei:'(skipped)', av_enviando:'Sending…', av_obrigado:'Thank you! Your rating was recorded.', av_km:'You traveled {km} km to Tecnoshow.', av_semRede:'No internet right now. Your answers are saved on this phone.', av_tentar:'Try again', story:'Story', storyEstive:'I visited', storyAvaliei:'I rated', storyTrilha:'I completed the trail', avaliarBtn:'Rate Tecnoshow', avaliarSub:'About 2 minutes, like a chat.',
         perguntas:'Live questions', suaPergunta:'Your question for the speaker', perguntar:'Send question', aguardando:'Waiting for review', respondida:'Answered', votar:'Vote for this question', semPerguntas:'No questions on screen yet.', perguntaOk:'Question sent. Everyone sees it after review.', perguntaLimite:'You have already sent 3 questions in this talk.', agoraTit:'Happening now', agoraPal:'Talks now', nadaAgora:'No talks right now.', aSeguir:'Coming up', emAlta:'Trending booths', pessoasAgora:'people in the last half hour', assuntos:'Trending topics',
         cid:{parceiro:'Tecnoshow partner', obrigado:'Checked in. Thanks for visiting!', comoFoi:'How was it?', naFeira:'Would you like to see this place at Tecnoshow?', naFeiraAj:'Your answer helps the fair invite new exhibitors.', sim:'Yes', nao:'No', pesquisa:'Are you staying here?', pesquisaAj:'It takes 20 seconds and helps the city prepare for the next fair. Answers are anonymous.', noites:'How many nights?', pessoas:'How many people in the room?', diaria:'Nightly rate', antecedencia:'How far in advance did you book?', motivo:'Reason for the trip', satisf:'How is your stay?', falta:'Please answer the first five questions.', hospedeOk:'Answer recorded. Thank you!', refazer:'Change my answer', tipo:{bar:'Bar', restaurante:'Restaurant', hotel:'Hotel', loja:'Shop', servico:'Service', turismo:'Tourism', outro:'Partner'}, diarias:{d1:'Up to R$ 150', d2:'R$ 151–250', d3:'R$ 251–400', d4:'R$ 401–600', d5:'Over R$ 600'}, antecedencias:{a0:'Less than 1 week', a1:'Up to 1 month', a2:'1 to 3 months', a3:'Over 3 months'}, motivos:{feira:'Tecnoshow', negocios:'Business', turismo:'Tourism', familia:'Family', outro:'Other'}}},
@@ -2705,6 +2719,7 @@ const Visit = (() => {
         semRede:'Sin internet ahora. Abra este código QR de nuevo cuando vuelva la señal.', naFila:'Sin internet: lo guardamos aquí y lo enviamos solo cuando vuelva la señal.', pendentes:'acciones esperando internet',
         trilhas:'Rutas', etapas:'etapas', premio:'Premio', oferecido:'Ofrecido por', verTodas:'Ver todas las rutas', ganhou:'¡Completó la ruta!', mostreCupom:'Muestre este código en el stand {x} para retirar el premio.', mostreCupomCid:'Muestre este código en {x} para retirar el premio.', mostreCupomOrg:'Muestre este código a la organización de la feria para retirar el premio.', retirado:'Premio ya retirado.', esgotada:'Se agotaron los premios de esta ruta.', encerrada:'Esta ruta ya terminó.', prazo:'Hasta', regulamento:'Reglamento', semTrilhas:'No hay rutas abiertas ahora.', semTrilha:'Ruta no encontrada o terminada.', comecar:'Lea el código QR de un stand o de una charla para empezar.', palestra:'Charla', estande:'Stand', presencaOk:'Asistencia registrada ✓', presencaSem:'Para registrar asistencia, lea el código QR de la pantalla durante la charla.', foraHorario:'La asistencia solo se registra durante la charla.', expirado:'Este código QR ya cambió. Léalo de nuevo en la pantalla.', avalPal:'¿Qué le pareció la charla?', comentPal:'Comentario para la organización (no se publica)',
         publicar:'Publicar en la pantalla', mensagem:'Mensaje (hasta 140 caracteres)', foto:'Agregar foto', publicarAj:'Su publicación pasa por moderación antes de aparecer en la pantalla de la feria, con la marca de la plataforma. No publique fotos de otras personas sin su permiso.', publicado:'¡Enviado! Su publicación aparece en la pantalla después de la moderación.', muitas:'Ya publicó muchas veces en la última hora. Intente más tarde.', fotoErro:'No fue posible leer esta foto. Pruebe otra.', fotoOuTexto:'Escriba un mensaje o elija una foto.',
+        av_tablet:'Antes de empezar: ¿ya respondió la encuesta en la tableta de la sala de evaluación?', av_tabletSim:'Sí, ya respondí', av_tabletNao:'No, quiero responder ahora', av_tabletOk:'¡Gracias! Su respuesta en la tableta ya cuenta. ¡Buena feria!', av_linkInvalido:'Este enlace de evaluación venció o no es válido.',
         av_semPerfil:'Para evaluar la feria, lea antes el código QR de un stand o de una charla en este celular.', av_jaRespondeu:'Usted ya evaluó esta edición. ¡Gracias!', av_ola:'¡Hola! 👋', av_intro:'Son {n} preguntas rápidas sobre la feria. Toque sus respuestas; las opcionales se pueden omitir.', av_pular:'Omitir', av_pronto:'Listo', av_pulei:'(omití)', av_enviando:'Enviando…', av_obrigado:'¡Gracias! Su evaluación fue registrada.', av_km:'Usted recorrió {km} km hasta la Tecnoshow.', av_semRede:'Sin internet ahora. Sus respuestas quedaron guardadas en este celular.', av_tentar:'Intentar de nuevo', story:'Story', storyEstive:'Estuve en el stand', storyAvaliei:'Yo evalué la', storyTrilha:'Completé la ruta', avaliarBtn:'Evalúe la Tecnoshow', avaliarSub:'Unos 2 minutos, como una conversación.',
         perguntas:'Preguntas en vivo', suaPergunta:'Su pregunta para el ponente', perguntar:'Enviar pregunta', aguardando:'Esperando la moderación', respondida:'Respondida', votar:'Votar esta pregunta', semPerguntas:'Aún no hay preguntas en pantalla.', perguntaOk:'Pregunta enviada. Todos la verán después de la moderación.', perguntaLimite:'Ya envió 3 preguntas en esta charla.', agoraTit:'Pasando ahora', agoraPal:'Charlas ahora', nadaAgora:'No hay charlas en este momento.', aSeguir:'A continuación', emAlta:'Stands en tendencia', pessoasAgora:'personas en la última media hora', assuntos:'Temas en tendencia',
         cid:{parceiro:'Socio Tecnoshow', obrigado:'Check-in hecho. ¡Gracias por visitar!', comoFoi:'¿Cómo le fue?', naFeira:'¿Le gustaría ver este lugar en la Tecnoshow?', naFeiraAj:'Su respuesta ayuda a la feria a invitar nuevos expositores.', sim:'Sí', nao:'No', pesquisa:'¿Está hospedado aquí?', pesquisaAj:'Toma 20 segundos y ayuda a la ciudad a prepararse para la próxima feria. Las respuestas son anónimas.', noites:'¿Cuántas noches?', pessoas:'¿Cuántas personas en la habitación?', diaria:'Valor de la noche', antecedencia:'¿Con cuánta anticipación reservó?', motivo:'Motivo del viaje', satisf:'¿Cómo está la estadía?', falta:'Responda las cinco primeras preguntas.', hospedeOk:'Respuesta registrada. ¡Gracias!', refazer:'Corregir mi respuesta', tipo:{bar:'Bar', restaurante:'Restaurante', hotel:'Hotel', loja:'Tienda', servico:'Servicio', turismo:'Turismo', outro:'Socio'}, diarias:{d1:'Hasta R$ 150', d2:'R$ 151–250', d3:'R$ 251–400', d4:'R$ 401–600', d5:'Más de R$ 600'}, antecedencias:{a0:'Menos de 1 semana', a1:'Hasta 1 mes', a2:'1 a 3 meses', a3:'Más de 3 meses'}, motivos:{feira:'Tecnoshow', negocios:'Negocios', turismo:'Turismo', familia:'Familia', outro:'Otro'}}}
@@ -3098,14 +3113,19 @@ const Visit = (() => {
 
   /* ---------- avaliação final em formato de conversa (#avaliar, decisão 33a) ----------
      Sem menus nem login: o link irá por WhatsApp. Usa o questionário publicado e pula o que o perfil já respondeu. */
-  async function avaliar(){
-    window.scrollTo(0,0); atual = avaliar;
-    const ed = LS.get('tsa_vis_ed', null), tok = ed && tokenDe(ed);
+  let langDoLink = false;
+  async function avaliar(cod){
+    window.scrollTo(0,0); atual = () => avaliar(cod);
+    cod = /^[0-9a-f]{32}$/.test(cod||'') ? cod : null;
+    const ed = LS.get('tsa_vis_ed', null), tok = cod ? null : (ed && tokenDe(ed));
     if (!Base.vis.disponivel()){ aviso(L().indisponivel); return; }
-    if (!tok){ aviso(L().av_semPerfil); return; }
+    if (!cod && !tok){ aviso(L().av_semPerfil); return; }
     corpo().innerHTML = topo() + `<p class="sub">${esc(L().carregando)}</p>`;
-    let st; try{ st = await Base.vis.avaliacaoEstado(tok); }catch(e){ aviso(e.code==='rede' ? L().semRede : L().erro); return; }
+    let st; try{ st = cod ? await Base.vis.avaliacaoEstadoCod(cod) : await Base.vis.avaliacaoEstado(tok); }
+    catch(e){ aviso(e.code==='link_invalido' ? L().av_linkInvalido : e.code==='rede' ? L().semRede : L().erro); return; }
+    if (cod && !langDoLink && VT[st.lang]){ langDoLink = true; lang = st.lang; corpo().innerHTML = topo(); }   // o link abre no idioma do cadastro
     if (st.respondeu){ aviso(L().av_jaRespondeu); return; }
+    if (st.tablet){ aviso(L().av_tabletOk); return; }
     try{ await Inst.buscar(st.ed); }catch(e){}
     Inst.restaurar();
     const pf = st.perfil || {}, PULA = ['origem','perfil','idade'];
@@ -3155,7 +3175,7 @@ const Visit = (() => {
       ['gen','prim','dias','pern','obj','av','tecn','neg','gasto','nps','com'].forEach(k=>{ const v = ans[k]; if (v!=null && v!=='' && !(Array.isArray(v)&&!v.length) && !(typeof v==='object'&&!Array.isArray(v)&&!Object.keys(v).length)) r[k] = v; });
       const x = {}; Object.entries(ans.x||{}).forEach(([k,v])=>{ if (v!=null && v!=='' && !(Array.isArray(v)&&!v.length)) x[k]=v; }); if (Object.keys(x).length) r.x = x;
       const b = bolha(esc(L().av_enviando));
-      try{ const res = await Base.vis.responderAvaliacao(tok, r); LS.set(SK, null);
+      try{ const res = cod ? await Base.vis.responderAvaliacaoCod(cod, r) : await Base.vis.responderAvaliacao(tok, r); LS.set(SK, null);
         const o = origemDe({br: res.pais==='BR'?1:0, mun: res.mun, pais: res.pais}), km = o ? Math.round(o.km) : 0;
         b.innerHTML = `<b>${esc(L().av_obrigado)}</b>${km>15 ? `<br>${esc(L().av_km.replace('{km}', km.toLocaleString(lang==='en'?'en-US':'pt-BR')))}` : ''}`;
         const s = area(`<button class="btn" data-story>📲 ${esc(L().story)}</button>`);
@@ -3165,7 +3185,16 @@ const Visit = (() => {
         if (e.code==='rede'){ const a = area(`<button class="btn sec" data-de-novo>${esc(L().av_tentar)}</button>`); a.querySelector('[data-de-novo]').onclick = () => { a.remove(); b.remove(); enviar(); }; }
       }
     }
-    proxima();
+    /* primeira pergunta: quem já respondeu no tablet sai aqui, sem contar duas vezes */
+    function perguntaTablet(){
+      bolha(esc(L().av_tablet));
+      const a = area(`<div class="vis-chips"><button class="vis-chip" data-tb="1">${esc(L().av_tabletSim)}</button><button class="vis-chip" data-tb="0">${esc(L().av_tabletNao)}</button></div>`);
+      a.querySelector('[data-tb="1"]').onclick = async () => { a.remove(); bolha(esc(L().av_tabletSim), true);
+        try{ await Base.vis.respondiTablet(tok, cod); LS.set(SK, null); bolha(`<b>${esc(L().av_tabletOk)}</b>`); }
+        catch(e){ bolha(esc(e.code==='rede' ? L().av_semRede : L().erro)); } };
+      a.querySelector('[data-tb="0"]').onclick = () => { a.remove(); bolha(esc(L().av_tabletNao), true); setTimeout(proxima, 250); };
+    }
+    perguntaTablet();
   }
 
   /* ---------- card para o story (Instagram e WhatsApp) ----------
@@ -3529,6 +3558,60 @@ const Dados = (() => {
     $('da-csv').disabled = false; $('da-json').disabled = false;
     $('da-csv').onclick = () => baixar(`dados_abertos_${edSlug()}.csv`, csv(), 'text/csv;charset=utf-8');
     $('da-json').onclick = () => baixar(`dados_abertos_${edSlug()}.json`, JSON.stringify(d, null, 2), 'application/json');
+  }
+  return {start};
+})();
+
+/* ================== AVALIAÇÕES A ENVIAR (#envios) ==================
+   Envio assistido, sem a plataforma paga do WhatsApp: o app monta a mensagem com o link pessoal e abre o
+   WhatsApp do celular da equipe; a pessoa só toca em enviar. O número só aparece na hora do envio. */
+const Envios = (() => {
+  const $ = id => document.getElementById(id);
+  let run = 0, sit = 'pendente';
+  const SIT = {pendente:'Pendentes', aguardando:'Aguardando as horas', enviada:'Enviadas', respondida:'Respondidas', tablet:'Responderam no tablet'};
+  const MSG = {
+    pt: (ed, url) => `Olá! Obrigado por visitar a ${ed}. Pode avaliar a feira? São 2 minutos, em formato de conversa: ${url}\n\nPesquisa do IF Goiano (Observatório ITA). Se você já respondeu no tablet da sala, é só tocar em "Sim, já respondi".`,
+    en: (ed, url) => `Hi! Thank you for visiting ${ed}. Could you rate the fair? It takes 2 minutes, like a chat: ${url}\n\nIF Goiano research (ITA Observatory). If you already answered on the tablet, just tap "Yes, I did".`,
+    es: (ed, url) => `¡Hola! Gracias por visitar la ${ed}. ¿Puede evaluar la feria? Son 2 minutos, como una conversación: ${url}\n\nInvestigación del IF Goiano (Observatorio ITA). Si ya respondió en la tableta, solo toque "Sí, ya respondí".`
+  };
+  const numero = w => { let d = String(w||'').replace(/\D/g,''); if (d.length===10 || d.length===11) d = '55'+d; return d; };
+  const quando = iso => iso ? new Date(iso).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}) : '–';
+  async function start(){
+    const meu = ++run;
+    const box = $('en-corpo'), topo = `<div class="adm-top"><div class="com-voltar"><button class="voltar" data-voltar aria-label="Voltar">←</button><div><div class="k">Equipe · ${esc(cfg.edicao)}</div><h1>Avaliações a enviar</h1></div></div></div>`;
+    if (Base.kind!=='supabase'){ box.innerHTML = topo + '<p class="adm-p">Funciona no site oficial da plataforma.</p>'; return; }
+    box.innerHTML = topo + '<p class="adm-p">Carregando…</p>';
+    if (!(await Base.garantirAcesso('equipe'))){ if (meu===run) box.innerHTML = topo + '<p class="adm-p">É preciso uma conta da equipe.</p>'; return; }
+    box.innerHTML = topo + `<p class="adm-p">Cada visitante adulto recebe o link da avaliação pelo WhatsApp, algumas horas depois do cadastro. Toque em <b>Enviar pelo WhatsApp</b>: o WhatsApp deste aparelho abre com a mensagem pronta, no idioma do visitante; é só tocar em enviar. O link é pessoal e vale 7 dias.</p>
+      <div class="adm-bar"><div class="seg-s" id="en-sit"></div><label class="fld" for="en-horas" style="min-width:auto">Enviar depois de (horas)<input id="en-horas" type="number" min="0" max="72" value="${LS.get('tsa_envio_horas', 3)}" style="width:7ch"></label><button class="ghost sm" id="en-atualizar">Atualizar</button></div>
+      <p class="adm-msg" id="en-msg" hidden></p><div id="en-lista"></div>`;
+    const msg = (t, k) => { const m=$('en-msg'); m.hidden=!t; m.textContent=t||''; m.className='adm-msg'+(k?' '+k:''); };
+    const horas = () => Math.max(0, Math.min(72, parseInt($('en-horas').value,10) || 0));
+    const carregar = async () => {
+      if (meu!==run) return;
+      let res = {}, l = [];
+      try{ [res, l] = await Promise.all([Base.envio.resumo(edSlug(), horas()), Base.envio.fila(edSlug(), horas(), sit)]); }
+      catch(e){ $('en-lista').innerHTML = '<p class="adm-msg erro">Não foi possível carregar a fila.</p>'; return; }
+      $('en-sit').innerHTML = Object.entries(SIT).map(([k,t])=>`<button class="chip ${k===sit?'on':''}" data-s="${k}">${t} (${res[k]||0})</button>`).join('');
+      $('en-sit').querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{ sit=b.dataset.s; msg(''); carregar(); });
+      const envia = sit==='pendente' || sit==='enviada';
+      $('en-lista').innerHTML = l.length ? `<div class="tw"><table class="adm-tab"><thead><tr><th>Cadastro</th><th>Idioma</th><th>Perfil</th><th>Origem</th>${sit==='enviada'?'<th>Enviada</th>':''}<th></th></tr></thead><tbody>${l.map(x=>`<tr><td>${esc(quando(x.cadastro))}</td><td>${esc((x.lang||'pt').toUpperCase())}</td><td>${esc(CID.perfil[x.perfil]||x.perfil||'–')}</td><td>${esc(x.mun ? CID.mun(x.mun) : (x.pais && PAIS.has(x.pais) ? PAIS.get(x.pais)[2] : '–'))}</td>${sit==='enviada'?`<td>${esc(quando(x.enviado_em))}</td>`:''}<td>${envia ? `<button class="${sit==='pendente'?'btn':'ghost'} sm" data-v="${esc(x.visitante)}">${sit==='pendente'?'Enviar pelo WhatsApp':'Reenviar'}</button>` : ''}</td></tr>`).join('')}</tbody></table></div>`
+        : `<p class="nota">${sit==='pendente' ? 'Ninguém para enviar agora.' : 'Nenhum visitante nesta situação.'}</p>`;
+      $('en-lista').querySelectorAll('[data-v]').forEach(b=>b.onclick=async()=>{
+        const jan = window.open('', '_blank');            // abre já no toque, para o navegador não bloquear
+        b.disabled = true;
+        try{ const r = await Base.envio.preparar(b.dataset.v);
+          const url = location.origin + location.pathname + '#avaliar-' + r.codigo;
+          const texto = (MSG[r.lang] || MSG.pt)(cfg.edicao, url);
+          const wa = 'https://wa.me/' + numero(r.whatsapp) + '?text=' + encodeURIComponent(texto);
+          if (jan) jan.location.href = wa; else location.href = wa;
+          msg('WhatsApp aberto com a mensagem pronta. Depois de enviar, volte aqui para o próximo.','ok'); carregar();
+        }catch(e){ if (jan) jan.close(); b.disabled = false; msg(e.code==='ja_respondeu' ? 'Esta pessoa já respondeu a avaliação.' : 'Não foi possível preparar o envio agora.','erro'); carregar(); }
+      });
+    };
+    $('en-horas').onchange = () => { LS.set('tsa_envio_horas', horas()); carregar(); };
+    $('en-atualizar').onclick = carregar;
+    carregar();
   }
   return {start};
 })();

@@ -25,7 +25,7 @@ As respostas ficam num banco **Supabase** do próprio projeto. Uma versão alter
 ## 1. Configurar o Supabase (uma vez)
 
 1. Crie um projeto em <https://supabase.com> (região São Paulo, `sa-east-1`).
-2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`, `003_visitante_estande.sql`, `004_moderacao_painel_expositor.sql`, `005_saida_tablets.sql`, `006_presenca_trilhas.sql`, `007_mural.sql`, `008_cidade.sql`, `009_passaporte_ao_vivo.sql`, `010_aparelhos_propostas_dados.sql` e `011_avaliacao_limpeza.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
+2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`, `003_visitante_estande.sql`, `004_moderacao_painel_expositor.sql`, `005_saida_tablets.sql`, `006_presenca_trilhas.sql`, `007_mural.sql`, `008_cidade.sql`, `009_passaporte_ao_vivo.sql`, `010_aparelhos_propostas_dados.sql`, `011_avaliacao_limpeza.sql` e `012_envio_avaliacao.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
 3. Em **Authentication → Sign In / Providers**, deixe **ligado** "Allow new users to sign up" (a equipe se cadastra pelo link de convite; uma conta criada sem convite não acessa nada) e mantenha "Confirm email" ligado.
    Em **Authentication → URL Configuration**, coloque o endereço do site em **Site URL** e em **Redirect URLs** (ex.: `https://danilo-rv.github.io/Painel-Tecnoshow/**`), para o e-mail de confirmação voltar ao app.
 4. Gere a chave da coleta: no SQL Editor, rode `select replace(gen_random_uuid()::text, '-', '') as chave_da_coleta;` e guarde o resultado.
@@ -310,6 +310,15 @@ Cada estande tem um QR (em **Administração → Cadastros → Expositores**, ab
   - as perguntas opcionais podem ser puladas;
   - sem internet, as respostas ficam guardadas no celular, com um botão para tentar de novo.
 - **Gravação:** uma resposta por visitante, no mesmo formato dos tablets (origem `WEB`). O painel e o relatório já a contam. Os dados do perfil vêm do banco, não do celular.
+
+### Envio do link pelo WhatsApp (sem a plataforma paga)
+
+- Uma pessoa da equipe abre **Avaliações a enviar (equipe)** na tela inicial (`…/#envios`), de preferência no celular com o WhatsApp da pesquisa.
+- **Fila:** mostra os visitantes adultos cadastrados há 3 horas ou mais (o prazo é ajustável) que ainda não avaliaram nem disseram que responderam no tablet, um por número de WhatsApp. A lista não mostra números.
+- **Envio:** **Enviar pelo WhatsApp** gera o link pessoal (`…/#avaliar-<código>`, vale 7 dias) e abre o WhatsApp com a mensagem pronta, no idioma do visitante; a pessoa só toca em enviar. O número só é decifrado nesse momento, e cada envio fica na auditoria.
+- **No visitante:** o link abre em qualquer navegador, mesmo que não seja o do cadastro. O bot começa perguntando se a pessoa já respondeu no tablet; quem diz "sim" sai da fila, sem contar duas vezes.
+- **Abas da fila:** Pendentes, Aguardando as horas, Enviadas (com "Reenviar"), Respondidas e Responderam no tablet.
+- **Escala maior:** se no futuro a escala justificar, a mesma fila pode enviar sozinha pela API oficial do WhatsApp, sem mudar o resto.
 
 ## 18. Card para o story
 
