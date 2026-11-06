@@ -73,7 +73,8 @@ def main():
     csp = ("default-src 'self'; "
            f"script-src 'self' {hashes}; "
            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
-           "font-src https://fonts.gstatic.com; img-src 'self' data: blob:; "
+           "font-src https://fonts.gstatic.com; "
+           f"img-src 'self' data: blob: {cfg['supabaseUrl']}; "
            f"connect-src 'self' {cfg['supabaseUrl']} https://fonts.googleapis.com https://fonts.gstatic.com; "
            "worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'")
     html = ('<!doctype html>\n<html lang="pt-BR">\n<head>\n<meta charset="utf-8">\n'

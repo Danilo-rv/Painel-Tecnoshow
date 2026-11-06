@@ -25,7 +25,7 @@ As respostas ficam num banco **Supabase** do próprio projeto. Uma versão alter
 ## 1. Configurar o Supabase (uma vez)
 
 1. Crie um projeto em <https://supabase.com> (região São Paulo, `sa-east-1`).
-2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**.
+2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
 3. Em **Authentication → Sign In / Providers**, deixe **ligado** "Allow new users to sign up" (a equipe se cadastra pelo link de convite; uma conta criada sem convite não acessa nada) e mantenha "Confirm email" ligado.
    Em **Authentication → URL Configuration**, coloque o endereço do site em **Site URL** e em **Redirect URLs** (ex.: `https://danilo-rv.github.io/Painel-Tecnoshow/**`), para o e-mail de confirmação voltar ao app.
 4. Gere a chave da coleta: no SQL Editor, rode `select replace(gen_random_uuid()::text, '-', '') as chave_da_coleta;` e guarde o resultado.
@@ -102,6 +102,24 @@ Na tela inicial, toque em **Administração** e entre com a conta de coordenador
 - A lista mostra quem está na equipe. **Remover** tira o acesso na hora. Convites não usados podem ser cancelados.
 
 Na versão do claude.ai, a equipe é quem você convida pelo menu **Compartilhar** do Artifact: quem tem permissão de edição também edita o questionário.
+
+## 6. Cadastros, mapa e pendências (base multifeira)
+
+Na **Administração**, as abas **Cadastros**, **Mapa** e **Pendências** aparecem para o administrador geral, a coordenação e a organização da feira.
+
+- **Cadastros:** expositores (com os lotes que ocupam na edição), lotes, locais e palcos, agenda e categorias.
+  - Busca, filtro "só a confirmar" e lixeira, que permite restaurar.
+  - Importação por planilha, com modelo para baixar e relatório de erros por linha.
+  - Tudo se liga por identificador: renomear uma categoria ou mudar um expositor de lote aparece em todas as telas.
+- **Mapa:**
+  - envio da planta (PNG, JPG ou WEBP);
+  - desenho dos lotes por retângulo;
+  - posição dos locais;
+  - georreferência com 3 ou 4 pontos e as coordenadas coletadas em campo.
+- **Pendências:** o que está "a confirmar", sem posição, sem categoria, sem palco ou sem planta, com um botão para abrir cada item. A lista é recalculada a cada consulta.
+- **Clonar edição** (administrador geral e coordenação): cria a próxima edição com planta, lotes, locais e estandes, e mostra uma única vez a chave da coleta nova.
+
+Papéis: `admin_geral` (tudo, inclusive apagar de vez e criar feiras), `coordenador` (questionário, equipe, cadastros, clonar edição), `organizacao` (cadastros e mapa) e `equipe` (painel e relatório). Toda alteração fica na tabela `auditoria`.
 
 ## Proteção de dados (LGPD)
 

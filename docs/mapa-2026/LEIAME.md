@@ -38,7 +38,7 @@ Fonte: 4 capturas de tela do mapa do app oficial da Tecnoshow 2026, enviadas pel
 2. Redesenhar a planta em SVG: lotes como polígonos com o número, ruas, portarias, estacionamentos, palcos e serviços como camadas.
 3. Ligar cada lote ao cadastro: `mapa_areas` e `estandes`, um estande por expositor com referência ao lote (ver dúvidas 2 e 3).
 4. Georreferenciar a planta com 4 pontos de controle (cantos do parque), para o GPS do celular cair no lugar certo dentro da feira.
-5. Usar as cores dos segmentos sobre os lotes (24 categorias do app oficial como ponto de partida).
+5. Usar as cores dos segmentos sobre os lotes (22 categorias do app oficial como ponto de partida).
 6. Validar a transcrição de `lotes.csv` com a organização, a começar pelas linhas de confiança "média".
 
 ## Dúvidas para resolver depois

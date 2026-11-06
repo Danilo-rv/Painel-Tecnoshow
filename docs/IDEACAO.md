@@ -512,13 +512,13 @@ Isso substitui o "chave da coleta" de hoje (uma chave igual em todos os tablets)
 
 Análise feita em 06/11/2026 a partir de 18 capturas de tela enviadas pelo coordenador.
 
-**O que o app tem:** início com clima, busca, atalhos (Estacionar, Locais, Mapa), carrossel de patrocinadores, 24 categorias com ícones, agenda por dia (6 a 9 de abril de 2026), lista de expositores com categoria e distância, locais (auditórios, banheiros, praças de alimentação), rota a pé até o local, "Onde estacionei" offline e faixa de apoio institucional.
+**O que o app tem:** início com clima, busca, atalhos (Estacionar, Locais, Mapa), carrossel de patrocinadores, 22 categorias com ícones, agenda por dia (6 a 9 de abril de 2026), lista de expositores com categoria e distância, locais (auditórios, banheiros, praças de alimentação), rota a pé até o local, "Onde estacionei" offline e faixa de apoio institucional.
 
 **Pontos fortes a manter ou reaproveitar**
 - Visual limpo, barra inferior com 4 abas, ícones claros por categoria.
 - "Onde estacionei" funcionando sem internet: muito útil e alinhado ao nosso princípio offline.
 - Agenda por dia com foto e palestrante.
-- As **24 categorias** servem de taxonomia inicial dos segmentos (seção 3, módulo A).
+- As **22 categorias** servem de taxonomia inicial dos segmentos (seção 3, módulo A).
 - Espaço de patrocínio já aceito pelo público.
 
 **Problemas observados**
@@ -821,7 +821,7 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - **Clonar edição:** a Tecnoshow 2027 nasce como cópia da 2026 e é ajustada; uma feira nova nasce de um modelo vazio.
 - **Importação por planilha** com modelo para baixar e relatório de erros (linhas sem categoria, lote inexistente).
 - **Painel de pendências de dados:** tudo o que está "a confirmar", sem posição no mapa, sem categoria ou sem palco, com quem é o responsável.
-- **Dados semente de 2026:** os 113 lotes de `docs/mapa-2026/lotes.csv`, as 24 categorias do app oficial e os locais conhecidos entram como rascunho marcado "a confirmar".
+- **Dados semente de 2026:** os 113 lotes de `docs/mapa-2026/lotes.csv`, as 22 categorias do app oficial e os locais conhecidos entram como rascunho marcado "a confirmar".
 
 **Cuidado:** mudanças de planta ou de lote durante a feira mexem no que o visitante vê ao vivo. Na edição em curso, a Administração pede confirmação e registra o motivo.
 
@@ -852,3 +852,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 06/11/2026: decisões 33b-c, 32-7, 32-10 e 31-r/32 tomadas; pauta para a reunião com a Comigo (seção 21). Todas as decisões em aberto foram respondidas.
 - 06/11/2026: princípio de tudo editável por feira, com propagação por identificador e dados semente de 2026 (seção 22).
 - 06/11/2026: Supabase em São Paulo instalado e testado; site publicado; plano de implantação atualizado para a versão 2 (decisões 31 a 33 e ideias das seções 18-A a 22 aplicadas).
+- 06/11/2026: base multifeira construída e aplicada em produção (migração 002, sementes de 2027, abas Cadastros, Mapa e Pendências na Administração).

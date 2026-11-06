@@ -69,3 +69,21 @@ Revisão da versão original (`tecnoshow_avalia.html` / `template.html`), com o 
 | Respostas a perguntas novas | Ficam em `x` (por id da pergunta), com `v` = versão | `enviar_respostas` confere cada resposta contra a versão em que foi dada: pergunta existente, opção válida, nota de 1 a 5, texto de até 400 caracteres |
 | Textos editáveis | Perguntas, opções, ajuda, abertura e termo | Sempre exibidos com escape de HTML. Testado com `<img onerror>` num texto de opção |
 | Núcleo protegido | Origem, perfil, satisfação, gasto e NPS não podem ser removidas; as opções do núcleo não mudam | Garante que o mapa, os indicadores, o impacto econômico e a comparação entre versões continuem válidos |
+
+## Base multifeira e cadastros editáveis (terceira etapa)
+
+| Item | Como funciona | Proteção |
+|---|---|---|
+| Papéis | `admin_geral`, `coordenador`, `organizacao`, `equipe` | Conferidos no banco (`meu_papel`, `pode_editar_cadastros`, `sou_admin_geral`) |
+| Cadastros | Feiras, categorias, expositores, planta, lotes, locais, estandes, agenda | RLS: a equipe lê; editores inserem e alteram; só o administrador geral apaga de vez |
+| Lixeira | Coluna `excluido_em`; restaurar é limpar a coluna | Exclusão definitiva só pelo administrador geral |
+| Auditoria | Gatilho em todas as tabelas de cadastro grava quem, o quê, antes e depois | A tabela não aceita escrita pela API; leitura só para administrador geral e coordenação |
+| Geometria | Lotes, pontos e georreferência em coordenadas de 0 a 1 sobre a planta | Validada por restrições no banco |
+| Chave da coleta | A equipe lê os dados da edição, nunca o hash da chave | Permissão por coluna em `edicoes` |
+| Plantas | Pasta pública `plantas` no Storage (imagens até 20 MB) | Só editores enviam ou apagam; a planta não tem dado pessoal |
+| Pendências | Visão `pendencias` com `security_invoker` | Segue as mesmas regras de leitura de quem consulta |
+
+Testes: as regras de cada papel foram testadas num Postgres local que imita o Supabase, antes de aplicar em produção. As telas foram testadas no navegador com os dados de partida. Os testes pegaram três defeitos, corrigidos antes da publicação:
+- funções de validação sem permissão de uso;
+- painel da versão claude.ai pedindo login;
+- identificadores repetidos entre as telas de Cadastros e de convite.

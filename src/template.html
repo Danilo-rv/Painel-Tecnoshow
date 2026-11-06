@@ -224,6 +224,32 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
 .login-box .ok{color:var(--good)!important}
 .kbar .ghost{padding:4px 12px}
 @media (max-width:640px){.qbox summary{grid-template-columns:2.2ch minmax(0,1fr)}.qbox .mv{grid-row:auto;grid-column:2}.orow.it{grid-template-columns:minmax(0,1fr) auto}.orow.it input[data-curto]{grid-column:1}}
+/* ---------- CADASTROS, MAPA E PENDÊNCIAS ---------- */
+.cad-ents{display:flex;gap:8px;flex-wrap:wrap}
+.cad-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.cad-bar .fld{min-width:180px;flex:1}
+.cad-tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--deep)}
+.cad-tab{border-collapse:collapse;width:100%;font-size:.86rem}
+.cad-tab th,.cad-tab td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.cad-tab th{font-family:var(--f-mono);font-weight:500;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);position:sticky;top:0;background:var(--deep)}
+.cad-tab tbody tr{cursor:pointer}
+.cad-tab tbody tr:hover td{background:rgba(95,208,255,.07)}
+.cad-tab tr.sel td{background:rgba(95,208,255,.14)}
+.cad-tab tr.lixo td{opacity:.5;text-decoration:line-through}
+.cad-tab .num{font-family:var(--f-mono);white-space:nowrap}
+.cad-form{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));background:linear-gradient(170deg,rgba(11,31,74,.92),rgba(7,22,55,.92));border:1px solid var(--glow);border-radius:12px;padding:16px}
+.cad-form .larga{grid-column:1/-1}
+.cad-form h3{grid-column:1/-1;margin:0;font-family:var(--f-display);font-size:1.15rem}
+.cad-form .acts{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.cad-cont{font-family:var(--f-mono);font-size:.78rem;color:var(--muted)}
+.pend-grupos{display:flex;gap:8px;flex-wrap:wrap}
+.mapa-lay{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;align-items:start}
+.mapa-area{overflow:auto;border:1px solid var(--line);border-radius:12px;background:var(--night);max-height:72vh}
+.mapa-area svg{display:block;width:100%;height:auto;touch-action:none;user-select:none}
+.mapa-lado{display:grid;gap:12px}
+.mapa-lado .adm-sec{padding:12px}
+.geo-lin{display:grid;grid-template-columns:2.5ch minmax(0,1fr) minmax(0,1fr);gap:6px;align-items:center;font-family:var(--f-mono);font-size:.78rem}
+@media (max-width:860px){.mapa-lay{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -310,7 +336,7 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
   <div class="adm">
     <div class="adm-top">
       <div><div class="k">Administração · <span id="a-ed"></span></div><h1>Questionário e equipe</h1></div>
-      <div class="adm-tabs"><button class="chip on" data-aba="form">Questionário</button><button class="chip" data-aba="equipe">Equipe</button><button class="ghost" id="a-voltar">Voltar ao início</button></div>
+      <div class="adm-tabs"><button class="chip on" data-aba="form">Questionário</button><button class="chip" data-aba="equipe">Equipe</button><button class="chip" data-aba="cadastros">Cadastros</button><button class="chip" data-aba="mapa">Mapa</button><button class="chip" data-aba="pendencias">Pendências</button><button class="ghost" id="a-voltar">Voltar ao início</button></div>
     </div>
     <p class="adm-msg erro" id="a-bloq" hidden></p>
     <div id="a-corpo" hidden>
@@ -328,6 +354,40 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
         <div class="adm-sec"><h3>Versões publicadas</h3><p class="adm-p">Cada publicação vira uma versão. Cada resposta guarda a versão em que foi dada, e o relatório informa quantas respostas há em cada uma.</p><div class="hist" id="a-hist"></div></div>
       </section>
       <section id="a-equipe" class="adm" hidden><div id="a-equipe-corpo" class="adm"></div></section>
+      <section id="a-cadastros" class="adm" hidden>
+        <div class="adm-bar"><div class="cad-ents" id="cd-ents"></div><div class="adm-acts"><button class="ghost sm" id="cd-clonar" hidden>Clonar edição</button></div></div>
+        <p class="adm-msg" id="cd-msg" hidden></p>
+        <div class="cad-bar">
+          <label class="fld" for="cd-busca">Buscar<input id="cd-busca" placeholder="Nome, número, lote…"></label>
+          <label class="tg"><input type="checkbox" id="cd-pend"> Só a confirmar</label>
+          <label class="tg"><input type="checkbox" id="cd-lixo"> Mostrar lixeira</label>
+          <div class="adm-acts"><button class="btn sm" id="cd-novo">Novo</button><button class="ghost sm" id="cd-modelo">Baixar modelo de planilha</button><label class="ghost sm" for="cd-imp" style="cursor:pointer">Importar planilha</label><input type="file" id="cd-imp" accept=".csv,text/csv" hidden></div>
+        </div>
+        <div id="cd-form"></div>
+        <div class="cad-cont" id="cd-cont"></div>
+        <div class="cad-tw"><table class="cad-tab"><thead id="cd-thead"></thead><tbody id="cd-tbody"></tbody></table></div>
+      </section>
+      <section id="a-mapa" class="adm" hidden>
+        <div class="adm-bar"><div id="m-status" class="nota"></div><div class="adm-acts">
+          <label class="ghost sm" for="m-arq" style="cursor:pointer">Enviar planta (imagem)</label><input type="file" id="m-arq" accept="image/png,image/jpeg,image/webp" hidden>
+          <span class="nota">Zoom</span><button class="ghost sm" data-zoom="100">100%</button><button class="ghost sm" data-zoom="160">160%</button><button class="ghost sm" data-zoom="250">250%</button></div></div>
+        <p class="adm-msg" id="m-msg" hidden></p>
+        <div class="mapa-lay">
+          <div class="mapa-area" id="m-area"><svg id="m-svg" viewBox="0 0 1000 700" role="img" aria-label="Planta da feira com lotes e locais"></svg></div>
+          <aside class="mapa-lado">
+            <div class="adm-sec"><h3>Ferramenta</h3><div class="seg-s" id="m-modos"><button class="chip on" data-modo="ver">Ver</button><button class="chip" data-modo="lote">Desenhar lote</button><button class="chip" data-modo="local">Posicionar local</button><button class="chip" data-modo="geo">Georreferência</button></div><p class="nota" id="m-ajuda"></p></div>
+            <div class="adm-sec" id="m-sel-lote" hidden><label class="fld" for="m-lote">Lote a desenhar<select id="m-lote"></select></label><p class="nota">Arraste um retângulo sobre a planta. Os lotes ainda sem posição aparecem primeiro.</p></div>
+            <div class="adm-sec" id="m-sel-local" hidden><label class="fld" for="m-local">Local a posicionar<select id="m-local"></select></label><p class="nota">Toque no ponto do mapa onde o local fica.</p></div>
+            <div class="adm-sec" id="m-geo" hidden><p class="nota">Toque em 4 pontos conhecidos da planta (de preferência os cantos do parque) e informe a latitude e a longitude de cada um, coletadas em campo.</p><div id="m-geo-lin"></div><div class="adm-acts"><button class="ghost sm" id="m-geo-limpar">Recomeçar</button><button class="btn sm" id="m-geo-salvar">Salvar georreferência</button></div></div>
+            <div class="adm-sec" id="m-info"><p class="nota">Toque num lote para ver os detalhes.</p></div>
+          </aside>
+        </div>
+      </section>
+      <section id="a-pendencias" class="adm" hidden>
+        <div class="adm-bar"><div><b>Pendências de dados</b> <span class="nota">recalculadas a cada consulta</span></div><button class="ghost sm" id="p-atualizar">Atualizar</button></div>
+        <div class="pend-grupos" id="p-grupos"></div>
+        <div class="cad-tw"><table class="cad-tab"><thead><tr><th>Tipo</th><th>Item</th><th>O que falta</th><th></th></tr></thead><tbody id="p-tbody"></tbody></table></div>
+      </section>
     </div>
   </div>
 </div>
@@ -708,21 +768,70 @@ const Base = (() => {
       };
     });
   }
-  /* papel: 'equipe' (painel, relatório) ou 'coordenador' (editar questionário e equipe) */
+  /* Papel de quem está logado: admin_geral, coordenador, organizacao, equipe (ou null). */
+  async function meuPapel(){
+    if (kind==='claude') return (await souCoordenador()) ? 'coordenador' : null;
+    if (kind!=='supabase') return null;
+    try{ return await rpc('meu_papel'); }catch(e){ return null; }
+  }
+  const EDITORES = ['admin_geral','coordenador','organizacao'];
+  /* papel pedido: 'equipe' (painel, relatório), 'coordenador' (questionário e equipe) ou 'editor' (cadastros e mapa) */
   async function garantirAcesso(papel){
-    if (kind==='claude') return papel==='coordenador' ? souCoordenador() : true;
+    if (kind==='claude') return (papel==='coordenador' || papel==='editor') ? souCoordenador() : true;
     if (!precisaLogin) return false;
     const ok = (await logado().catch(()=>false)) || await pedirLogin();
     if (!ok) return false;
-    return papel==='coordenador' ? souCoordenador() : true;
+    if (papel==='coordenador') return souCoordenador();
+    if (papel==='editor') return EDITORES.includes(await meuPapel());
+    return true;
   }
+  /* Cadastros editáveis (só no modo Supabase). Tudo se liga por id; as regras de acesso estão no banco. */
+  const codErro = e => e && e.code==='23505' ? 'duplicado' : e && e.code==='23514' ? 'invalido' : e && (e.code==='42501' || /row-level security/.test(e.message||'')) ? 'sem_permissao' : 'rede';
+  const cad = {
+    disponivel: () => kind==='supabase',
+    async edicao(slug){
+      const {data,error} = await sb.from('edicoes').select('slug,nome,feira_id,ano,inicio,fim,dias,status').eq('slug',slug).maybeSingle();
+      if (error) throw erro(codErro(error), error.message); return data;
+    },
+    async listar(tab, col, val){
+      const out=[];
+      for (let i=0;;i+=1000){
+        const {data,error} = await sb.from(tab).select('*').eq(col,val).order('criado_em').range(i,i+999);
+        if (error) throw erro(codErro(error), error.message);
+        out.push(...data); if (data.length<1000) break;
+      }
+      return out;
+    },
+    async vinculos(ids){
+      const out=[];
+      for (let i=0;i<ids.length;i+=150){
+        const {data,error} = await sb.from('estande_lotes').select('estande_id,lote_id').in('estande_id', ids.slice(i,i+150));
+        if (error) throw erro(codErro(error), error.message); out.push(...data);
+      }
+      return out;
+    },
+    async inserir(tab,row){ const {data,error} = await sb.from(tab).insert(row).select().single(); if (error) throw erro(codErro(error), error.message); return data; },
+    async alterar(tab,id,row){ const {data,error} = await sb.from(tab).update(row).eq('id',id).select().single(); if (error) throw erro(codErro(error), error.message); return data; },
+    async vincular(estande_id, lote_id){ const {error} = await sb.from('estande_lotes').insert({estande_id, lote_id}); if (error && error.code!=='23505') throw erro(codErro(error), error.message); },
+    async desvincular(estande_id, lote_id){ const {error} = await sb.from('estande_lotes').delete().eq('estande_id',estande_id).eq('lote_id',lote_id); if (error) throw erro(codErro(error), error.message); },
+    async pendencias(ed){
+      const {data,error} = await sb.from('pendencias').select('*').eq('ed',ed).limit(5000);
+      if (error) throw erro(codErro(error), error.message); return data;
+    },
+    async enviarPlanta(caminho, arquivo){
+      const {error} = await sb.storage.from('plantas').upload(caminho, arquivo, {upsert:false, contentType:arquivo.type});
+      if (error) throw erro(codErro(error), error.message);
+      return sb.storage.from('plantas').getPublicUrl(caminho).data.publicUrl;
+    },
+    clonar: (origem, slug, nome) => rpc('clonar_edicao', {p_origem:origem, p_slug:slug, p_nome:nome})
+  };
   const equipe = {
     listar: () => rpc('listar_equipe'), convites: () => rpc('listar_convites'),
     convidar: () => rpc('criar_convite', {p_dias:7}), revogar: id => rpc('revogar_convite', {p_id:id}),
     remover: id => rpc('remover_membro', {p_user:id}), aceitar: tok => rpc('aceitar_convite', {p_token:tok})
   };
-  return {kind, enviar, ler, acompanhar, precisaLogin, garantirAcesso, sair, entrar, cadastrar, temSessao, souCoordenador,
-          instrumentoAtual, publicarInstrumento, historico, equipe};
+  return {kind, enviar, ler, acompanhar, precisaLogin, garantirAcesso, sair, entrar, cadastrar, temSessao, souCoordenador, meuPapel,
+          instrumentoAtual, publicarInstrumento, historico, equipe, cad};
 })();
 
 /* Questionário em uso neste aparelho: a última versão publicada da edição, guardada para uso offline. */
@@ -1387,7 +1496,7 @@ const Relatorio = (() => {
 /* ================== ADMINISTRAÇÃO (coordenador) ================== */
 const Admin = (() => {
   const $ = id => document.getElementById(id);
-  let ed=null, pub=null, rasc=null, lingua='pt', run=0, abertos=new Set(), tSalvar=null, hist=[];
+  let ed=null, pub=null, rasc=null, lingua='pt', run=0, abertos=new Set(), tSalvar=null, hist=[], papel=null;
   const RK = () => 'tsa_rascunho_'+ed;
   const novoId = p => p + aleatorio(6);
   const vazioTxt = () => Object.fromEntries(LANGS.map(l=>[l,'']));
@@ -1517,7 +1626,7 @@ const Admin = (() => {
     box.innerHTML = hist.length ? hist.map((h,k)=>`<div><span><b>v${h.versao}</b> · ${esc(quando(h.publicado_em))} · ${((h.def&&h.def.perguntas)||[]).filter(p=>p.ativa!==false).length} perguntas</span><button class="ghost sm" data-h="${k}">Copiar para o rascunho</button></div>`).join('') : '<span class="nota">Nenhuma versão publicada ainda. Os tablets usam o questionário padrão.</span>';
     box.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{ const d=limparInstrumento(hist[+b.dataset.h].def); if(!d) return; rasc={...d, versao:pub.versao, publicado_em:pub.publicado_em}; salvar(); render(); msg(`A versão ${hist[+b.dataset.h].versao} foi copiada para o rascunho. Revise e publique para voltar a usá-la.`, 'ok'); aba('form'); window.scrollTo(0,0); });
   }
-  function aba(n){ document.querySelectorAll('.adm-tabs .chip').forEach(b=>b.classList.toggle('on', b.dataset.aba===n)); $('a-form').hidden = n!=='form'; $('a-equipe').hidden = n!=='equipe'; if (n==='equipe') equipe(); }
+  function aba(n){ document.querySelectorAll('.adm-tabs .chip').forEach(b=>b.classList.toggle('on', b.dataset.aba===n)); ['form','equipe','cadastros','mapa','pendencias'].forEach(x=>{ $('a-'+x).hidden = n!==x; }); if (['cadastros','mapa','pendencias'].includes(n)) Cad.abrir(n); if (n==='equipe') equipe(); }
   async function equipe(){
     const box=$('a-equipe-corpo');
     if (Base.kind!=='supabase'){ box.innerHTML = `<div class="adm-sec"><h3>Equipe no claude.ai</h3><p class="adm-p">Nesta versão, a equipe é quem você convida pelo menu <b>Compartilhar</b> do Artifact. Quem recebe permissão de edição também pode alterar o questionário. Quem só pode usar a página consegue coletar nos tablets e ver o painel e o relatório.</p></div>`; return; }
@@ -1546,12 +1655,17 @@ const Admin = (() => {
     if (!ligado){ ligado=true; ligar(); }
     const bloq = t => { $('a-bloq').hidden=false; $('a-bloq').innerHTML = t; };
     if (!Base.kind){ bloq('Nenhuma base de respostas configurada nesta versão. A edição do questionário precisa do Supabase (site próprio) ou do claude.ai.'); return; }
-    const ok = await Base.garantirAcesso('coordenador'); if (meu!==run) return;
+    const ok = await Base.garantirAcesso('editor'); if (meu!==run) return;
     if (!ok){
-      bloq('Só o coordenador da pesquisa edita o questionário e a equipe.' + (Base.kind==='supabase' ? ' <button class="ghost sm" id="a-outra">Entrar com outra conta</button>' : ' No claude.ai, é preciso ter permissão de edição do Artifact.'));
+      bloq('A Administração é para o administrador geral, a coordenação da pesquisa e a organização da feira.' + (Base.kind==='supabase' ? ' <button class="ghost sm" id="a-outra">Entrar com outra conta</button>' : ' No claude.ai, é preciso ter permissão de edição do Artifact.'));
       const o=$('a-outra'); if (o) o.onclick = async () => { await Base.sair(); start(); };
       return;
     }
+    papel = await Base.meuPapel(); if (meu!==run) return;
+    const coord = papel==='admin_geral' || papel==='coordenador', cadOk = Base.cad.disponivel();
+    document.querySelectorAll('.adm-tabs .chip').forEach(b=>{ const a=b.dataset.aba; b.hidden = (a==='form'||a==='equipe') ? !coord : !cadOk; });
+    Cad.papel(papel);
+    if (!coord){ $('a-corpo').hidden = false; aba('cadastros'); return; }
     await Inst.buscar(ed).catch(()=>{}); if (meu!==run) return;
     pub = clone(Inst.publicado());
     const r = limparInstrumento(LS.get(RK(), null));
@@ -1560,6 +1674,373 @@ const Admin = (() => {
     render(); aba('form'); historicoCarregar();
   }
   return {start};
+})();
+
+/* ================== CADASTROS, MAPA E PENDÊNCIAS ==================
+   Tudo o que depende da organização da feira é editável aqui. Os registros se ligam por id:
+   renomear uma categoria, mudar um expositor de lote ou trocar o palco de uma palestra
+   aparece em todas as telas. Excluir leva à lixeira (excluido_em); o banco audita cada mudança. */
+const Cad = (() => {
+  const $ = id => document.getElementById(id);
+  const ST = {a_confirmar:'A confirmar', confirmado:'Confirmado'};
+  const TL = {expositores:'Expositores', auditorio:'Auditório', pavilhao:'Pavilhão', pecuaria:'Pecuária', alimentacao:'Alimentação', praca:'Praça', descanso:'Descanso', bosque:'Bosque', administracao:'Administração', imprensa:'Imprensa', servico:'Serviço', outro:'Outro'};
+  const TC = {palco:'Palco', banheiro:'Banheiro', portaria:'Portaria', ambulatorio:'Ambulatório', estacionamento:'Estacionamento', alimentacao:'Alimentação', test_drive:'Test drive', heliponto:'Heliponto', acessibilidade:'Acessibilidade', servico:'Serviço', outro:'Outro'};
+  const TA = {palestra:'Palestra', demonstracao:'Demonstração', lancamento:'Lançamento', dinamica:'Dinâmica', test_drive:'Test drive', cerimonia:'Cerimônia', outro:'Outro'};
+  const st = {k:'status', l:'Situação', t:'sel', op:ST};
+  const ENT = {
+    expositores: {nome:'Expositores', esc:'feira', chave:'nome', campos:[
+      {k:'nome', l:'Nome', t:'text', req:1, max:120}, {k:'categoria_id', l:'Categoria', t:'ref', ref:'categorias'},
+      {k:'lotes', l:'Lotes nesta edição (ex.: 99, 100)', t:'lotes'}, {k:'juntar_lotes', l:'Um estande só para todos os lotes', t:'bool'},
+      {k:'cnpj', l:'CNPJ (só números)', t:'text', max:14}, {k:'site', l:'Site', t:'text', max:200}, st,
+      {k:'obs', l:'Observação', t:'area', max:500}]},
+    lotes: {nome:'Lotes', esc:'ed', chave:'numero', campos:[
+      {k:'numero', l:'Número', t:'text', req:1, max:10}, {k:'tipo', l:'Tipo', t:'sel', op:TL, req:1},
+      {k:'rotulo', l:'Ocupantes / rótulo', t:'area', max:400}, {k:'fileira', l:'Fileira', t:'text', max:40}, st,
+      {k:'obs', l:'Observação', t:'area', max:500}]},
+    locais: {nome:'Locais e palcos', esc:'ed', chave:'nome', campos:[
+      {k:'nome', l:'Nome', t:'text', req:1, max:120}, {k:'tipo', l:'Tipo', t:'sel', op:TC, req:1},
+      {k:'lote_id', l:'Lote onde fica', t:'ref', ref:'lotes'}, {k:'horarios', l:'Horários', t:'text', max:200}, st,
+      {k:'obs', l:'Observação', t:'area', max:500}]},
+    agenda: {nome:'Agenda', esc:'ed', chave:'titulo', campos:[
+      {k:'titulo', l:'Título', t:'text', req:1, max:200}, {k:'tipo', l:'Tipo', t:'sel', op:TA, req:1},
+      {k:'local_id', l:'Palco ou local', t:'ref', ref:'locais'}, {k:'inicio', l:'Início', t:'dt'}, {k:'fim', l:'Fim', t:'dt'},
+      {k:'palestrante', l:'Palestrante', t:'text', max:200}, st, {k:'descricao', l:'Descrição', t:'area', max:2000}]},
+    categorias: {nome:'Categorias', esc:'feira', chave:'nome', campos:[
+      {k:'nome', l:'Nome', t:'text', req:1, max:80}, {k:'cor', l:'Cor no mapa', t:'cor'}, {k:'icone', l:'Ícone (nome curto)', t:'text', max:40},
+      {k:'ordem', l:'Ordem', t:'num'}, st]}
+  };
+  const ORDEM = ['expositores','lotes','locais','agenda','categorias'];
+  let ed=null, edi=null, d=null, ent='expositores', sel=null, papel=null, carregando=null;
+  const ger = () => papel==='admin_geral' || papel==='coordenador';
+  const num = v => { const n = parseInt(v,10); return isNaN(n) ? 1e9 : n; };
+  const nomeCat = id => (d.categorias.find(c=>c.id===id)||{}).nome || '';
+  const numLote = id => (d.lotes.find(l=>l.id===id)||{}).numero || '';
+  const nomeLocal = id => (d.locais.find(l=>l.id===id)||{}).nome || '';
+  const estandeDe = xid => d.estandes.find(s=>s.expositor_id===xid && !s.excluido_em);
+  const lotesDe = xid => { const s = estandeDe(xid); return s ? d.vinc.filter(v=>v.estande_id===s.id).map(v=>numLote(v.lote_id)).filter(Boolean).sort((a,b)=>num(a)-num(b)) : []; };
+  const expositoresDoLote = lid => { const ids = d.vinc.filter(v=>v.lote_id===lid).map(v=>v.estande_id); return d.estandes.filter(s=>ids.includes(s.id)).map(s=>(d.expositores.find(x=>x.id===s.expositor_id)||{}).nome).filter(Boolean); };
+  function msg(t, tipo, alvo='cd-msg'){ const m=$(alvo); if(!m) return; m.hidden=!t; m.textContent=t||''; m.className='adm-msg'+(tipo?' '+tipo:''); }
+  const ERRO = {duplicado:'Já existe um registro com esse nome ou número nesta edição.', invalido:'Algum valor está fora do formato aceito (confira CNPJ, cor, datas e posição).', sem_permissao:'Sua conta não tem permissão para esta ação.', rede:'Não foi possível salvar agora. Confira a internet e tente de novo.'};
+
+  async function carregar(){
+    ed = edSlug();
+    const B = Base.cad;
+    edi = await B.edicao(ed);
+    if (!edi) throw Object.assign(new Error('edicao'), {code:'edicao'});
+    const f = edi.feira_id;
+    const [categorias, expositores, lotes, locais, agenda, estandes, plantas] = await Promise.all([
+      B.listar('categorias','feira_id',f), B.listar('expositores','feira_id',f), B.listar('lotes','ed',ed),
+      B.listar('locais','ed',ed), B.listar('agenda','ed',ed), B.listar('estandes','ed',ed), B.listar('plantas','ed',ed)]);
+    const vinc = await B.vinculos(estandes.map(s=>s.id));
+    d = {categorias, expositores, lotes, locais, agenda, estandes, plantas, vinc};
+  }
+  function garantir(){ if (!carregando) carregando = carregar().finally(()=>{ carregando=null; }); return carregando; }
+
+  /* ---------- lista ---------- */
+  function linhas(){
+    const q = norm($('cd-busca').value.trim()), soPend = $('cd-pend').checked, lixo = $('cd-lixo').checked;
+    let L = d[ent].filter(r => lixo ? true : !r.excluido_em);
+    if (ent==='expositores'){ const noEd = new Set(d.estandes.filter(s=>!s.excluido_em).map(s=>s.expositor_id)); L = L.filter(r=>noEd.has(r.id) || lixo || !d.estandes.length); }
+    if (soPend) L = L.filter(r=>r.status==='a_confirmar');
+    if (q) L = L.filter(r => norm([r.nome, r.numero, r.titulo, r.rotulo, r.palestrante, ent==='expositores' ? lotesDe(r.id).join(' ') : ''].filter(Boolean).join(' ')).includes(q));
+    const k = ENT[ent].chave;
+    return L.sort((a,b)=> k==='numero' ? num(a.numero)-num(b.numero) : ent==='agenda' ? String(a.inicio||'').localeCompare(String(b.inicio||'')) : ent==='categorias' ? (a.ordem-b.ordem) : String(a[k]).localeCompare(String(b[k]),'pt'));
+  }
+  const COLS = {
+    expositores: [['Nome', r=>esc(r.nome)], ['Lotes', r=>`<span class="num">${esc(lotesDe(r.id).join(', ')||'–')}</span>`], ['Categoria', r=>esc(nomeCat(r.categoria_id)||'–')]],
+    lotes: [['Nº', r=>`<span class="num">${esc(r.numero)}</span>`], ['Tipo', r=>esc(TL[r.tipo]||r.tipo)], ['Ocupantes', r=>esc(r.rotulo||'')], ['No mapa', r=>r.poligono?'sim':'–']],
+    locais: [['Nome', r=>esc(r.nome)], ['Tipo', r=>esc(TC[r.tipo]||r.tipo)], ['Lote', r=>`<span class="num">${esc(numLote(r.lote_id)||'–')}</span>`], ['No mapa', r=>(r.ponto||r.lote_id)?'sim':'–']],
+    agenda: [['Início', r=>`<span class="num">${esc(r.inicio ? new Date(r.inicio).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}) : '–')}</span>`], ['Título', r=>esc(r.titulo)], ['Local', r=>esc(nomeLocal(r.local_id)||'–')], ['Palestrante', r=>esc(r.palestrante||'')]],
+    categorias: [['Ordem', r=>`<span class="num">${r.ordem}</span>`], ['Nome', r=>esc(r.nome)], ['Cor', r=>r.cor?`<span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:${esc(r.cor)};vertical-align:middle"></span> <span class="num">${esc(r.cor)}</span>`:'–']]
+  };
+  function lista(){
+    const L = linhas(), cols = COLS[ent];
+    $('cd-thead').innerHTML = `<tr>${cols.map(c=>`<th>${c[0]}</th>`).join('')}<th>Situação</th></tr>`;
+    $('cd-tbody').innerHTML = L.map(r=>`<tr data-id="${esc(r.id)}" class="${r.id===sel?'sel':''} ${r.excluido_em?'lixo':''}">${cols.map(c=>`<td>${c[1](r)}</td>`).join('')}<td><span class="pill ${r.status==='confirmado'?'ok':'warn'}">${esc(ST[r.status]||'')}</span>${r.excluido_em?' <span class="pill mut">lixeira</span>':''}</td></tr>`).join('') || `<tr><td colspan="${cols.length+1}" class="nota">Nada encontrado.</td></tr>`;
+    const total = d[ent].filter(r=>!r.excluido_em).length, pend = d[ent].filter(r=>!r.excluido_em && r.status==='a_confirmar').length;
+    $('cd-cont').textContent = `${L.length} na lista · ${total} no total · ${pend} a confirmar · edição ${edi.nome}`;
+    document.querySelectorAll('#cd-ents .chip').forEach(b=>b.classList.toggle('on', b.dataset.ent===ent));
+  }
+
+  /* ---------- formulário ---------- */
+  const dtLocal = iso => { if (!iso) return ''; const x = new Date(iso), p = n => String(n).padStart(2,'0'); return `${x.getFullYear()}-${p(x.getMonth()+1)}-${p(x.getDate())}T${p(x.getHours())}:${p(x.getMinutes())}`; };
+  function opcoesRef(ref, atual){
+    const base = ref==='categorias' ? d.categorias.filter(c=>!c.excluido_em).sort((a,b)=>a.ordem-b.ordem).map(c=>[c.id,c.nome])
+      : ref==='lotes' ? d.lotes.filter(l=>!l.excluido_em).sort((a,b)=>num(a.numero)-num(b.numero)).map(l=>[l.id,'Lote '+l.numero])
+      : d.locais.filter(l=>!l.excluido_em).sort((a,b)=>a.nome.localeCompare(b.nome,'pt')).map(l=>[l.id, l.nome+' ('+(TC[l.tipo]||l.tipo)+')']);
+    return '<option value="">—</option>' + base.map(([v,t])=>`<option value="${esc(v)}" ${v===atual?'selected':''}>${esc(t)}</option>`).join('');
+  }
+  function campo(c, r){
+    const v = c.k==='lotes' ? lotesDe(r.id).join(', ') : c.k==='juntar_lotes' ? ((estandeDe(r.id)||{juntar_lotes:true}).juntar_lotes) : r[c.k];
+    const id = 'cf-'+c.k, lbl = esc(c.l)+(c.req?' *':''), larga = (c.t==='area') ? ' larga' : '';
+    if (c.t==='sel') return `<label class="fld" for="${id}">${lbl}<select id="${id}" data-k="${c.k}">${Object.entries(c.op).map(([k,t])=>`<option value="${k}" ${k===(v||(c.k==='status'?'a_confirmar':''))?'selected':''}>${esc(t)}</option>`).join('')}</select></label>`;
+    if (c.t==='ref') return `<label class="fld" for="${id}">${lbl}<select id="${id}" data-k="${c.k}">${opcoesRef(c.ref, v)}</select></label>`;
+    if (c.t==='bool') return `<label class="tg"><input type="checkbox" id="${id}" data-k="${c.k}" ${v!==false?'checked':''}> ${lbl}</label>`;
+    if (c.t==='area') return `<label class="fld${larga}" for="${id}">${lbl}<textarea id="${id}" data-k="${c.k}" rows="2" maxlength="${c.max||500}">${esc(v||'')}</textarea></label>`;
+    if (c.t==='dt') return `<label class="fld" for="${id}">${lbl}<input type="datetime-local" id="${id}" data-k="${c.k}" value="${esc(dtLocal(v))}"></label>`;
+    if (c.t==='num') return `<label class="fld" for="${id}">${lbl}<input type="number" id="${id}" data-k="${c.k}" value="${esc(v??0)}"></label>`;
+    if (c.t==='cor') return `<label class="fld" for="${id}">${lbl}<input type="color" id="${id}" data-k="${c.k}" value="${esc(v||'#5fd0ff')}"></label>`;
+    return `<label class="fld" for="${id}">${lbl}<input id="${id}" data-k="${c.k}" maxlength="${c.max||200}" value="${esc(v||'')}"></label>`;
+  }
+  function form(r){
+    sel = r ? r.id : null;
+    if (r===undefined){ $('cd-form').innerHTML=''; lista(); return; }
+    const novo = !r, R = r || {};
+    const extra = ent==='lotes' && r ? `<p class="nota larga">Expositores neste lote: ${esc(expositoresDoLote(r.id).join(', ')||'nenhum')}.</p>` : '';
+    $('cd-form').innerHTML = `<div class="cad-form"><h3>${novo?'Novo registro':'Editar'} · ${esc(ENT[ent].nome)}</h3>${ENT[ent].campos.map(c=>campo(c,R)).join('')}${extra}
+      <div class="acts">${!novo ? (R.excluido_em ? '<button class="ghost sm" id="cf-rest">Restaurar da lixeira</button>' : '<button class="ghost sm" id="cf-exc">Mover para a lixeira</button>') : ''}<button class="ghost sm" id="cf-cancel">Cancelar</button><button class="btn sm" id="cf-salvar">Salvar</button></div></div>`;
+    $('cf-cancel').onclick = () => form(undefined);
+    $('cf-salvar').onclick = () => salvar(R);
+    if ($('cf-exc')) $('cf-exc').onclick = async () => { await lixeira(R, true); };
+    if ($('cf-rest')) $('cf-rest').onclick = async () => { await lixeira(R, false); };
+    lista(); $('cd-form').scrollIntoView({block:'nearest'});
+  }
+  function valores(){
+    const o = {};
+    ENT[ent].campos.forEach(c=>{
+      const el = $('cf-'+c.k); if (!el) return;
+      let v = c.t==='bool' ? el.checked : el.value;
+      if (c.t==='text' || c.t==='area') v = v.trim() || null;
+      if (c.t==='ref' || c.t==='sel') v = v || null;
+      if (c.t==='num') v = parseInt(v,10) || 0;
+      if (c.t==='dt') v = v ? new Date(v).toISOString() : null;
+      o[c.k] = v;
+    });
+    return o;
+  }
+  async function gravar(R, o){
+    const E = ENT[ent];
+    for (const c of E.campos) if (c.req && !o[c.k]) throw Object.assign(new Error('req'), {code:'req', campo:c.l});
+    if (o.cnpj && !/^[0-9]{14}$/.test(o.cnpj)) throw Object.assign(new Error('cnpj'), {code:'invalido'});
+    const lotesTxt = o.lotes, juntar = o.juntar_lotes; delete o.lotes; delete o.juntar_lotes;
+    if (E.esc==='feira') o.feira_id = edi.feira_id; else o.ed = ed;
+    const rec = R.id ? await Base.cad.alterar(ent, R.id, o) : await Base.cad.inserir(ent, o);
+    if (ent==='expositores' && lotesTxt!==undefined) await sincronizarLotes(rec.id, lotesTxt, juntar);
+    return rec;
+  }
+  async function sincronizarLotes(xid, txt, juntar){
+    const nums = String(txt||'').split(/[,;\s]+/).map(x=>x.trim()).filter(Boolean);
+    const ids = nums.map(n=>{ const l = d.lotes.find(x=>!x.excluido_em && x.numero===n); if (!l) throw Object.assign(new Error('lote'), {code:'lote', lote:n}); return l.id; });
+    let s = estandeDe(xid);
+    if (!s && ids.length){ s = await Base.cad.inserir('estandes', {ed, expositor_id:xid, juntar_lotes: juntar!==false}); d.estandes.push(s); }
+    if (!s) return;
+    if (juntar!==undefined && s.juntar_lotes!==(juntar!==false)) await Base.cad.alterar('estandes', s.id, {juntar_lotes: juntar!==false});
+    const atuais = d.vinc.filter(v=>v.estande_id===s.id).map(v=>v.lote_id);
+    for (const id of ids) if (!atuais.includes(id)) await Base.cad.vincular(s.id, id);
+    for (const id of atuais) if (!ids.includes(id)) await Base.cad.desvincular(s.id, id);
+  }
+  function erroTexto(e){ return e.code==='req' ? `Preencha o campo "${e.campo}".` : e.code==='lote' ? `O lote ${e.lote} não existe nesta edição. Cadastre-o em Lotes primeiro.` : (ERRO[e.code] || ERRO.rede); }
+  async function salvar(R){
+    const bt = $('cf-salvar'); bt.disabled = true;
+    try{ const rec = await gravar(R, valores()); await carregar(); msg('Salvo. As telas que usam este registro já mostram a mudança.','ok'); form(d[ent].find(x=>x.id===rec.id)); }
+    catch(e){ msg(erroTexto(e),'erro'); }
+    finally{ if ($('cf-salvar')) $('cf-salvar').disabled = false; }
+  }
+  async function lixeira(R, mover){
+    try{ await Base.cad.alterar(ent, R.id, {excluido_em: mover ? new Date().toISOString() : null}); await carregar(); msg(mover ? 'Movido para a lixeira. Dá para restaurar marcando "Mostrar lixeira".' : 'Restaurado.','ok'); form(undefined); }
+    catch(e){ msg(erroTexto(e),'erro'); }
+  }
+
+  /* ---------- planilha (CSV) ---------- */
+  function lerCSV(txt){
+    txt = txt.replace(/^﻿/,''); const sep = (txt.split('\n')[0].match(/;/g)||[]).length >= (txt.split('\n')[0].match(/,/g)||[]).length ? ';' : ',';
+    const rows=[]; let row=[], cel='', aspas=false;
+    for (let i=0;i<txt.length;i++){
+      const ch = txt[i];
+      if (aspas){ if (ch==='"' && txt[i+1]==='"'){ cel+='"'; i++; } else if (ch==='"') aspas=false; else cel+=ch; }
+      else if (ch==='"') aspas=true; else if (ch===sep){ row.push(cel); cel=''; } else if (ch==='\n'){ row.push(cel.replace(/\r$/,'')); rows.push(row); row=[]; cel=''; } else cel+=ch;
+    }
+    if (cel || row.length){ row.push(cel.replace(/\r$/,'')); rows.push(row); }
+    return rows.filter(r=>r.some(x=>x.trim()));
+  }
+  const colunasModelo = () => ENT[ent].campos.map(c=>c.k==='categoria_id'?'categoria':c.k==='lote_id'?'lote':c.k==='local_id'?'local':c.k);
+  function baixarModelo(){
+    const cols = colunasModelo();
+    const ex = {expositores:['Exemplo Máquinas Ltda','Máquinas e equipamentos','99, 100','sim','','','a_confirmar',''], lotes:['114','expositores','Exemplo Máquinas','2','a_confirmar',''], locais:['Auditório 4','palco','18','9h às 18h','a_confirmar',''], agenda:['Manejo de pastagens','palestra','Auditório 1','2027-04-06 09:00','2027-04-06 10:00','Nome da pessoa','a_confirmar','Descrição curta'], categorias:['Bioinsumos','#2e7d32','bioinsumos','30','a_confirmar']}[ent];
+    const csv = '﻿' + cols.join(';') + '\n' + ex.join(';') + '\n';
+    const a=document.createElement('a'), url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})); a.href=url; a.download=`modelo_${ent}.csv`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),5000);
+  }
+  async function importar(arq){
+    const rows = lerCSV(await arq.text()); if (rows.length<2){ msg('A planilha está vazia ou sem cabeçalho.','erro'); return; }
+    const cab = rows[0].map(h=>norm(h.trim()).replace(/\s+/g,'_'));
+    const E = ENT[ent], erros=[]; let novos=0, alterados=0;
+    msg(`Importando ${rows.length-1} linhas…`,'aviso');
+    for (let i=1;i<rows.length;i++){
+      const v = {}; cab.forEach((h,j)=>{ v[h] = (rows[i][j]||'').trim(); });
+      try{
+        const o = {};
+        for (const c of E.campos){
+          const k = c.k==='categoria_id'?'categoria':c.k==='lote_id'?'lote':c.k==='local_id'?'local':c.k;
+          if (!(k in v)) continue; let x = v[k];
+          if (c.t==='ref'){
+            if (!x){ o[c.k]=null; continue; }
+            const alvo = c.ref==='categorias' ? d.categorias.find(z=>!z.excluido_em && norm(z.nome)===norm(x)) : c.ref==='lotes' ? d.lotes.find(z=>!z.excluido_em && z.numero===x) : d.locais.find(z=>!z.excluido_em && norm(z.nome)===norm(x));
+            if (!alvo) throw new Error(`${c.l} "${x}" não encontrado`); o[c.k]=alvo.id;
+          } else if (c.t==='bool') o[c.k] = !/^(n|nao|não|false|0)$/i.test(x);
+          else if (c.t==='num') o[c.k] = parseInt(x,10)||0;
+          else if (c.t==='dt') o[c.k] = x ? new Date(x.replace(' ','T')).toISOString() : null;
+          else if (c.t==='sel'){ if (x && !(x in c.op)){ const achou = Object.entries(c.op).find(([,t])=>norm(t)===norm(x)); if (!achou) throw new Error(`${c.l} "${x}" inválido`); x = achou[0]; } o[c.k] = x || (c.k==='status'?'a_confirmar':null); }
+          else o[c.k] = x || null;
+        }
+        const chave = o[E.chave]; if (!chave) throw new Error(`falta ${E.chave}`);
+        const R = d[ent].find(z=>!z.excluido_em && norm(String(z[E.chave]))===norm(String(chave))) || {};
+        const rec = await gravar(R, o); R.id ? alterados++ : novos++;
+        if (!R.id) d[ent].push(rec); else Object.assign(R, rec);
+        if (ent==='expositores') { d.estandes = await Base.cad.listar('estandes','ed',ed); d.vinc = await Base.cad.vinculos(d.estandes.map(s=>s.id)); }
+      }catch(e){ erros.push(`linha ${i+1}: ${e.code ? erroTexto(e) : e.message}`); }
+    }
+    await carregar(); lista();
+    msg(`Importação concluída: ${novos} novos, ${alterados} atualizados${erros.length?`, ${erros.length} com erro:\n• `+erros.slice(0,15).join('\n• ')+(erros.length>15?`\n• … e mais ${erros.length-15}`:''):'.'}`, erros.length?'aviso':'ok');
+  }
+
+  /* ---------- pendências ---------- */
+  const PARA = {lote:'lotes', local:'locais', estande:'expositores', expositor:'expositores', agenda:'agenda', planta:'mapa'};
+  async function pendencias(){
+    $('p-tbody').innerHTML = '<tr><td colspan="4" class="nota">Carregando…</td></tr>';
+    try{
+      const P = await Base.cad.pendencias(edSlug());
+      const g = {}; P.forEach(p=>{ g[p.motivo]=(g[p.motivo]||0)+1; });
+      $('p-grupos').innerHTML = Object.entries(g).sort((a,b)=>b[1]-a[1]).map(([m,n])=>`<span class="pill warn">${esc(m)}: ${n}</span>`).join('') || '<span class="pill ok">Nenhuma pendência</span>';
+      const tipoNome = {lote:'Lote', local:'Local', estande:'Estande', expositor:'Expositor', agenda:'Agenda', planta:'Planta'};
+      $('p-tbody').innerHTML = P.slice(0,800).map(p=>`<tr><td>${esc(tipoNome[p.tipo]||p.tipo)}</td><td>${esc(p.item)}</td><td>${esc(p.motivo)}</td><td><button class="ghost sm" data-ptipo="${esc(p.tipo)}" data-pref="${esc(p.ref||'')}">Abrir</button></td></tr>`).join('') + (P.length>800?`<tr><td colspan="4" class="nota">… e mais ${P.length-800}. Use os filtros em Cadastros.</td></tr>`:'');
+      $('p-tbody').querySelectorAll('[data-ptipo]').forEach(b=>b.onclick = async () => {
+        const destino = PARA[b.dataset.ptipo]; if (destino==='mapa'){ irAba('mapa'); return; }
+        await garantir(); ent = destino; let id = b.dataset.pref;
+        if (b.dataset.ptipo==='estande'){ const s = d.estandes.find(x=>x.id===id); id = s ? s.expositor_id : null; }
+        irAba('cadastros'); msg(''); form(d[ent].find(x=>x.id===id));
+      });
+    }catch(e){ $('p-tbody').innerHTML = `<tr><td colspan="4" class="adm-msg erro">${esc(ERRO[e.code]||ERRO.rede)}</td></tr>`; }
+  }
+  const irAba = n => document.querySelector(`.adm-tabs [data-aba="${n}"]`).click();
+
+  /* ---------- mapa ---------- */
+  let modo='ver', W=1000, H=700, arraste=null, geo=[], zoom=100;
+  const planta = () => d.plantas.filter(p=>p.ativa && !p.excluido_em).sort((a,b)=>String(b.criado_em).localeCompare(String(a.criado_em)))[0];
+  const ponto = ev => { const s=$('m-svg'), p=s.createSVGPoint(); p.x=ev.clientX; p.y=ev.clientY; const q=p.matrixTransform(s.getScreenCTM().inverse()); return [Math.max(0,Math.min(W,q.x)), Math.max(0,Math.min(H,q.y))]; };
+  const cor = l => { const x = expositoresDoLote(l.id); if (!x.length) return 'var(--cds-chart-axis, #8fa6d1)'; const ex = d.expositores.find(e=>e.nome===x[0]); const c = ex && d.categorias.find(k=>k.id===ex.categoria_id); return (c && c.cor) || '#5fd0ff'; };
+  function desenhar(){
+    const p = planta(); W = 1000; H = p && p.largura ? Math.round(1000*p.altura/p.largura) : 700;
+    const s = $('m-svg'); s.setAttribute('viewBox', `0 0 ${W} ${H}`); s.style.width = zoom+'%';
+    const lotesSvg = d.lotes.filter(l=>!l.excluido_em && l.poligono).map(l=>{
+      const pts = l.poligono.map(([x,y])=>`${(x*W).toFixed(1)},${(y*H).toFixed(1)}`).join(' ');
+      const cx = l.poligono.reduce((a,v)=>a+v[0],0)/l.poligono.length*W, cy = l.poligono.reduce((a,v)=>a+v[1],0)/l.poligono.length*H;
+      return `<g data-lote="${esc(l.id)}" style="cursor:pointer"><polygon points="${pts}" fill="${esc(cor(l))}" fill-opacity="${l.status==='confirmado'?0.45:0.25}" stroke="${l.status==='confirmado'?'#e7f1ff':'#ffb347'}" stroke-width="1.5" stroke-dasharray="${l.status==='confirmado'?'':'5 3'}"/><text x="${cx.toFixed(1)}" y="${(cy+4).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="700" fill="#e7f1ff" style="paint-order:stroke;stroke:#040b1f;stroke-width:3px">${esc(l.numero)}</text></g>`; }).join('');
+    const locaisSvg = d.locais.filter(o=>!o.excluido_em).map(o=>{
+      let x, y, deriv=false;
+      if (o.ponto){ x=o.ponto.x*W; y=o.ponto.y*H; } else { const l = d.lotes.find(z=>z.id===o.lote_id && z.poligono); if (!l) return ''; x = l.poligono.reduce((a,v)=>a+v[0],0)/l.poligono.length*W + 10; y = l.poligono.reduce((a,v)=>a+v[1],0)/l.poligono.length*H - 10; deriv=true; }
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6" fill="${deriv?'none':'#ffc861'}" stroke="#ffc861" stroke-width="2"><title>${esc(o.nome)}</title></circle>`; }).join('');
+    const geoSvg = geo.map((g,i)=>`<g><circle cx="${(g.x*W).toFixed(1)}" cy="${(g.y*H).toFixed(1)}" r="8" fill="#ff6b7d"/><text x="${(g.x*W+11).toFixed(1)}" y="${(g.y*H+4).toFixed(1)}" font-size="13" font-weight="700" fill="#ff6b7d">${i+1}</text></g>`).join('');
+    const fundo = p ? `<image href="${esc(p.imagem_url)}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none"/>` : `<rect width="${W}" height="${H}" fill="#071637"/><text x="${W/2}" y="${H/2}" text-anchor="middle" font-size="22" fill="#8fa6d1">Envie a planta da feira (botão acima) para posicionar os lotes</text>`;
+    s.innerHTML = fundo + `<g>${lotesSvg}</g><g>${locaisSvg}</g><g>${geoSvg}</g><rect id="m-ret" x="0" y="0" width="0" height="0" fill="#5fd0ff" fill-opacity=".2" stroke="#5fd0ff" stroke-width="2" visibility="hidden"/>`;
+    const semPos = d.lotes.filter(l=>!l.excluido_em && !l.poligono).length;
+    const noMapa = d.lotes.filter(l=>!l.excluido_em).length - semPos;
+    $('m-status').innerHTML = `${p ? 'Planta carregada' : '<b>Sem planta</b>'} · ${noMapa} ${noMapa===1?'lote':'lotes'} no mapa · ${semPos} sem posição · georreferência: ${p && p.georef ? 'feita' : 'pendente'}`;
+    s.querySelectorAll('[data-lote]').forEach(g=>g.addEventListener('click', ev=>{ if (modo!=='ver') return; ev.stopPropagation(); infoLote(d.lotes.find(l=>l.id===g.dataset.lote)); }));
+  }
+  function selects(){
+    const L = d.lotes.filter(l=>!l.excluido_em).sort((a,b)=>(!!a.poligono - !!b.poligono) || num(a.numero)-num(b.numero));
+    $('m-lote').innerHTML = L.map(l=>`<option value="${esc(l.id)}">Lote ${esc(l.numero)}${l.poligono?' (já no mapa)':''} · ${esc((l.rotulo||'').slice(0,40))}</option>`).join('');
+    const O = d.locais.filter(o=>!o.excluido_em).sort((a,b)=>(!!(a.ponto) - !!(b.ponto)) || a.nome.localeCompare(b.nome,'pt'));
+    $('m-local').innerHTML = O.map(o=>`<option value="${esc(o.id)}">${esc(o.nome)}${o.ponto?' (já posicionado)':''}</option>`).join('');
+  }
+  function infoLote(l){
+    if (!l){ $('m-info').innerHTML = '<p class="nota">Toque num lote para ver os detalhes.</p>'; return; }
+    $('m-info').innerHTML = `<h3>Lote ${esc(l.numero)}</h3><p class="nota">${esc(TL[l.tipo]||l.tipo)} · ${esc(ST[l.status])}</p><p class="nota">Expositores: ${esc(expositoresDoLote(l.id).join(', ')||'nenhum')}</p><div class="adm-acts"><button class="ghost sm" id="m-tirar">Apagar posição</button><button class="ghost sm" id="m-editar">Editar cadastro</button></div>`;
+    $('m-tirar').onclick = async () => { try{ await Base.cad.alterar('lotes', l.id, {poligono:null}); await carregar(); desenhar(); selects(); infoLote(null); msg('Posição apagada.','ok','m-msg'); }catch(e){ msg(ERRO[e.code]||ERRO.rede,'erro','m-msg'); } };
+    $('m-editar').onclick = () => { ent='lotes'; irAba('cadastros'); form(l); };
+  }
+  const AJUDA = {ver:'Role a planta para navegar e use o zoom para ver os lotes pequenos.', lote:'Escolha o lote ao lado e arraste um retângulo sobre ele na planta.', local:'Escolha o local ao lado e toque no ponto da planta onde ele fica.', geo:'Toque em até 4 pontos de referência e informe as coordenadas de cada um.'};
+  function setModo(m){
+    modo = m; document.querySelectorAll('#m-modos .chip').forEach(b=>b.classList.toggle('on', b.dataset.modo===m));
+    $('m-sel-lote').hidden = m!=='lote'; $('m-sel-local').hidden = m!=='local'; $('m-geo').hidden = m!=='geo'; $('m-ajuda').textContent = AJUDA[m];
+    if (m==='geo'){ const p = planta(); geo = p && p.georef ? p.georef.map(g=>({...g})) : []; linhasGeo(); desenhar(); }
+  }
+  function linhasGeo(){
+    $('m-geo-lin').innerHTML = geo.map((g,i)=>`<div class="geo-lin"><b>${i+1}</b><input aria-label="Latitude do ponto ${i+1}" placeholder="latitude" data-geo="${i}" data-c="lat" value="${g.lat??''}"><input aria-label="Longitude do ponto ${i+1}" placeholder="longitude" data-geo="${i}" data-c="lon" value="${g.lon??''}"></div>`).join('') || '<p class="nota">Nenhum ponto marcado ainda.</p>';
+    $('m-geo-lin').querySelectorAll('[data-geo]').forEach(inp=>inp.oninput=()=>{ geo[+inp.dataset.geo][inp.dataset.c] = inp.value.replace(',','.'); });
+  }
+  function ligarMapa(){
+    const s = $('m-svg');
+    s.addEventListener('pointerdown', ev=>{
+      if (!planta()) return;
+      const [x,y] = ponto(ev);
+      if (modo==='lote'){ arraste = {x0:x, y0:y}; s.setPointerCapture(ev.pointerId); }
+      if (modo==='local'){ const id = $('m-local').value; if (!id) return;
+        Base.cad.alterar('locais', id, {ponto:{x:+(x/W).toFixed(4), y:+(y/H).toFixed(4)}}).then(async()=>{ await carregar(); desenhar(); selects(); msg('Local posicionado.','ok','m-msg'); }).catch(e=>msg(ERRO[e.code]||ERRO.rede,'erro','m-msg')); }
+      if (modo==='geo'){ if (geo.length>=4) geo.shift(); geo.push({x:+(x/W).toFixed(4), y:+(y/H).toFixed(4), lat:'', lon:''}); linhasGeo(); desenhar(); }
+    });
+    s.addEventListener('pointermove', ev=>{
+      if (!arraste) return; const [x,y] = ponto(ev), r = $('m-ret');
+      r.setAttribute('x', Math.min(x,arraste.x0)); r.setAttribute('y', Math.min(y,arraste.y0)); r.setAttribute('width', Math.abs(x-arraste.x0)); r.setAttribute('height', Math.abs(y-arraste.y0)); r.setAttribute('visibility','visible');
+    });
+    s.addEventListener('pointerup', async ev=>{
+      if (!arraste) return; const [x,y] = ponto(ev), a = arraste; arraste = null; $('m-ret').setAttribute('visibility','hidden');
+      if (Math.abs(x-a.x0)<4 || Math.abs(y-a.y0)<4) return;
+      const x1=Math.min(x,a.x0)/W, x2=Math.max(x,a.x0)/W, y1=Math.min(y,a.y0)/H, y2=Math.max(y,a.y0)/H, f=v=>+v.toFixed(4);
+      const id = $('m-lote').value, l = d.lotes.find(z=>z.id===id);
+      try{ await Base.cad.alterar('lotes', id, {poligono:[[f(x1),f(y1)],[f(x2),f(y1)],[f(x2),f(y2)],[f(x1),f(y2)]]}); await carregar(); desenhar(); selects(); msg(`Lote ${l?l.numero:''} posicionado. Escolha o próximo na lista.`,'ok','m-msg'); }
+      catch(e){ msg(ERRO[e.code]||ERRO.rede,'erro','m-msg'); }
+    });
+    document.querySelectorAll('#m-modos .chip').forEach(b=>b.onclick=()=>setModo(b.dataset.modo));
+    document.querySelectorAll('[data-zoom]').forEach(b=>b.onclick=()=>{ zoom = +b.dataset.zoom; $('m-svg').style.width = zoom+'%'; });
+    $('m-geo-limpar').onclick = () => { geo = []; linhasGeo(); desenhar(); };
+    $('m-geo-salvar').onclick = async () => {
+      const p = planta(); if (!p) return;
+      const g = geo.map(x=>({x:x.x, y:x.y, lat:parseFloat(x.lat), lon:parseFloat(x.lon)}));
+      if (g.length<3 || g.some(x=>!isFinite(x.lat) || !isFinite(x.lon) || Math.abs(x.lat)>90 || Math.abs(x.lon)>180)){ msg('Marque pelo menos 3 pontos (o ideal são 4) e informe latitude e longitude válidas em cada um.','erro','m-msg'); return; }
+      try{ await Base.cad.alterar('plantas', p.id, {georef:g}); await carregar(); desenhar(); msg('Georreferência salva.','ok','m-msg'); }catch(e){ msg(ERRO[e.code]||ERRO.rede,'erro','m-msg'); }
+    };
+    $('m-arq').onchange = async ev => {
+      const arq = ev.target.files[0]; ev.target.value=''; if (!arq) return;
+      if (!/^image\/(png|jpeg|webp)$/.test(arq.type)){ msg('Envie uma imagem PNG, JPG ou WEBP. Se a planta for PDF, exporte a página como imagem.','erro','m-msg'); return; }
+      if (arq.size > 20*1024*1024){ msg('A imagem passa de 20 MB. Reduza a resolução e tente de novo.','erro','m-msg'); return; }
+      msg('Enviando a planta…','aviso','m-msg');
+      try{
+        const dim = await new Promise((ok,falha)=>{ const im=new Image(), u=URL.createObjectURL(arq); im.onload=()=>{ ok([im.naturalWidth, im.naturalHeight]); URL.revokeObjectURL(u); }; im.onerror=falha; im.src=u; });
+        const ext = arq.type.split('/')[1].replace('jpeg','jpg');
+        const url = await Base.cad.enviarPlanta(`${ed}/${Date.now()}.${ext}`, arq);
+        for (const p of d.plantas.filter(p=>p.ativa && !p.excluido_em)) await Base.cad.alterar('plantas', p.id, {ativa:false});
+        await Base.cad.inserir('plantas', {ed, imagem_url:url, largura:dim[0], altura:dim[1], ativa:true});
+        await carregar(); desenhar(); msg('Planta carregada. Os lotes já posicionados continuam no lugar relativo; ajuste se a nova planta tiver outro enquadramento.','ok','m-msg');
+      }catch(e){ msg(ERRO[e.code]||ERRO.rede,'erro','m-msg'); }
+    };
+  }
+
+  /* ---------- abertura e ligações ---------- */
+  let ligado = false;
+  function ligar(){
+    $('cd-ents').innerHTML = ORDEM.map(k=>`<button class="chip" data-ent="${k}">${esc(ENT[k].nome)}</button>`).join('');
+    document.querySelectorAll('#cd-ents .chip').forEach(b=>b.onclick=()=>{ ent=b.dataset.ent; sel=null; $('cd-form').innerHTML=''; msg(''); lista(); });
+    ['cd-busca','cd-pend','cd-lixo'].forEach(id=>$(id).addEventListener(id==='cd-busca'?'input':'change', lista));
+    $('cd-tbody').addEventListener('click', ev=>{ const tr = ev.target.closest('tr[data-id]'); if (tr) form(d[ent].find(x=>x.id===tr.dataset.id)); });
+    $('cd-novo').onclick = () => form(null);
+    $('cd-modelo').onclick = baixarModelo;
+    $('cd-imp').onchange = async ev => { const f = ev.target.files[0]; ev.target.value=''; if (f) await importar(f); };
+    $('cd-clonar').onclick = clonar;
+    $('p-atualizar').onclick = pendencias;
+    ligarMapa();
+  }
+  async function clonar(){
+    const ano = (edi.ano||new Date().getFullYear())+1, slug = edi.slug.replace(/[0-9]{4}$/, String(ano)), nome = edi.nome.replace(/[0-9]{4}$/, String(ano));
+    if (slug===edi.slug){ msg('Não consegui sugerir o nome da próxima edição. Ajuste o nome da edição atual para terminar com o ano.','erro'); return; }
+    const bt = $('cd-clonar');
+    if (bt.dataset.conf!=='1'){ bt.dataset.conf='1'; bt.textContent=`Confirmar: criar ${nome}`; return; }
+    bt.dataset.conf=''; bt.textContent='Clonar edição';
+    try{ const r = await Base.cad.clonar(edi.slug, slug, nome); msg(`Edição ${nome} criada com planta, lotes, locais e estandes (tudo "a confirmar"). Chave da coleta da nova edição, mostrada uma única vez: ${r.chave_da_coleta}. Para editá-la, troque o campo Edição na tela inicial.`,'ok'); }
+    catch(e){ msg(e.code==='slug_invalido' ? `A edição ${nome} já existe.` : ERRO[e.code]||ERRO.rede,'erro'); }
+  }
+  async function abrir(n){
+    if (!Base.cad.disponivel()){ msg('Os cadastros e o mapa funcionam no site com o Supabase.','aviso'); return; }
+    if (!ligado){ ligado = true; ligar(); }
+    $('cd-clonar').hidden = !ger();
+    if (n==='pendencias'){ pendencias(); return; }
+    try{
+      if (!d || ed!==edSlug()) { msg('Carregando os cadastros…','aviso'); await garantir(); msg(''); }
+      if (n==='cadastros') lista();
+      if (n==='mapa'){ desenhar(); selects(); setModo(modo); }
+    }catch(e){ msg(e.code==='edicao' ? `A edição "${edSlug()}" não está cadastrada no banco. Confira o campo Edição na tela inicial.` : ERRO[e.code]||ERRO.rede,'erro'); }
+  }
+  return {abrir, papel: p => { papel = p; }};
 })();
 
 /* ================== CONVITE (cadastro na equipe por link) ================== */
