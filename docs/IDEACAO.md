@@ -567,6 +567,22 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 |---|---|---|---|
 | 25 | **Negativos só para a loja e a organização.** Carinha triste, motivos e comentários negativos nunca aparecem em público | 05/11/2026 | Em telas públicas (rankings, telão, perfil da loja) só entram indicadores agregados. O detalhe negativo fica no painel da loja e no da organização. Rankings públicos seguem com número mínimo de avaliações |
 | 26 (parcial) | **Toda postagem e toda moldura levam a logo do app** (logo ainda a definir, ver seção 15) | 05/11/2026 | Cartões de story, selfies com moldura, fotos do telão social e qualquer imagem gerada pela plataforma recebem a logo num lugar fixo. Cada compartilhamento divulga a plataforma, além da feira e do estande. A logo entra na lista de entregas da identidade visual |
+| 6 | **Dono e controlador dos dados: IF Goiano/Observatório ITA.** A Tecnoshow/Comigo é parceira que usa a plataforma | 06/11/2026 | O ITA é o controlador (LGPD) e nomeia o encarregado. Acordo com a Comigo define o uso dos dados operacionais pela organização. Combina com licenciar a plataforma para outras feiras |
+| 5 | **Supabase + site próprio.** O Artifact do claude.ai fica só como demonstração | 06/11/2026 | Toda a plataforma nova é desenhada sobre o Supabase |
+| 27 | **Dois administradores gerais:** um da organização da feira e um do ITA | 06/11/2026 | Ninguém depende de uma pessoa só. Ambos com verificação em duas etapas |
+| 20 | **Piloto num evento menor no 1º semestre**, depois a plataforma completa na Tecnoshow 2027 (ou 2028, se o prazo apertar) | 06/11/2026 | O cronograma reverso parte da data do piloto |
+| 1 | **Pedir à organização a planta oficial** com a numeração dos estandes | 06/11/2026 | O mapa digital da feira é desenhado sobre a planta oficial |
+| 2 | **Piloto com 20 a 40 expositores** parceiros, de segmentos variados | 06/11/2026 | Importação por planilha fica pronta, mas a fase 1 atende esse grupo |
+| 13 | **Fundação de apoio do IF Goiano agora; spin-off do ITA depois**, quando houver receita recorrente | 06/11/2026 | Projetos e contratos passam pela fundação. A arquitetura já separa o que for comercial |
+| 7 | **Painel do expositor freemium:** básico grátis, premium pago (leads, benchmark, relatório, destaque) | 06/11/2026 | O sistema precisa controlar planos por expositor |
+| 14 | **Cobrança do premium só a partir da 2ª edição** | 06/11/2026 | Na 1ª edição, todos recebem o premium grátis, e os resultados viram argumento de venda |
+| 3 | **Prêmios doados por patrocinadores e estandes, por mérito** (pontuação ou concurso cultural), sem sorteio | 06/11/2026 | Dispensa a autorização de sorteio (Lei 5.768/71). Regulamento público com critérios de pontuação |
+| 4 | **Fotos de visitantes no telão, com moderação** (filtro automático + aprovação de moderador) e termo de uso de imagem | 06/11/2026 | O papel "Moderador" e a fila de aprovação entram na fase do telão social |
+| 8 | **O app será proposto à Comigo como canal oficial** (agenda, mapa, premiação), estudando a integração com o credenciamento para depois | 06/11/2026 | Proposta formal à organização entra no cronograma |
+| 9 | **Dados abertos agregados também ao vivo**, durante a feira (por exemplo, o mapa de origens), além dos relatórios anuais | 06/11/2026 | Painel público ao vivo, só com agregados de grupos de 5 ou mais. O painel completo continua restrito à equipe |
+| 10 | **Multifeira desde já:** cada feira com seus dados separados, mesmo usando só a Tecnoshow no começo | 06/11/2026 | Todas as tabelas levam a feira e a edição. Permite licenciar sem refazer o sistema |
+| 11 | **Canal do visitante: link web (QR, sem baixar) + assistente oficial no WhatsApp** | 06/11/2026 | Prever custo da API do WhatsApp Business no orçamento |
+| 12 | **Simulação de crédito e consórcio na 2ª fase.** Na 1ª, só um link para os estandes dos bancos e da cooperativa | 06/11/2026 | Acordo com bancos e Comigo antes da 2ª fase |
 
 ---
 
@@ -581,3 +597,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 05/11/2026: interação instantânea no QR do estande (reações, carinhas, comentários, story), decisões 25 e 26.
 - 05/11/2026: decisão 25 tomada (negativos só para loja e organização); decisão 26 em parte (logo do app em toda postagem e moldura).
 - 06/11/2026: administração geral, hierarquia de papéis, habilitação de aparelhos pela equipe treinada, decisões 27 a 30.
+- 06/11/2026: decisões 1 a 14, 20 e 27 tomadas.
