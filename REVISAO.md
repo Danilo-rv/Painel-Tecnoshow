@@ -207,3 +207,30 @@ Testes:
   - moderação com a foto à vista;
   - telão com destaque, alternância e "em alta".
 - Os testes anteriores continuam passando.
+
+## Tecnoshow na Cidade (nona etapa)
+
+| Item | Como funciona | Proteção |
+|---|---|---|
+| Visitante na cidade | Mesmo perfil anônimo da feira; check-in pelo QR do balcão, carinhas, "quero na feira" e pesquisa do hóspede | A credencial é conferida; o estabelecimento precisa ser da edição; respostas fora do formato e campos extras são recusados; no máximo 60 check-ins por hora |
+| Contas de parceiro | Tabela `estab_equipe`, preenchida por convite | Não entram na equipe; cada conta só vê o próprio estabelecimento |
+| Ocupação dos hotéis | Informada pelo próprio hotel (ou pela organização) | Sigilosa: a tabela não é lida pela API; a média da cidade só sai com 3 ou mais hotéis no dia (decisão 16); a diária média só com 3 ou mais valores |
+| Painel do parceiro | Contagens do próprio estabelecimento | Perfil e resumo de hóspedes a partir de 5 pessoas; origem só em grupos de 3 ou mais |
+| Resumo da organização | Prospecção, hóspedes, transbordamento e demanda | Hóspedes a partir de 5 respostas; município com menos de 3 hotéis entra em "outras cidades" |
+
+Testes:
+- **Banco local:**
+  - tipo inválido;
+  - usuário anônimo lendo as tabelas;
+  - ação e valor inválidos;
+  - pesquisa com campo extra (como CPF) ou valor fora da faixa;
+  - pesquisa de hóspede num bar;
+  - ocupados acima do total de quartos;
+  - hotel lendo ou gravando dados de outro hotel;
+  - demanda com 2 hotéis (não aparece) e com 3 (aparece).
+- **Navegador:**
+  - cadastro do hotel e do bar com QR e convite;
+  - visitante no bar e no hotel;
+  - hotel entrando pelo convite e informando a ocupação;
+  - aba Cidade.
+- Os testes anteriores continuam passando.

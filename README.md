@@ -25,7 +25,7 @@ As respostas ficam num banco **Supabase** do próprio projeto. Uma versão alter
 ## 1. Configurar o Supabase (uma vez)
 
 1. Crie um projeto em <https://supabase.com> (região São Paulo, `sa-east-1`).
-2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`, `003_visitante_estande.sql`, `004_moderacao_painel_expositor.sql`, `005_saida_tablets.sql`, `006_presenca_trilhas.sql` e `007_mural.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
+2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`, `003_visitante_estande.sql`, `004_moderacao_painel_expositor.sql`, `005_saida_tablets.sql`, `006_presenca_trilhas.sql`, `007_mural.sql` e `008_cidade.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
 3. Em **Authentication → Sign In / Providers**, deixe **ligado** "Allow new users to sign up" (a equipe se cadastra pelo link de convite; uma conta criada sem convite não acessa nada) e mantenha "Confirm email" ligado.
    Em **Authentication → URL Configuration**, coloque o endereço do site em **Site URL** e em **Redirect URLs** (ex.: `https://danilo-rv.github.io/Painel-Tecnoshow/**`), para o e-mail de confirmação voltar ao app.
 4. Gere a chave da coleta: no SQL Editor, rode `select replace(gen_random_uuid()::text, '-', '') as chave_da_coleta;` e guarde o resultado.
@@ -227,6 +227,28 @@ Cada estande tem um QR (em **Administração → Cadastros → Expositores**, ab
   - "Em alta agora": os estandes com mais pessoas diferentes nos últimos 30 minutos, a partir de 3 pessoas.
   O mapa usa a planta e os lotes desenhados em Administração → Mapa.
 - **Onde a foto fica:** no banco, sem endereço público. Só a moderação e o telão a leem. No piloto, cada foto ocupa cerca de 100 KB; para volumes maiores, o plano é passar as fotos para o Storage.
+
+## 12. Tecnoshow na Cidade
+
+- **Cadastro:** em **Cadastros → Cidade**, cadastre bares, restaurantes, hotéis, lojas, serviços e pontos turísticos parceiros de Rio Verde e das cidades vizinhas, num raio de 250 km da feira (decisão 17). O formulário de cada parceiro traz:
+  - o QR do balcão;
+  - o botão **Gerar convite para o parceiro**;
+  - a lista de contas com acesso, com a opção de remover.
+- **Visitante:** lê o QR com o mesmo perfil anônimo da feira (quem ainda não tem perfil responde a porta de entrada) e faz check-in.
+  - **Bar, restaurante e loja:** avalia com as carinhas e responde "Gostaria de ver este lugar na Tecnoshow?".
+  - **Hotel:** responde a pesquisa do hóspede (noites, pessoas, faixa de diária, antecedência da reserva, motivo e satisfação), em cerca de 20 segundos.
+- **Área do parceiro** (`…/#parceiro`, também pelo botão na tela inicial): o estabelecimento vê visitantes, check-ins, avaliação e visitantes por dia. O perfil e a origem dos visitantes aparecem a partir de 5 pessoas, e a origem só em grupos de 3 ou mais.
+- **Hotel:**
+  - informa a ocupação do dia (quartos, ocupados e diária média), que é sigilosa (decisão 16);
+  - recebe a demanda da cidade: ocupação e diária média, só nos dias com 3 ou mais hotéis informantes;
+  - vê o resumo dos próprios hóspedes a partir de 5 respostas.
+- **Organização** (**Administração → Cidade**):
+  - visitantes na cidade e quantos passaram pela feira e pela cidade;
+  - prospecção de expositores, com os estabelecimentos mais pedidos para expor na feira;
+  - perfil dos hóspedes (a partir de 5 respostas);
+  - transbordamento por município do hotel (municípios com menos de 3 hotéis entram em "outras cidades");
+  - ocupação média da cidade;
+  - tabela dos parceiros.
 
 ## Proteção de dados (LGPD)
 

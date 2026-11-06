@@ -389,7 +389,7 @@ details.vis-card summary{cursor:pointer;font-weight:600}
         <input id="cfg-edicao" value="Tecnoshow Comigo 2027" maxlength="60"></label>
       <label for="cfg-chave" id="cfg-chave-wrap" hidden>Chave da coleta (só nos tablets)
         <input id="cfg-chave" type="password" autocomplete="off" spellcheck="false" maxlength="200"></label>
-      <div class="demo-links"><button class="ghost" id="go-painel-demo">Ver painel com dados de demonstração</button><button class="ghost" id="go-relatorio-demo">Ver relatório de demonstração</button><button class="ghost" id="go-admin">Administração</button><button class="ghost" id="go-expositor">Área do expositor</button><button class="ghost" id="cfg-sair" hidden>Sair da conta da equipe</button></div>
+      <div class="demo-links"><button class="ghost" id="go-painel-demo">Ver painel com dados de demonstração</button><button class="ghost" id="go-relatorio-demo">Ver relatório de demonstração</button><button class="ghost" id="go-admin">Administração</button><button class="ghost" id="go-expositor">Área do expositor</button><button class="ghost" id="go-parceiro">Área do parceiro (cidade)</button><button class="ghost" id="cfg-sair" hidden>Sair da conta da equipe</button></div>
       <p class="cfg-aviso" id="cfg-aviso" hidden></p>
     </div>
   </div>
@@ -455,7 +455,7 @@ details.vis-card summary{cursor:pointer;font-weight:600}
   <div class="adm">
     <div class="adm-top">
       <div class="com-voltar"><button class="voltar" data-voltar aria-label="Voltar">←</button><div><div class="k">Administração · <span id="a-ed"></span></div><h1>Gestão da plataforma</h1></div></div>
-      <div class="adm-tabs"><button class="chip on" data-aba="form">Questionário</button><button class="chip" data-aba="equipe">Equipe</button><button class="chip" data-aba="cadastros">Cadastros</button><button class="chip" data-aba="mapa">Mapa</button><button class="chip" data-aba="pendencias">Pendências</button><button class="chip" data-aba="moderacao">Moderação</button><button class="ghost" id="a-voltar">Voltar ao início</button></div>
+      <div class="adm-tabs"><button class="chip on" data-aba="form">Questionário</button><button class="chip" data-aba="equipe">Equipe</button><button class="chip" data-aba="cadastros">Cadastros</button><button class="chip" data-aba="mapa">Mapa</button><button class="chip" data-aba="pendencias">Pendências</button><button class="chip" data-aba="moderacao">Moderação</button><button class="chip" data-aba="cidade">Cidade</button><button class="ghost" id="a-voltar">Voltar ao início</button></div>
     </div>
     <p class="adm-msg erro" id="a-bloq" hidden></p>
     <div id="a-corpo" hidden>
@@ -509,6 +509,7 @@ details.vis-card summary{cursor:pointer;font-weight:600}
         <p class="adm-msg" id="mo-msg" hidden></p>
         <div id="mo-lista" class="adm-lista"></div>
       </section>
+      <section id="a-cidade" class="adm" hidden><div id="ci-corpo" class="adm"></div></section>
       <section id="a-pendencias" class="adm" hidden>
         <div class="adm-bar"><div><b>Pendências de dados</b> <span class="nota">recalculadas a cada consulta</span></div><button class="ghost sm" id="p-atualizar">Atualizar</button></div>
         <div class="pend-grupos" id="p-grupos"></div>
@@ -525,6 +526,8 @@ details.vis-card summary{cursor:pointer;font-weight:600}
 <div id="v-telao" class="view" hidden><div class="tl" id="tl-corpo"></div></div>
 
 <div id="v-mural" class="view" hidden><div class="mu" id="mu-corpo"></div></div>
+
+<div id="v-parceiro" class="view" hidden><div class="loja" id="pc-corpo"></div></div>
 
 <div id="v-convite" class="view" hidden>
   <div class="conv"><form class="login-box" id="c-form" autocomplete="on">
@@ -1001,6 +1004,9 @@ const Base = (() => {
     presenca: (token, id, cod) => rpc('presenca_palestra', {p_token:token, p_agenda:id, p_codigo:cod}),
     avaliarPalestra: (token, id, car, txt) => rpc('avaliar_palestra', {p_token:token, p_agenda:id, p_carinha:car, p_texto:txt}),
     trilhas: token => rpc('trilhas_visitante', {p_token:token}),
+    estab: id => rpc('estab_publico', {p_estab:id}),
+    agirCidade: (token, id, acao, valor) => rpc('interagir_cidade', {p_token:token, p_estab:id, p_acao:acao, p_valor:valor||null}),
+    hospede: (token, id, dados) => rpc('pesquisa_hospede', {p_token:token, p_estab:id, p_dados:dados}),
     publicar: (token, tipo, id, texto, foto) => rpc('publicar_mural', {p_token:token, p_alvo_tipo:tipo, p_alvo_id:id, p_texto:texto, p_foto:foto||null}),
     agir: (token, est, acao, extra={}) => rpc('interagir', {p_token:token, p_estande:est, p_acao:acao, p_produto:extra.produto||null, p_valor:extra.valor||null, p_texto:extra.texto||null, p_publico:!!extra.publico})
   };
@@ -1010,6 +1016,23 @@ const Base = (() => {
     presencas: ed => rpc('presencas_edicao', {p_ed:ed}),
     comentarios: id => rpc('comentarios_palestra', {p_agenda:id}),
     metricasTrilha: id => rpc('metricas_trilha', {p_trilha:id})
+  };
+  /* Tecnoshow na Cidade: parceiros (bares, restaurantes, hotéis) e resumo para a organização */
+  const parceiro = {
+    disponivel: () => kind==='supabase',
+    meus: () => rpc('meus_estabelecimentos'),
+    painel: id => rpc('painel_parceiro', {p_estab:id}),
+    ocupacao: (id, dia, q, o, dm) => rpc('registrar_ocupacao', {p_estab:id, p_dia:dia, p_quartos:q, p_ocupados:o, p_diaria:dm}),
+    convidar: id => rpc('criar_convite_parceiro', {p_estab:id}),
+    contas: id => rpc('listar_contas_parceiro', {p_estab:id}),
+    remover: (u, id) => rpc('remover_conta_parceiro', {p_user:u, p_estab:id}),
+    resumo: ed => rpc('resumo_cidade', {p_ed:ed}),
+    async entrar(){
+      const serve = async () => { if (EDITORES.includes(await meuPapel())) return true; try{ return (await rpc('meus_estabelecimentos')).length>0; }catch(e){ return false; } };
+      if ((await temSessao().catch(()=>false)) && await serve()) return true;
+      return pedirLogin({titulo:'Área do parceiro', texto:'Entre com a conta que você criou pelo link de convite do seu estabelecimento.', verificar:serve,
+        negado:'Esta conta não está ligada a nenhum estabelecimento parceiro. Peça o link de convite à organização da feira.'});
+    }
   };
   /* Moderação dos comentários públicos */
   const mod = {
@@ -1039,7 +1062,7 @@ const Base = (() => {
   const rpcPublica = (nome, args) => kind==='supabase' ? rpc(nome, args) : Promise.reject(erro('sem_base'));
   const saida = { definir: (ed, cod) => rpc('definir_codigo_saida', {p_ed:ed, p_codigo:cod}), info: ed => rpc('info_codigo_saida', {p_ed:ed}) };
   return {kind, rpcPublica, saida, enviar, ler, acompanhar, precisaLogin, garantirAcesso, sair, entrar, cadastrar, temSessao, souCoordenador, meuPapel,
-          instrumentoAtual, publicarInstrumento, historico, equipe, cad, vis, mod, mural, loja, agenda, EDITORES, MODERADORES};
+          instrumentoAtual, publicarInstrumento, historico, equipe, cad, vis, mod, mural, loja, agenda, parceiro, EDITORES, MODERADORES};
 })();
 
 /* Questionário em uso neste aparelho: a última versão publicada da edição, guardada para uso offline. */
@@ -1074,6 +1097,7 @@ const Inst = (() => {
   }
   document.getElementById('go-admin').onclick = () => go('admin');
   document.getElementById('go-expositor').onclick = () => go('expositor');
+  document.getElementById('go-parceiro').onclick = () => go('parceiro');
   if (!Base.kind){
     aviso.hidden=false; aviso.textContent='Nenhuma base de respostas configurada: só os modos de demonstração funcionam. Veja o LEIAME para ligar o Supabase.';
   }
@@ -1135,7 +1159,7 @@ const Saida = (() => {
 })();
 
 /* ================== ROTEAMENTO ================== */
-const VIEWS = ['inicio','coleta','painel','relatorio','admin','convite','visitante','expositor','telao','mural'];
+const VIEWS = ['inicio','coleta','painel','relatorio','admin','convite','visitante','expositor','telao','mural','parceiro'];
 let current = null;
 function route(){
   let h = (location.hash||'').replace('#','');
@@ -1145,7 +1169,7 @@ function route(){
   if (/^convite-/.test(base)) base='convite';
   if (/^e-[0-9a-f-]{36}$/.test(base)) base='visitante';
   if (/^expositor(-[0-9a-f-]{36})?$/.test(base)) base='expositor';
-  if (/^p-[0-9a-f-]{36}(-[0-9a-f]{10})?$/.test(base) || /^t-[0-9a-f-]{36}$/.test(base) || base==='trilhas') base='visitante';
+  if (/^p-[0-9a-f-]{36}(-[0-9a-f]{10})?$/.test(base) || /^[tc]-[0-9a-f-]{36}$/.test(base) || base==='trilhas') base='visitante';
   if (/^telao-[0-9a-f-]{36}$/.test(base)) base='telao';
   let v = VIEWS.includes(base) ? base : 'inicio';
   if (v!=='coleta' && Saida.travado()){ history.replaceState(null,'',location.pathname+'#coleta'); v='coleta'; h='coleta'; }
@@ -1161,10 +1185,12 @@ function route(){
     if (h.startsWith('e-')) Visit.estande(h.slice(2));
     else if (h.startsWith('p-')) Visit.palestra(h.slice(2,38), h.slice(39)||null);
     else if (h.startsWith('t-')) Visit.trilha(h.slice(2));
+    else if (h.startsWith('c-')) Visit.cidade(h.slice(2));
     else Visit.trilhas();
   }
   if (v==='telao') Telao.start(h.slice(6));
   if (v==='mural') Mural.start();
+  if (v==='parceiro') Parceiro.start();
   if (v==='expositor') Loja.start(h.slice(10));
 }
 /* Seta de voltar: volta para a tela anterior do app; se a pessoa chegou direto (link ou QR), vai para o início. */
@@ -1913,7 +1939,26 @@ const Admin = (() => {
     box.innerHTML = hist.length ? hist.map((h,k)=>`<div><span><b>v${h.versao}</b> · ${esc(quando(h.publicado_em))} · ${((h.def&&h.def.perguntas)||[]).filter(p=>p.ativa!==false).length} perguntas</span><button class="ghost sm" data-h="${k}">Copiar para o rascunho</button></div>`).join('') : '<span class="nota">Nenhuma versão publicada ainda. Os tablets usam o questionário padrão.</span>';
     box.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{ const d=limparInstrumento(hist[+b.dataset.h].def); if(!d) return; rasc={...d, versao:pub.versao, publicado_em:pub.publicado_em}; salvar(); render(); msg(`A versão ${hist[+b.dataset.h].versao} foi copiada para o rascunho. Revise e publique para voltar a usá-la.`, 'ok'); aba('form'); window.scrollTo(0,0); });
   }
-  function aba(n){ document.querySelectorAll('.adm-tabs .chip').forEach(b=>b.classList.toggle('on', b.dataset.aba===n)); ['form','equipe','cadastros','mapa','pendencias','moderacao'].forEach(x=>{ $('a-'+x).hidden = n!==x; }); if (['cadastros','mapa','pendencias'].includes(n)) Cad.abrir(n); if (n==='equipe') equipe(); if (n==='moderacao') moderacao(); }
+  function aba(n){ document.querySelectorAll('.adm-tabs .chip').forEach(b=>b.classList.toggle('on', b.dataset.aba===n)); ['form','equipe','cadastros','mapa','pendencias','moderacao','cidade'].forEach(x=>{ $('a-'+x).hidden = n!==x; }); if (n==='cidade') cidadeResumo(); if (['cadastros','mapa','pendencias'].includes(n)) Cad.abrir(n); if (n==='equipe') equipe(); if (n==='moderacao') moderacao(); }
+  /* ---- Tecnoshow na Cidade: resumo para a organização ---- */
+  async function cidadeResumo(){
+    const box = $('ci-corpo'); box.innerHTML = '<p class="adm-p">Carregando…</p>';
+    let r; try{ r = await Base.parceiro.resumo(ed); }catch(e){ box.innerHTML = '<p class="adm-msg erro">Não foi possível carregar o resumo da cidade.</p>'; return; }
+    const n = v => (v||0).toLocaleString('pt-BR'), E = r.estabelecimentos||[];
+    const prosp = E.filter(x=>x.tipo!=='hotel' && x.quer_na_feira>0).sort((a,b)=>b.quer_na_feira-a.quer_na_feira);
+    box.innerHTML = `<div class="adm-bar"><div><b>Tecnoshow na Cidade</b> <span class="nota">parceiros cadastrados em Cadastros › Cidade</span></div><button class="ghost sm" id="ci-atualizar">Atualizar</button></div>
+      <div class="loja-kpis"><div class="loja-kpi"><b>${n(E.length)}</b><span>estabelecimentos parceiros</span></div><div class="loja-kpi"><b>${n(r.visitantes_cidade)}</b><span>visitantes com check-in na cidade</span></div>
+        <div class="loja-kpi"><b>${n(r.visitantes_feira_e_cidade)}</b><span>passaram pela feira e pela cidade</span></div><div class="loja-kpi"><b>${n(r.hospedes_n)}</b><span>hóspedes responderam</span></div></div>
+      <div class="adm-sec"><h3>Prospecção de expositores</h3><p class="adm-p">Estabelecimentos que os visitantes gostariam de ver na feira: evidência de demanda para o convite.</p>
+        ${prosp.length ? hbarsC(prosp.slice(0,15).map(x=>[x.nome+' · '+(CID.tipo[x.tipo]||x.tipo), x.quer_na_feira]), Math.max(...prosp.map(x=>x.visitantes),1)) + '<p class="nota">Percentual sobre os visitantes do estabelecimento com mais check-ins.</p>' : '<p class="nota">Nenhum pedido ainda.</p>'}</div>
+      <div class="loja-duo"><div class="adm-sec"><h3>Hóspedes</h3>${r.hospedes ? `<p class="adm-p">${n(r.hospedes.respostas)} respostas · ${String(r.hospedes.noites_media).replace('.',',')} noites e ${String(r.hospedes.pessoas_media).replace('.',',')} pessoas por quarto, em média</p>
+            <span class="vis-lbl">Diária</span>${distC(r.hospedes.diaria, CID.diaria)}<span class="vis-lbl">Antecedência</span>${distC(r.hospedes.antecedencia, CID.antecedencia)}<span class="vis-lbl">Motivo</span>${distC(r.hospedes.motivo, CID.motivo)}` : '<p class="adm-p">Aparece a partir de 5 respostas.</p>'}</div>
+        <div class="adm-sec"><h3>Transbordamento regional</h3><p class="adm-p">Hóspedes por município do hotel. Municípios com menos de 3 hotéis parceiros entram em "outras cidades", para nenhum hotel ser identificado.</p>
+          ${(r.transbordamento||[]).length ? hbarsC(r.transbordamento.map(x=>[x.municipio ? CID.mun(x.municipio) : 'Outras cidades', x.hospedes]), r.transbordamento.reduce((a,x)=>a+x.hospedes,0)) : '<p class="nota">Sem respostas ainda.</p>'}</div></div>
+      <div class="adm-sec"><h3>Ocupação hoteleira (média da cidade)</h3>${(r.demanda||[]).length ? `<div class="tw"><table class="adm-tab"><thead><tr><th>Dia</th><th>Hotéis</th><th>Ocupação</th><th>Diária média</th></tr></thead><tbody>${r.demanda.map(x=>`<tr><td>${esc(new Date(x.dia+'T12:00').toLocaleDateString('pt-BR'))}</td><td class="tabnum">${x.hoteis}</td><td class="tabnum">${String(x.ocupacao).replace('.',',')}%</td><td class="tabnum">${x.diaria_media!=null?'R$ '+n(x.diaria_media):'–'}</td></tr>`).join('')}</tbody></table></div>` : '<p class="adm-p">Aparece nos dias em que 3 ou mais hotéis informarem a ocupação (decisão 16).</p>'}</div>
+      <div class="adm-sec"><h3>Estabelecimentos</h3><div class="tw"><table class="adm-tab"><thead><tr><th>Nome</th><th>Tipo</th><th>Município</th><th>Visitantes</th><th>Avaliações</th><th>Conta</th></tr></thead><tbody>${E.map(x=>`<tr><td>${esc(x.nome)}</td><td>${esc(CID.tipo[x.tipo]||x.tipo)}</td><td>${esc(CID.mun(x.municipio))}</td><td class="tabnum">${n(x.visitantes)}</td><td class="tabnum">${x.avaliacoes?`${n(x.avaliacoes)} (${Math.round(100*x.bom/x.avaliacoes)}% bom)`:'–'}</td><td>${x.contas?'sim':'–'}</td></tr>`).join('') || '<tr><td colspan="6">Cadastre os parceiros em Cadastros › Cidade.</td></tr>'}</tbody></table></div></div>`;
+    $('ci-atualizar').onclick = cidadeResumo;
+  }
   /* ---- moderação dos comentários públicos ---- */
   let moSt = 'pendente', moLigado = false, moTipo = 'comentarios';
   const DEC = {aprovado:'Aprovado', recusado:'Recusado', pendente:'Pendente'};
@@ -2012,6 +2057,20 @@ const Admin = (() => {
    Tudo o que depende da organização da feira é editável aqui. Os registros se ligam por id:
    renomear uma categoria, mudar um expositor de lote ou trocar o palco de uma palestra
    aparece em todas as telas. Excluir leva à lixeira (excluido_em); o banco audita cada mudança. */
+/* ================== TECNOSHOW NA CIDADE: rótulos comuns ================== */
+const CID = {
+  tipo: {bar:'Bar', restaurante:'Restaurante', hotel:'Hotel', loja:'Loja', servico:'Serviço', turismo:'Turismo', outro:'Outro'},
+  diaria: {d1:'Até R$ 150', d2:'R$ 151 a 250', d3:'R$ 251 a 400', d4:'R$ 401 a 600', d5:'Acima de R$ 600'},
+  antecedencia: {a0:'Menos de 1 semana', a1:'1 semana a 1 mês', a2:'1 a 3 meses', a3:'Mais de 3 meses'},
+  motivo: {feira:'Tecnoshow', negocios:'Negócios', turismo:'Turismo', familia:'Família', outro:'Outro'},
+  perfil: {pp:'Produtor pequeno', pm:'Produtor médio', pg:'Produtor grande', tec:'Técnico, agrônomo', exp:'Expositor, repres.', est:'Estudante', inv:'Investidor', vis:'Visitante'},
+  mun: m => m && MUN.has(m) ? MUN.get(m)[0]+' ('+MUN.get(m)[1]+')' : '–'
+};
+const hbarsC = (linhas, total, cor) => `<div class="hbars">${linhas.map(([rot, v])=>`<div class="hbar"><span class="l" title="${esc(rot)}">${esc(rot)}</span><span class="tr"><i style="width:${total?Math.max(1,100*v/total):0}%;${cor?`background:${cor}`:''}"></i></span><span class="v">${(v||0).toLocaleString('pt-BR')} · ${total?Math.round(100*v/total):0}%</span></div>`).join('')}</div>`;
+const distC = (obj, rot) => { const e = Object.entries(obj||{}); const t = e.reduce((a,[,v])=>a+v,0); return hbarsC(Object.keys(rot).filter(k=>obj&&obj[k]).map(k=>[rot[k], obj[k]]), t); };
+
+/* Municípios oferecidos no cadastro da cidade: Goiás e vizinhos a até 250 km da feira (decisão 17) */
+const MUN_CIDADE = (GEO.mun.filter(m=>hav(FAIR.lat,FAIR.lon,m[2],m[3])<250).sort((a,b)=>hav(FAIR.lat,FAIR.lon,a[2],a[3])-hav(FAIR.lat,FAIR.lon,b[2],b[3])).map(m=>[String(m[4]), m[0]+' ('+m[1]+')']));    // lista de pares: mantém a ordem por distância
 const Cad = (() => {
   const $ = id => document.getElementById(id);
   const ST = {a_confirmar:'A confirmar', confirmado:'Confirmado', rascunho:'Rascunho', aprovada:'Aprovada', encerrada:'Encerrada'};
@@ -2044,6 +2103,10 @@ const Cad = (() => {
       {k:'validade', l:'Condição válida até', t:'data'}, {k:'foto_url', l:'Endereço da foto (https://…)', t:'text', max:400},
       {k:'ordem', l:'Ordem na vitrine', t:'num'}, st, {k:'descricao', l:'Descrição', t:'area', max:1000},
       {k:'condicoes', l:'Pagamento e financiamento (formas, parcelas, juros, CET, banco)', t:'area', max:1000}]},
+    estabelecimentos: {nome:'Cidade', esc:'ed', chave:'nome', campos:[
+      {k:'nome', l:'Nome do estabelecimento', t:'text', req:1, max:120}, {k:'tipo', l:'Tipo', t:'sel', op:CID.tipo, req:1},
+      {k:'municipio', l:'Município', t:'sel', op:MUN_CIDADE, req:1}, {k:'endereco', l:'Endereço', t:'text', max:200},
+      {k:'quartos', l:'Quartos (só hotéis)', t:'num'}, st, {k:'obs', l:'Observação (interna)', t:'area', max:500}]},
     trilhas: {nome:'Trilhas', esc:'ed', chave:'titulo', semCSV:true, campos:[
       {k:'titulo', l:'Nome da trilha', t:'text', req:1, max:120}, {k:'premio', l:'Prêmio', t:'text', req:1, max:200},
       {k:'doador_estande', l:'Estande que entrega o prêmio (dá baixa no cupom)', t:'ref', ref:'estandes'}, {k:'estoque', l:'Quantidade de prêmios', t:'num'},
@@ -2054,7 +2117,7 @@ const Cad = (() => {
       {k:'nome', l:'Nome', t:'text', req:1, max:80}, {k:'cor', l:'Cor no mapa', t:'cor'}, {k:'icone', l:'Ícone (nome curto)', t:'text', max:40},
       {k:'ordem', l:'Ordem', t:'num'}, st]}
   };
-  const ORDEM = ['expositores','produtos','lotes','locais','agenda','trilhas','categorias'];
+  const ORDEM = ['expositores','produtos','lotes','locais','agenda','trilhas','estabelecimentos','categorias'];
   let ed=null, edi=null, d=null, ent='expositores', sel=null, papel=null, carregando=null, etapasEd=[];
   const ger = () => papel==='admin_geral' || papel==='coordenador';
   const num = v => { const n = parseInt(v,10); return isNaN(n) ? 1e9 : n; };
@@ -2077,9 +2140,10 @@ const Cad = (() => {
       B.listar('categorias','feira_id',f), B.listar('expositores','feira_id',f), B.listar('lotes','ed',ed),
       B.listar('locais','ed',ed), B.listar('agenda','ed',ed), B.listar('estandes','ed',ed), B.listar('plantas','ed',ed),
       B.listar('trilhas','ed',ed).catch(()=>[]), Base.agenda.presencas(ed).catch(()=>[])]);
+    const estabelecimentos = await B.listar('estabelecimentos','ed',ed).catch(()=>[]);
     const vinc = await B.vinculos(estandes.map(s=>s.id));
     const produtos = await B.listarEm('produtos','expositor_id', expositores.map(x=>x.id));
-    d = {categorias, expositores, lotes, locais, agenda, estandes, plantas, vinc, produtos, trilhas, pres:Object.fromEntries((pres||[]).map(x=>[x.agenda_id, x]))};
+    d = {categorias, expositores, lotes, locais, agenda, estandes, plantas, vinc, produtos, trilhas, estabelecimentos, pres:Object.fromEntries((pres||[]).map(x=>[x.agenda_id, x]))};
   }
   function garantir(){ if (!carregando) carregando = carregar().finally(()=>{ carregando=null; }); return carregando; }
 
@@ -2098,6 +2162,7 @@ const Cad = (() => {
     lotes: [['Nº', r=>`<span class="num">${esc(r.numero)}</span>`], ['Tipo', r=>esc(TL[r.tipo]||r.tipo)], ['Ocupantes', r=>esc(r.rotulo||'')], ['No mapa', r=>r.poligono?'sim':'–']],
     locais: [['Nome', r=>esc(r.nome)], ['Tipo', r=>esc(TC[r.tipo]||r.tipo)], ['Lote', r=>`<span class="num">${esc(numLote(r.lote_id)||'–')}</span>`], ['No mapa', r=>(r.ponto||r.lote_id)?'sim':'–']],
     produtos: [['Produto', r=>esc(r.nome)], ['Expositor', r=>esc((d.expositores.find(x=>x.id===r.expositor_id)||{}).nome||'–')], ['Preço ou condição', r=>esc(r.preco_texto||'–')]],
+    estabelecimentos: [['Nome', r=>esc(r.nome)], ['Tipo', r=>esc(CID.tipo[r.tipo]||r.tipo)], ['Município', r=>esc(CID.mun(r.municipio))]],
     trilhas: [['Trilha', r=>esc(r.titulo)], ['Prêmio', r=>esc(r.premio)], ['Etapas', r=>`<span class="num">${(r.etapas||[]).length}</span>`], ['Estoque', r=>`<span class="num">${r.estoque}</span>`]],
     agenda: [['Presentes', r=>`<span class="num">${(d.pres[r.id]||{}).presentes||0}</span>`], ['Início', r=>`<span class="num">${esc(r.inicio ? new Date(r.inicio).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}) : '–')}</span>`], ['Título', r=>esc(r.titulo)], ['Local', r=>esc(nomeLocal(r.local_id)||'–')], ['Palestrante', r=>esc(r.palestrante||'')]],
     categorias: [['Ordem', r=>`<span class="num">${r.ordem}</span>`], ['Nome', r=>esc(r.nome)], ['Cor', r=>r.cor?`<span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:${esc(r.cor)};vertical-align:middle"></span> <span class="num">${esc(r.cor)}</span>`:'–']]
@@ -2122,10 +2187,12 @@ const Cad = (() => {
       : d.locais.filter(l=>!l.excluido_em).sort((a,b)=>a.nome.localeCompare(b.nome,'pt')).map(l=>[l.id, l.nome+' ('+(TC[l.tipo]||l.tipo)+')']);
     return '<option value="">—</option>' + base.map(([v,t])=>`<option value="${esc(v)}" ${v===atual?'selected':''}>${esc(t)}</option>`).join('');
   }
+  const opsDe = c => Array.isArray(c.op) ? c.op : Object.entries(c.op);
   function campo(c, r){
     const v = c.k==='lotes' ? lotesDe(r.id).join(', ') : c.k==='juntar_lotes' ? ((estandeDe(r.id)||{juntar_lotes:true}).juntar_lotes) : r[c.k];
     const id = 'cf-'+c.k, lbl = esc(c.l)+(c.req?' *':''), larga = (c.t==='area') ? ' larga' : '';
-    if (c.t==='sel') return `<label class="fld" for="${id}">${lbl}<select id="${id}" data-k="${c.k}">${Object.entries(c.op).map(([k,t])=>`<option value="${k}" ${k===(v||(c.k==='status'?'a_confirmar':''))?'selected':''}>${esc(t)}</option>`).join('')}</select></label>`;
+    if (c.t==='sel'){ const vv = v==null||v==='' ? (c.k==='status'?'a_confirmar':'') : String(v);
+      return `<label class="fld" for="${id}">${lbl}<select id="${id}" data-k="${c.k}">${c.req&&!vv?'<option value="">—</option>':''}${opsDe(c).map(([k,t])=>`<option value="${k}" ${k===vv?'selected':''}>${esc(t)}</option>`).join('')}</select></label>`; }
     if (c.t==='ref') return `<label class="fld" for="${id}">${lbl}<select id="${id}" data-k="${c.k}">${opcoesRef(c.ref, v)}</select></label>`;
     if (c.t==='bool') return `<label class="tg"><input type="checkbox" id="${id}" data-k="${c.k}" ${v!==false?'checked':''}> ${lbl}</label>`;
     if (c.t==='area') return `<label class="fld${larga}" for="${id}">${lbl}<textarea id="${id}" data-k="${c.k}" rows="2" maxlength="${c.max||500}">${esc(v||'')}</textarea></label>`;
@@ -2161,6 +2228,14 @@ const Cad = (() => {
         <p class="adm-p"><b>${pr.presentes||0}</b> presenças · avaliações: 😀 ${pr.bom||0} · 😐 ${pr.neutro||0} · ☹️ ${pr.ruim||0} · ${pr.comentarios||0} comentários (só a organização vê)</p>
         <div id="cf-pal-com" class="coments"></div></div>`;
     }
+    if (ent==='estabelecimentos' && r){
+      const link = location.origin + location.pathname + '#c-' + r.id;
+      extra += `<div class="larga qr-box"><img alt="QR de ${esc(R.nome)}" src="${qrDataURL(link)}"><div class="fld"><span>QR do balcão: o visitante faz check-in, avalia${R.tipo==='hotel'?' e responde a pesquisa do hóspede':' e diz se quer ver o lugar na feira'}</span><input readonly id="cf-link" value="${esc(link)}" aria-label="Link do estabelecimento"><div class="adm-acts"><button class="ghost sm" id="cf-baixar-qr">Baixar QR (imagem)</button></div></div></div>
+        <div class="larga adm-sec" style="background:transparent"><b>Área do parceiro</b><p class="nota">O estabelecimento vê os próprios números${R.tipo==='hotel'?', informa a ocupação diária (sigilosa) e recebe a demanda da cidade':''}. Gere o convite e envie ao responsável.</p>
+          <div class="adm-acts"><button class="ghost sm" id="cf-par-conv">Gerar convite para o parceiro</button></div>
+          <div class="adm-link" id="cf-par-link" hidden><input readonly id="cf-par-url" aria-label="Link de convite do parceiro"><button class="ghost sm" id="cf-par-copiar">Copiar</button></div>
+          <div id="cf-par-contas" class="nota">Carregando as contas…</div></div>`;
+    }
     if (ent==='trilhas' && r){
       const link = location.origin + location.pathname + '#t-' + r.id;
       extra += `<div class="larga qr-box"><img alt="QR da trilha ${esc(R.titulo)}" src="${qrDataURL(link)}"><div class="fld"><span>Link da trilha para divulgar (o visitante vê o progresso e o cupom)</span><input readonly value="${esc(link)}" aria-label="Link da trilha"><p class="nota">Só aparece para o visitante com a situação "Aprovada". O prêmio vai por ordem de chegada, até acabar a quantidade.</p></div></div>
@@ -2172,6 +2247,16 @@ const Cad = (() => {
     if ($('cf-copiar')) $('cf-copiar').onclick = () => { const t=$('cf-link'); navigator.clipboard.writeText(t.value).then(()=>msg('Link copiado.','ok')).catch(()=>{ t.select(); }); };
     if ($('cf-baixar-qr')) $('cf-baixar-qr').onclick = () => { const a=document.createElement('a'); a.href=qrDataURL($('cf-link').value, 12); a.download='qr_'+norm(R.nome).replace(/[^a-z0-9]+/g,'_')+'.gif'; document.body.appendChild(a); a.click(); a.remove(); };
     $('cf-salvar').onclick = () => salvar(R);
+    if ($('cf-par-conv')){
+      const contas = async () => { const box=$('cf-par-contas'); if (!box) return;
+        try{ const l = await Base.parceiro.contas(R.id); if (!$('cf-par-contas')) return;
+          box.innerHTML = l.length ? 'Contas com acesso: ' + l.map(c=>`${esc(c.nome||c.email)} <span class="nota">(${esc(c.email)})</span> <button class="ghost sm" data-rmp="${esc(c.user_id)}">Remover acesso</button>`).join(' · ') : 'Nenhuma conta do parceiro ainda.';
+          box.querySelectorAll('[data-rmp]').forEach(b=>b.onclick=async()=>{ if (b.dataset.conf!=='1'){ b.dataset.conf='1'; b.textContent='Confirmar remoção'; return; } try{ await Base.parceiro.remover(b.dataset.rmp, R.id); msg('Acesso removido.','ok'); contas(); }catch(e){ msg('Não foi possível remover agora.','erro'); } });
+        }catch(e){ box.textContent='Não foi possível carregar as contas.'; } };
+      contas();
+      $('cf-par-conv').onclick = async () => { try{ const tok = await Base.parceiro.convidar(R.id); $('cf-par-link').hidden=false; $('cf-par-url').value = location.origin+location.pathname+'#convite-'+tok; $('cf-par-url').select(); msg('Convite criado. Ele vale por 14 dias e funciona uma única vez.','ok'); }catch(e){ msg('Não foi possível criar o convite agora.','erro'); } };
+      $('cf-par-copiar').onclick = () => { const t=$('cf-par-url'); navigator.clipboard.writeText(t.value).then(()=>msg('Link copiado.','ok')).catch(()=>t.select()); };
+    }
     if (ent==='trilhas'){
       etapasEd = clone((R.etapas)||[]); desenharEtapas();
       $('cf-etapa-add').onclick = () => { const v = $('cf-etapa-nova').value; if (!v) return; const [tipo, id] = v.split(':');
@@ -2227,6 +2312,7 @@ const Cad = (() => {
   async function gravar(R, o){
     const E = ENT[ent];
     for (const c of E.campos) if (c.req && !o[c.k]) throw Object.assign(new Error('req'), {code:'req', campo:c.l});
+    if (ent==='estabelecimentos'){ o.quartos = o.tipo==='hotel' && o.quartos>0 ? o.quartos : null; if (o.municipio) o.municipio = +o.municipio; }
     if (ent==='trilhas' && !(o.etapas||[]).length) throw Object.assign(new Error('req'), {code:'req', campo:'Etapas'});
     if (o.cnpj && !/^[0-9]{14}$/.test(o.cnpj)) throw Object.assign(new Error('cnpj'), {code:'invalido'});
     const lotesTxt = o.lotes, juntar = o.juntar_lotes; delete o.lotes; delete o.juntar_lotes;
@@ -2303,7 +2389,7 @@ const Cad = (() => {
           else if (c.t==='num') o[c.k] = parseInt(x,10)||0;
           else if (c.t==='dt') o[c.k] = x ? new Date(x.replace(' ','T')).toISOString() : null;
           else if (c.t==='data') o[c.k] = /^\d{4}-\d{2}-\d{2}$/.test(x) ? x : null;
-          else if (c.t==='sel'){ if (x && !(x in c.op)){ const achou = Object.entries(c.op).find(([,t])=>norm(t)===norm(x)); if (!achou) throw new Error(`${c.l} "${x}" inválido`); x = achou[0]; } o[c.k] = x || (c.k==='status'?'a_confirmar':null); }
+          else if (c.t==='sel'){ if (x && !opsDe(c).some(([k])=>k===x)){ const achou = opsDe(c).find(([,t])=>norm(t)===norm(x)); if (!achou) throw new Error(`${c.l} "${x}" inválido`); x = achou[0]; } o[c.k] = x || (c.k==='status'?'a_confirmar':null); }
           else o[c.k] = x || null;
         }
         const chave = o[E.chave]; if (!chave) throw new Error(`falta ${E.chave}`);
@@ -2487,7 +2573,8 @@ const Visit = (() => {
         naoAchado:'Estande não encontrado. Confira o QR code ou procure a equipe da feira.', indisponivel:'A interatividade ao vivo funciona no site oficial da plataforma.', carregando:'Carregando…',
         semRede:'Sem internet agora. Abra este QR de novo quando o sinal voltar.', naFila:'Sem internet: guardamos aqui e enviamos sozinhos quando o sinal voltar.', pendentes:'ações esperando internet',
         trilhas:'Trilhas', etapas:'etapas', premio:'Prêmio', oferecido:'Oferecido por', verTodas:'Ver todas as trilhas', ganhou:'Você completou a trilha!', mostreCupom:'Mostre este código no estande {x} para retirar o prêmio.', mostreCupomOrg:'Mostre este código à organização da feira para retirar o prêmio.', retirado:'Prêmio já retirado.', esgotada:'Os prêmios desta trilha acabaram.', encerrada:'Esta trilha já foi encerrada.', prazo:'Até', regulamento:'Regulamento', semTrilhas:'Nenhuma trilha aberta agora.', semTrilha:'Trilha não encontrada ou encerrada.', comecar:'Leia o QR de um estande ou de uma palestra para começar.', palestra:'Palestra', estande:'Estande', presencaOk:'Presença registrada ✓', presencaSem:'Para registrar presença, leia o QR do telão durante a palestra.', foraHorario:'A presença só pode ser registrada durante a palestra.', expirado:'Este QR já mudou. Leia de novo o QR do telão.', avalPal:'O que achou da palestra?', comentPal:'Comentário para a organização (não é publicado)',
-        publicar:'Publicar no telão', mensagem:'Mensagem (até 140 caracteres)', foto:'Adicionar foto', publicarAj:'Sua publicação passa pela moderação antes de aparecer no telão da feira, com a marca da plataforma. Não publique fotos de outras pessoas sem a permissão delas.', publicado:'Enviado! Sua publicação aparece no telão depois da moderação.', muitas:'Você já publicou muitas vezes na última hora. Tente mais tarde.', fotoErro:'Não foi possível ler esta foto. Tente outra.', fotoOuTexto:'Escreva uma mensagem ou escolha uma foto.'},
+        publicar:'Publicar no telão', mensagem:'Mensagem (até 140 caracteres)', foto:'Adicionar foto', publicarAj:'Sua publicação passa pela moderação antes de aparecer no telão da feira, com a marca da plataforma. Não publique fotos de outras pessoas sem a permissão delas.', publicado:'Enviado! Sua publicação aparece no telão depois da moderação.', muitas:'Você já publicou muitas vezes na última hora. Tente mais tarde.', fotoErro:'Não foi possível ler esta foto. Tente outra.', fotoOuTexto:'Escreva uma mensagem ou escolha uma foto.',
+        cid:{parceiro:'Parceiro Tecnoshow', obrigado:'Check-in feito. Obrigado por visitar!', comoFoi:'Como foi?', naFeira:'Gostaria de ver este lugar na Tecnoshow?', naFeiraAj:'Sua resposta ajuda a feira a convidar novos expositores.', sim:'Sim', nao:'Não', pesquisa:'Você está hospedado aqui?', pesquisaAj:'Leva 20 segundos e ajuda a cidade a se preparar para a próxima feira. As respostas são anônimas.', noites:'Quantas noites?', pessoas:'Quantas pessoas no quarto?', diaria:'Valor da diária', antecedencia:'Com que antecedência reservou?', motivo:'Motivo da viagem', satisf:'Como está a estadia?', falta:'Responda as cinco primeiras perguntas.', hospedeOk:'Resposta registrada. Obrigado!', refazer:'Corrigir minha resposta', tipo:{bar:'Bar', restaurante:'Restaurante', hotel:'Hotel', loja:'Loja', servico:'Serviço', turismo:'Turismo', outro:'Parceiro'}, diarias:{d1:'Até R$ 150', d2:'R$ 151–250', d3:'R$ 251–400', d4:'R$ 401–600', d5:'Mais de R$ 600'}, antecedencias:{a0:'Menos de 1 semana', a1:'Até 1 mês', a2:'1 a 3 meses', a3:'Mais de 3 meses'}, motivos:{feira:'Tecnoshow', negocios:'Negócios', turismo:'Turismo', familia:'Família', outro:'Outro'}}},
     en:{entrar:'Before you interact, tell us a little about yourself', entrarSub:'It takes about 40 seconds and covers the whole fair. We do not ask for your name or ID.',
         idioma:'Language', origem:'Where did you come from?', cidade:'Type your city', pais:'Type your country', perfil:'Which best describes you?', idade:'Age group',
         culturas:'Crops and activities of interest', prim:'Is this your first time at the fair?', dias:'How many days are you attending?', pern:'Are you staying overnight because of the fair?',
@@ -2502,7 +2589,8 @@ const Visit = (() => {
         naoAchado:'Exhibitor not found. Check the QR code or ask the fair staff.', indisponivel:'Live interaction works on the platform website.', carregando:'Loading…',
         semRede:'No internet right now. Open this QR code again when you have signal.', naFila:'No internet: saved on this phone and sent automatically when the signal returns.', pendentes:'actions waiting for internet',
         trilhas:'Trails', etapas:'steps', premio:'Prize', oferecido:'Offered by', verTodas:'See all trails', ganhou:'You completed the trail!', mostreCupom:'Show this code at the {x} booth to collect your prize.', mostreCupomOrg:'Show this code to the fair staff to collect your prize.', retirado:'Prize already collected.', esgotada:'The prizes for this trail have run out.', encerrada:'This trail has ended.', prazo:'Until', regulamento:'Rules', semTrilhas:'No open trails right now.', semTrilha:'Trail not found or ended.', comecar:'Scan the QR code of a booth or a talk to start.', palestra:'Talk', estande:'Booth', presencaOk:'Attendance recorded ✓', presencaSem:'To record attendance, scan the QR code on the screen during the talk.', foraHorario:'Attendance can only be recorded during the talk.', expirado:'This QR code has changed. Scan the screen again.', avalPal:'How was the talk?', comentPal:'Comment for the organizers (not published)',
-        publicar:'Post to the big screen', mensagem:'Message (up to 140 characters)', foto:'Add photo', publicarAj:'Your post is reviewed before it appears on the fair screen, with the platform logo. Do not post photos of other people without their permission.', publicado:'Sent! Your post will appear on the screen after review.', muitas:'You have posted many times in the last hour. Try again later.', fotoErro:'This photo could not be read. Try another one.', fotoOuTexto:'Write a message or choose a photo.'},
+        publicar:'Post to the big screen', mensagem:'Message (up to 140 characters)', foto:'Add photo', publicarAj:'Your post is reviewed before it appears on the fair screen, with the platform logo. Do not post photos of other people without their permission.', publicado:'Sent! Your post will appear on the screen after review.', muitas:'You have posted many times in the last hour. Try again later.', fotoErro:'This photo could not be read. Try another one.', fotoOuTexto:'Write a message or choose a photo.',
+        cid:{parceiro:'Tecnoshow partner', obrigado:'Checked in. Thanks for visiting!', comoFoi:'How was it?', naFeira:'Would you like to see this place at Tecnoshow?', naFeiraAj:'Your answer helps the fair invite new exhibitors.', sim:'Yes', nao:'No', pesquisa:'Are you staying here?', pesquisaAj:'It takes 20 seconds and helps the city prepare for the next fair. Answers are anonymous.', noites:'How many nights?', pessoas:'How many people in the room?', diaria:'Nightly rate', antecedencia:'How far in advance did you book?', motivo:'Reason for the trip', satisf:'How is your stay?', falta:'Please answer the first five questions.', hospedeOk:'Answer recorded. Thank you!', refazer:'Change my answer', tipo:{bar:'Bar', restaurante:'Restaurant', hotel:'Hotel', loja:'Shop', servico:'Service', turismo:'Tourism', outro:'Partner'}, diarias:{d1:'Up to R$ 150', d2:'R$ 151–250', d3:'R$ 251–400', d4:'R$ 401–600', d5:'Over R$ 600'}, antecedencias:{a0:'Less than 1 week', a1:'Up to 1 month', a2:'1 to 3 months', a3:'Over 3 months'}, motivos:{feira:'Tecnoshow', negocios:'Business', turismo:'Tourism', familia:'Family', outro:'Other'}}},
     es:{entrar:'Antes de interactuar, cuéntenos un poco sobre usted', entrarSub:'Toma unos 40 segundos y vale para toda la feria. No pedimos nombre ni documento.',
         idioma:'Idioma', origem:'¿De dónde viene?', cidade:'Escriba su ciudad', pais:'Escriba su país', perfil:'¿Cuál es su perfil?', idade:'Rango de edad',
         culturas:'Cultivos y actividades de interés', prim:'¿Es su primera vez en la feria?', dias:'¿Cuántos días viene?', pern:'¿Va a pasar la noche fuera de casa por la feria?',
@@ -2517,7 +2605,8 @@ const Visit = (() => {
         naoAchado:'Expositor no encontrado. Revise el código QR o busque al personal de la feria.', indisponivel:'La interacción en vivo funciona en el sitio de la plataforma.', carregando:'Cargando…',
         semRede:'Sin internet ahora. Abra este código QR de nuevo cuando vuelva la señal.', naFila:'Sin internet: lo guardamos aquí y lo enviamos solo cuando vuelva la señal.', pendentes:'acciones esperando internet',
         trilhas:'Rutas', etapas:'etapas', premio:'Premio', oferecido:'Ofrecido por', verTodas:'Ver todas las rutas', ganhou:'¡Completó la ruta!', mostreCupom:'Muestre este código en el stand {x} para retirar el premio.', mostreCupomOrg:'Muestre este código a la organización de la feria para retirar el premio.', retirado:'Premio ya retirado.', esgotada:'Se agotaron los premios de esta ruta.', encerrada:'Esta ruta ya terminó.', prazo:'Hasta', regulamento:'Reglamento', semTrilhas:'No hay rutas abiertas ahora.', semTrilha:'Ruta no encontrada o terminada.', comecar:'Lea el código QR de un stand o de una charla para empezar.', palestra:'Charla', estande:'Stand', presencaOk:'Asistencia registrada ✓', presencaSem:'Para registrar asistencia, lea el código QR de la pantalla durante la charla.', foraHorario:'La asistencia solo se registra durante la charla.', expirado:'Este código QR ya cambió. Léalo de nuevo en la pantalla.', avalPal:'¿Qué le pareció la charla?', comentPal:'Comentario para la organización (no se publica)',
-        publicar:'Publicar en la pantalla', mensagem:'Mensaje (hasta 140 caracteres)', foto:'Agregar foto', publicarAj:'Su publicación pasa por moderación antes de aparecer en la pantalla de la feria, con la marca de la plataforma. No publique fotos de otras personas sin su permiso.', publicado:'¡Enviado! Su publicación aparece en la pantalla después de la moderación.', muitas:'Ya publicó muchas veces en la última hora. Intente más tarde.', fotoErro:'No fue posible leer esta foto. Pruebe otra.', fotoOuTexto:'Escriba un mensaje o elija una foto.'}
+        publicar:'Publicar en la pantalla', mensagem:'Mensaje (hasta 140 caracteres)', foto:'Agregar foto', publicarAj:'Su publicación pasa por moderación antes de aparecer en la pantalla de la feria, con la marca de la plataforma. No publique fotos de otras personas sin su permiso.', publicado:'¡Enviado! Su publicación aparece en la pantalla después de la moderación.', muitas:'Ya publicó muchas veces en la última hora. Intente más tarde.', fotoErro:'No fue posible leer esta foto. Pruebe otra.', fotoOuTexto:'Escriba un mensaje o elija una foto.',
+        cid:{parceiro:'Socio Tecnoshow', obrigado:'Check-in hecho. ¡Gracias por visitar!', comoFoi:'¿Cómo le fue?', naFeira:'¿Le gustaría ver este lugar en la Tecnoshow?', naFeiraAj:'Su respuesta ayuda a la feria a invitar nuevos expositores.', sim:'Sí', nao:'No', pesquisa:'¿Está hospedado aquí?', pesquisaAj:'Toma 20 segundos y ayuda a la ciudad a prepararse para la próxima feria. Las respuestas son anónimas.', noites:'¿Cuántas noches?', pessoas:'¿Cuántas personas en la habitación?', diaria:'Valor de la noche', antecedencia:'¿Con cuánta anticipación reservó?', motivo:'Motivo del viaje', satisf:'¿Cómo está la estadía?', falta:'Responda las cinco primeras preguntas.', hospedeOk:'Respuesta registrada. ¡Gracias!', refazer:'Corregir mi respuesta', tipo:{bar:'Bar', restaurante:'Restaurante', hotel:'Hotel', loja:'Tienda', servico:'Servicio', turismo:'Turismo', outro:'Socio'}, diarias:{d1:'Hasta R$ 150', d2:'R$ 151–250', d3:'R$ 251–400', d4:'R$ 401–600', d5:'Más de R$ 600'}, antecedencias:{a0:'Menos de 1 semana', a1:'Hasta 1 mes', a2:'1 a 3 meses', a3:'Más de 3 meses'}, motivos:{feira:'Tecnoshow', negocios:'Negocios', turismo:'Turismo', familia:'Familia', outro:'Otro'}}}
   };
   const CULT = {soja:['Soja','Soybean','Soja'], milho:['Milho','Corn','Maíz'], algodao:['Algodão','Cotton','Algodón'], cana:['Cana','Sugarcane','Caña'], cafe:['Café','Coffee','Café'],
     feijao:['Feijão','Beans','Frijol'], sorgo:['Sorgo','Sorghum','Sorgo'], trigo:['Trigo','Wheat','Trigo'], pecuaria_corte:['Pecuária de corte','Beef cattle','Ganadería de carne'],
@@ -2806,6 +2895,56 @@ const Visit = (() => {
     };
   }
 
+  /* ---------- Tecnoshow na Cidade: QR no balcão de bares, restaurantes, hotéis… ---------- */
+  async function cidade(id){
+    window.scrollTo(0,0);
+    const t0 = L();
+    if (!Base.vis.disponivel()){ aviso(t0.indisponivel); return; }
+    corpo().innerHTML = topo() + `<p class="sub">${esc(t0.carregando)}</p>`;
+    let e; try{ e = await Base.vis.estab(id); }catch(err){ aviso(err.code==='rede' ? t0.semRede : t0.erro); return; }
+    if (!e){ aviso(t0.naoAchado); return; }
+    const tok = tokenDe(e.ed);
+    if (!tok){ atual = () => entrada(e.ed, () => cidade(id)); atual(); return; }
+    LS.set('tsa_vis_ed', e.ed);
+    let st;
+    try{ st = await Base.vis.agirCidade(tok, id, 'checkin'); }
+    catch(err){ if (err.code==='visitante_invalido'){ LS.set('tsa_vis_'+e.ed, null); atual = () => entrada(e.ed, () => cidade(id)); atual(); return; } st = {}; }
+    const hotel = e.tipo==='hotel', resp = {};
+    let refazer = false;
+    const pag = () => {
+      const t = L(), C = t.cid, chips = (campo, ops) => `<div class="vis-chips" data-hc="${campo}">${Object.entries(ops).map(([k,v])=>`<button class="vis-chip ${resp[campo]===k?'sel':''}" data-v="${esc(k)}">${esc(v)}</button>`).join('')}</div>`;
+      const car = st.carinha;
+      corpo().innerHTML = topo() + `<div><span class="vis-tag" style="color:var(--gold)">${esc(C.tipo[e.tipo]||e.tipo)} · ${esc(C.parceiro)}</span></div>
+        <h1>${esc(e.nome)}</h1><p class="sub">${esc([e.endereco, MUN.has(e.municipio)?MUN.get(e.municipio)[0]:''].filter(Boolean).join(' · '))}</p>
+        <p class="vis-msg ok">${esc(C.obrigado)}</p>
+        ${hotel ? ((st.hospede && !refazer) ? `<div class="vis-card"><p class="sub">${esc(C.hospedeOk)}</p><button class="ghost" id="vc-refazer" style="justify-self:start">${esc(C.refazer)}</button></div>` : `<div class="vis-card"><h2>${esc(C.pesquisa)}</h2><p class="sub">${esc(C.pesquisaAj)}</p>
+            <span class="vis-lbl">${esc(C.noites)}</span>${chips('noites', {1:'1',2:'2',3:'3',4:'4',5:'5',6:'6',7:'7+'})}
+            <span class="vis-lbl">${esc(C.pessoas)}</span>${chips('pessoas', {1:'1',2:'2',3:'3',4:'4',5:'5+'})}
+            <span class="vis-lbl">${esc(C.diaria)}</span>${chips('diaria', C.diarias)}
+            <span class="vis-lbl">${esc(C.antecedencia)}</span>${chips('antecedencia', C.antecedencias)}
+            <span class="vis-lbl">${esc(C.motivo)}</span>${chips('motivo', C.motivos)}
+            <span class="vis-lbl">${esc(C.satisf)}</span>${chips('carinha', {bom:'😀 '+t.bom, neutro:'😐 '+t.neutro, ruim:'☹️ '+t.ruim})}
+            <button class="btn" id="vc-enviar">${esc(t.enviar)}</button></div>`)
+          : `<div class="vis-card"><h2>${esc(C.comoFoi)}</h2><div class="vis-acts"><button class="vis-bt ${car==='bom'?'on':''}" data-cc="bom"><b>😀</b>${esc(t.bom)}</button><button class="vis-bt ${car==='neutro'?'on':''}" data-cc="neutro"><b>😐</b>${esc(t.neutro)}</button><button class="vis-bt ${car==='ruim'?'on':''}" data-cc="ruim"><b>☹️</b>${esc(t.ruim)}</button></div></div>
+            <div class="vis-card"><h2>${esc(C.naFeira)}</h2><p class="sub">${esc(C.naFeiraAj)}</p><div class="vis-acts"><button class="vis-bt ${st.quer_na_feira===true?'on':''}" data-qf="sim"><b>🙋</b>${esc(C.sim)}</button><button class="vis-bt ${st.quer_na_feira===false?'on':''}" data-qf="nao"><b>🤷</b>${esc(C.nao)}</button></div></div>`}
+        <a class="ghost" href="#trilhas" style="justify-self:start">${esc(t.verTodas)}</a>
+        <p class="vis-msg" id="vp-msg" hidden></p>`;
+      ligarIdioma();
+      const msgv = (x, k) => { const m=$('vp-msg'); m.hidden=!x; m.textContent=x||''; m.className='vis-msg'+(k?' '+k:''); };
+      const falha = err => msgv(err.code==='rede' ? L().semRede : L().erro, 'erro');
+      corpo().querySelectorAll('[data-cc]').forEach(b=>b.onclick=async()=>{ try{ st = await Base.vis.agirCidade(tok, id, 'carinha', b.dataset.cc); pag(); msgv(L().obrigado,'ok'); }catch(err){ falha(err); } });
+      corpo().querySelectorAll('[data-qf]').forEach(b=>b.onclick=async()=>{ try{ st = await Base.vis.agirCidade(tok, id, 'quer_na_feira', b.dataset.qf); pag(); msgv(L().obrigado,'ok'); }catch(err){ falha(err); } });
+      corpo().querySelectorAll('[data-hc]').forEach(g=>g.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{ resp[g.dataset.hc] = b.dataset.v; g.querySelectorAll('[data-v]').forEach(x=>x.classList.toggle('sel', x===b)); }));
+      if ($('vc-refazer')) $('vc-refazer').onclick = () => { refazer = true; pag(); };
+      if ($('vc-enviar')) $('vc-enviar').onclick = async () => {
+        if (!['noites','pessoas','diaria','antecedencia','motivo'].every(k=>resp[k])){ msgv(L().cid.falta, 'erro'); return; }
+        try{ st = await Base.vis.hospede(tok, id, {noites:+resp.noites, pessoas:+resp.pessoas, diaria:resp.diaria, antecedencia:resp.antecedencia, motivo:resp.motivo, carinha:resp.carinha||null});
+          refazer = false; pag(); msgv(L().cid.hospedeOk, 'ok'); }catch(err){ falha(err); }
+      };
+    };
+    atual = pag; pag();
+  }
+
   /* ---------- palestra (QR do telão) ---------- */
   async function palestra(id, cod){
     window.scrollTo(0,0);
@@ -2852,7 +2991,7 @@ const Visit = (() => {
     };
     atual = pag; pag();
   }
-  return {estande, palestra, trilha, trilhas, CULT};
+  return {estande, palestra, trilha, trilhas, cidade, CULT};
 })();
 
 /* ================== TELÃO DE PRESENÇA (auditório) ==================
@@ -2923,6 +3062,79 @@ const Mural = (() => {
     };
     passo();
     giro = setInterval(()=>{ if (meu!==run || location.hash!=='#mural'){ clearInterval(giro); return; } if (posts.length>1){ idx = (idx+1) % posts.length; destaque(); } }, 8000);
+  }
+  return {start};
+})();
+
+/* ================== ÁREA DO PARCEIRO (#parceiro) ==================
+   Bar, restaurante ou hotel parceiro vê os próprios números. O hotel informa a ocupação (sigilosa)
+   e recebe a demanda da cidade, só com médias de 3 ou mais hotéis (decisão 16). */
+const Parceiro = (() => {
+  const $ = id => document.getElementById(id);
+  const corpo = () => $('pc-corpo');
+  let run = 0, meus = [], estId = null, d = null;
+  const n = v => (v||0).toLocaleString('pt-BR');
+  const topo = (titulo, sub) => `<div class="adm-top"><div class="com-voltar"><button class="voltar" data-voltar aria-label="Voltar">←</button><div><div class="k">Área do parceiro${sub?' · '+esc(sub):''}</div><h1>${esc(titulo)}</h1></div></div>
+    <div class="adm-acts">${d&&estId?'<button class="btn sm" id="pc-atualizar">Atualizar</button>':''}${meus.length>1&&estId?'<button class="ghost sm" id="pc-trocar">Trocar</button>':''}<button class="ghost sm" id="pc-sair">Sair</button></div></div>`;
+  function ligar(){
+    if ($('pc-sair')) $('pc-sair').onclick = async () => { await Base.sair(); go('inicio'); };
+    if ($('pc-atualizar')) $('pc-atualizar').onclick = () => carregar(run);
+    if ($('pc-trocar')) $('pc-trocar').onclick = () => { estId = null; d = null; escolher(); };
+  }
+  function aviso(t){ corpo().innerHTML = topo('Tecnoshow na Cidade') + `<div class="adm-sec"><p class="adm-p">${esc(t)}</p></div>`; ligar(); }
+  async function start(){
+    const meu = ++run; window.scrollTo(0,0); d = null; estId = null;
+    if (!Base.parceiro.disponivel()){ aviso('A área do parceiro funciona no site oficial da plataforma.'); return; }
+    aviso('Carregando…');
+    const ok = await Base.parceiro.entrar(); if (meu!==run) return;
+    if (!ok){ aviso('Entre com a conta criada pelo link de convite do seu estabelecimento. Se ainda não tem conta, peça o convite à organização da feira.'); return; }
+    try{ meus = await Base.parceiro.meus(); }catch(e){ meus = []; }
+    if (meu!==run) return;
+    if (meus.length===1){ estId = meus[0].estab_id; carregar(meu); } else escolher();
+  }
+  function escolher(){
+    if (!meus.length){ aviso('Sua conta é da organização. O resumo da cidade está em Administração › Cidade.'); return; }
+    corpo().innerHTML = topo('Escolha o estabelecimento') + `<div class="adm-lista">${meus.map(m=>`<button class="mode" data-e="${esc(m.estab_id)}"><span class="k">${esc(CID.tipo[m.tipo]||m.tipo)}</span><b>${esc(m.nome)}</b></button>`).join('')}</div>`;
+    ligar(); corpo().querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{ estId=b.dataset.e; carregar(run); });
+  }
+  async function carregar(meu){
+    try{ d = await Base.parceiro.painel(estId); }catch(e){ if (meu===run) aviso(e.code==='sem_permissao'?'Esta conta não tem acesso a este estabelecimento.':'Não foi possível carregar agora. Confira a internet e tente de novo.'); return; }
+    if (meu!==run) return; render();
+  }
+  function render(){
+    const e = d.estab, hotel = e.tipo==='hotel', s = d.satisfacao||{}, hoje = diaLocal(Date.now());
+    const pd = d.por_dia||[], maxDia = Math.max(1, ...pd.map(x=>x.n));
+    corpo().innerHTML = topo(e.nome, (CID.tipo[e.tipo]||e.tipo)+' · '+CID.mun(e.municipio)) + `
+      <p class="adm-msg">Estes números são só do seu estabelecimento. Eles vêm dos visitantes da Tecnoshow que leram o QR do balcão, com o perfil anônimo da feira.</p>
+      <div class="loja-kpis"><div class="loja-kpi"><b>${n(d.visitantes)}</b><span>visitantes da feira</span></div><div class="loja-kpi"><b>${n(d.checkins)}</b><span>check-ins</span></div>
+        <div class="loja-kpi"><b>${n(s.total)}</b><span>avaliações</span></div>${hotel?`<div class="loja-kpi"><b>${n(d.hospedes_n)}</b><span>hóspedes responderam</span></div>`:`<div class="loja-kpi"><b>${n(d.quer_na_feira)}</b><span>querem ver vocês na feira</span></div>`}</div>
+      ${hotel ? `<section class="adm-sec"><h3>Ocupação de hoje (sigilosa)</h3>
+          <p class="adm-p">Informe a ocupação uma vez por dia. Ela nunca aparece com o nome do hotel: a organização e os outros hotéis veem só a média da cidade, e só nos dias em que 3 ou mais hotéis informaram. Em troca, você recebe a demanda da cidade abaixo.</p>
+          <form class="adm-acts" id="pc-oc"><label class="fld" for="pc-dia">Dia<input type="date" id="pc-dia" value="${hoje}" max="${hoje}"></label>
+            <label class="fld" for="pc-q">Quartos disponíveis<input type="number" id="pc-q" min="1" max="5000" value="${e.quartos||''}"></label>
+            <label class="fld" for="pc-o">Quartos ocupados<input type="number" id="pc-o" min="0" max="5000"></label>
+            <label class="fld" for="pc-dm">Diária média (R$, opcional)<input type="number" id="pc-dm" min="0" step="1"></label>
+            <button class="btn sm" style="align-self:end">Salvar</button></form><p class="adm-msg" id="pc-oc-msg" hidden></p>
+          ${(d.ocupacao||[]).length?`<div class="tw"><table class="adm-tab"><thead><tr><th>Dia</th><th>Ocupados</th><th>Taxa</th><th>Diária média</th></tr></thead><tbody>${d.ocupacao.slice(0,10).map(o=>`<tr><td>${esc(new Date(o.dia+'T12:00').toLocaleDateString('pt-BR'))}</td><td class="tabnum">${n(o.ocupados)} de ${n(o.quartos)}</td><td class="tabnum">${Math.round(100*o.ocupados/o.quartos)}%</td><td class="tabnum">${o.diaria_media!=null?'R$ '+n(Math.round(o.diaria_media)):'–'}</td></tr>`).join('')}</tbody></table></div>`:''}</section>
+        <section class="adm-sec"><h3>Demanda da cidade</h3>${(d.demanda_cidade||[]).length ? `<div class="tw"><table class="adm-tab"><thead><tr><th>Dia</th><th>Hotéis informantes</th><th>Ocupação média</th><th>Diária média</th></tr></thead><tbody>${d.demanda_cidade.map(x=>`<tr><td>${esc(new Date(x.dia+'T12:00').toLocaleDateString('pt-BR'))}</td><td class="tabnum">${x.hoteis}</td><td class="tabnum">${String(x.ocupacao).replace('.',',')}%</td><td class="tabnum">${x.diaria_media!=null?'R$ '+n(x.diaria_media):'–'}</td></tr>`).join('')}</tbody></table></div>` : '<p class="adm-p">Aparece nos dias em que 3 ou mais hotéis informarem a ocupação.</p>'}</section>` : ''}
+      <div class="loja-duo">
+        <section class="adm-sec"><h3>Avaliação</h3>${s.total ? hbarsC([['🙂 Bom', s.bom], ['😐 Neutro', s.neutro], ['🙁 Ruim', s.ruim]], s.total) : '<p class="adm-p">Ainda não há avaliações.</p>'}</section>
+        <section class="adm-sec"><h3>Visitantes por dia</h3>${pd.length ? hbarsC(pd.map(x=>[new Date(x.dia+'T12:00').toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'}), x.n]), pd.reduce((a,x)=>a+x.n,0)) : '<p class="adm-p">Sem check-ins ainda.</p>'}</section>
+      </div>
+      ${hotel ? `<section class="adm-sec"><h3>Seus hóspedes</h3>${d.hospedes ? `<p class="adm-p">${n(d.hospedes.respostas)} respostas · ${String(d.hospedes.noites_media).replace('.',',')} noites e ${String(d.hospedes.pessoas_media).replace('.',',')} pessoas em média</p>
+          <div class="loja-duo"><div><span class="vis-lbl">Diária paga</span>${distC(d.hospedes.diaria, CID.diaria)}</div><div><span class="vis-lbl">Antecedência da reserva</span>${distC(d.hospedes.antecedencia, CID.antecedencia)}</div><div><span class="vis-lbl">Motivo da viagem</span>${distC(d.hospedes.motivo, CID.motivo)}</div></div>`
+          : '<p class="adm-p">O resumo aparece a partir de 5 respostas de hóspedes, para proteger a privacidade de cada um.</p>'}</section>` : ''}
+      <section class="adm-sec"><h3>Quem são</h3>${d.perfil ? `<span class="vis-lbl">Perfil</span>${hbarsC(Object.entries(d.perfil).sort((a,b)=>b[1]-a[1]).map(([k,v])=>[CID.perfil[k]||k, v]), d.visitantes)}
+          ${(d.origem||[]).length?`<span class="vis-lbl">De onde vieram (grupos de 3 ou mais pessoas)</span>${hbarsC(d.origem.map(o=>[o.mun?CID.mun(o.mun):(o.pais&&PAIS.has(o.pais)?PAIS.get(o.pais)[2]:'–'), o.n]), d.visitantes)}`:''}`
+        : '<p class="adm-p">O perfil aparece a partir de 5 visitantes.</p>'}</section>`;
+    ligar();
+    if ($('pc-oc')) $('pc-oc').onsubmit = async ev => {
+      ev.preventDefault(); const m = $('pc-oc-msg'), dz = (t, k) => { m.hidden=false; m.textContent=t; m.className='adm-msg '+k; };
+      const q = parseInt($('pc-q').value,10), o = parseInt($('pc-o').value,10), dm = $('pc-dm').value ? parseFloat($('pc-dm').value) : null;
+      if (!(q>0) || !(o>=0) || o>q){ dz('Confira os números: os quartos ocupados não podem passar do total disponível.', 'erro'); return; }
+      try{ await Base.parceiro.ocupacao(estId, $('pc-dia').value, q, o, dm); dz('Ocupação salva. Obrigado!', 'ok'); setTimeout(()=>carregar(run), 600); }
+      catch(err){ dz(err.code==='data_invalida' ? 'Escolha um dia válido (até hoje).' : 'Não foi possível salvar agora.', 'erro'); }
+    };
   }
   return {start};
 })();
@@ -3126,14 +3338,13 @@ const Convite = (() => {
     $('c-ok').textContent = modo==='novo' ? 'Criar conta' : modo==='entrar' ? 'Entrar e aceitar' : 'Aceitar convite';
   }
   async function aceitar(t){
-    try{ const r = await Base.equipe.aceitar(t); LS.set(PK, null); return r==='expositor' ? 'expositor' : 'equipe'; }
+    try{ const r = await Base.equipe.aceitar(t); LS.set(PK, null); return r==='expositor' || r==='parceiro' ? r : 'equipe'; }
     catch(e){ LS.set(PK, null); texto(e.code==='convite_invalido' ? 'Este convite expirou, foi cancelado ou já foi usado. Peça um novo link ao coordenador.' : 'Não foi possível aceitar o convite agora. Tente de novo.'); return false; }
   }
   async function concluir(){
     const r = await aceitar(tok); if (!r) return;
-    const loja = r==='expositor';
-    history.replaceState(null,'',location.pathname+(loja ? '#expositor' : '#painel'));
-    texto(loja ? 'Pronto! Sua conta está ligada ao estande. Abrindo o painel do estande…' : 'Pronto! Você agora faz parte da equipe. Abrindo o painel…', true);
+    history.replaceState(null,'',location.pathname+(r==='expositor' ? '#expositor' : r==='parceiro' ? '#parceiro' : '#painel'));
+    texto(r==='expositor' ? 'Pronto! Sua conta está ligada ao estande. Abrindo o painel do estande…' : r==='parceiro' ? 'Pronto! Sua conta está ligada ao estabelecimento. Abrindo a área do parceiro…' : 'Pronto! Você agora faz parte da equipe. Abrindo o painel…', true);
     setTimeout(()=>{ current=null; route(); }, 1200);
   }
   document.querySelectorAll('#c-modo .lang').forEach(b=>b.onclick=()=>{ modo=b.dataset.m; texto(''); modoUI(); });
@@ -3167,7 +3378,7 @@ const Convite = (() => {
   /* Volta da confirmação de e-mail: se havia convite pendente e agora há sessão, aceita sozinho. */
   setTimeout(async ()=>{
     const p = LS.get(PK, null); if (!p || Base.kind!=='supabase') return;
-    if (await Base.temSessao().catch(()=>false)){ const r = await aceitar(p); if (r){ const a=document.getElementById('cfg-aviso'); a.hidden=false; a.textContent = r==='expositor' ? 'Convite aceito: abra a Área do expositor para ver o painel do seu estande.' : 'Convite aceito: você agora faz parte da equipe.'; } }
+    if (await Base.temSessao().catch(()=>false)){ const r = await aceitar(p); if (r){ const a=document.getElementById('cfg-aviso'); a.hidden=false; a.textContent = r==='expositor' ? 'Convite aceito: abra a Área do expositor para ver o painel do seu estande.' : r==='parceiro' ? 'Convite aceito: abra a Área do parceiro para ver os números do seu estabelecimento.' : 'Convite aceito: você agora faz parte da equipe.'; } }
   }, 1500);
   return {start};
 })();
