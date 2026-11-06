@@ -508,6 +508,51 @@ Isso substitui o "chave da coleta" de hoje (uma chave igual em todos os tablets)
 - **Escala da equipe por dia e turno**, com quem está de plantão em cada setor da feira.
 - Para o ITA: o treinamento e a escala também documentam a equipe de campo da pesquisa (seção 13.2).
 
+## 18-A. Benchmark: app oficial da Tecnoshow 2026
+
+Análise feita em 06/11/2026 a partir de 18 capturas de tela enviadas pelo coordenador.
+
+**O que o app tem:** início com clima, busca, atalhos (Estacionar, Locais, Mapa), carrossel de patrocinadores, 24 categorias com ícones, agenda por dia (6 a 9 de abril de 2026), lista de expositores com categoria e distância, locais (auditórios, banheiros, praças de alimentação), rota a pé até o local, "Onde estacionei" offline e faixa de apoio institucional.
+
+**Pontos fortes a manter ou reaproveitar**
+- Visual limpo, barra inferior com 4 abas, ícones claros por categoria.
+- "Onde estacionei" funcionando sem internet: muito útil e alinhado ao nosso princípio offline.
+- Agenda por dia com foto e palestrante.
+- As **24 categorias** servem de taxonomia inicial dos segmentos (seção 3, módulo A).
+- Espaço de patrocínio já aceito pelo público.
+
+**Problemas observados**
+| Problema | Onde | Efeito |
+|---|---|---|
+| Distância e rota calculadas da cidade como se fosse dentro da feira ("A 7,8 km" em todos os itens; "123 min · 10.327 m" a pé) | Locais, Expositores, navegação | Fora da feira, a informação não ajuda; dentro dela, faltam metros e a planta |
+| "Modo mapa" sobre o mapa de ruas, sem a planta da feira | Locais | Não orienta entre estandes e pavilhões |
+| Tags HTML aparecendo no texto (`<p>…</p>`) | Detalhe de evento | Falha de tratamento do conteúdo |
+| Eventos sem descrição e sem local (qual auditório?) | Detalhe de evento | O visitante não sabe aonde ir |
+| Título repetido duas vezes no detalhe do evento | Detalhe de evento | Ocupa a tela sem informação nova |
+| Grafia "Technoshow 2026" | Início | Erro na própria marca |
+| Capitalização irregular ("Automóveis E Utilitários", "AGENER SAUDE ANIMAL", "(comigo)") | Categorias, expositores, agenda | Aparência de cadastro sem revisão |
+| Categorias possivelmente trocadas (ADAMA, empresa de defensivos, aparece como "Sementes") | Expositores | Busca por segmento falha |
+| Locais e alguns expositores sem foto ou logo | Locais, Expositores | Lista pouco atrativa |
+| Sem idiomas, apesar de "Diálogo com Embaixadas" na agenda | Todo o app | Exclui o público estrangeiro |
+| Sem lembrete, sem "adicionar à agenda", sem compartilhar | Agenda | Nenhum hábito de uso |
+| Nenhuma interação: não há avaliação, curtida, favorito, contato, check-in ou QR | Todo o app | O app é um catálogo de mão única e não gera dados para ninguém |
+
+**Leitura estratégica**
+- O app oficial é um **guia informativo**: diz o que existe e onde está.
+- A plataforma ITex é a **camada de interação e inteligência**: o que o visitante fez, o que achou e de onde veio.
+- Ter dois apps disputando o celular do visitante seria o pior cenário. Por isso, a proposta à Comigo (decisão 8) deve oferecer **integração**, com três caminhos:
+  1. **Integrar ao app oficial:** o app existente abre as telas ITex (estande por QR, reações, desafios, caderno da feira) por link ou tela incorporada, e a plataforma recebe os cadastros de expositores, locais e agenda.
+  2. **Substituir na edição seguinte:** a ITex assume também as funções informativas (agenda, locais, estacionamento), aproveitando o que funciona hoje.
+  3. **Convivência no piloto:** no evento-piloto, a ITex roda sozinha; a decisão entre 1 e 2 sai da avaliação do piloto.
+- Os dados cadastrados no app oficial (expositores, categorias, locais, agenda) podem ser importados, o que poupa trabalho na fase 1.
+
+**Ajustes que isso gera na plataforma**
+- Mapa com **duas escalas**: fora da feira, rota de carro ou transporte e link para o app de mapas do celular; dentro dela, a planta oficial com distâncias em metros.
+- Detalhe de evento sempre com local (ligado à planta), descrição, lembrete, "adicionar à agenda" e avaliação da sessão.
+- Revisão de cadastro (grafia, capitalização, categoria) antes de publicar, com o expositor confirmando os próprios dados.
+- **Número de dias configurável por edição.** A Tecnoshow 2026 teve 4 dias (6 a 9 de abril), mas o questionário atual oferece "Todos os 5 dias". A opção de dias precisa vir do cadastro da edição.
+- Manter "Onde estacionei" offline e o clima no início.
+
 ---
 
 ## 19. Decisões pendentes (acumuladas)
@@ -553,6 +598,9 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 **Da etapa de interação no QR do estande**
 25. ~~Visibilidade dos negativos~~ → **decidida** (ver seção 20).
 26. Cartão de story: a logo do app já é obrigatória (seção 20). Falta decidir quem desenha a moldura, se cada estande pode ter a sua versão e se há espaço para patrocinador.
+
+**Do benchmark do app oficial**
+31. Relação com o app oficial da Tecnoshow: integrar (o app oficial abre as telas ITex), substituir na edição seguinte, ou decidir depois do piloto? Quem desenvolveu o app atual e há API para importar expositores, locais e agenda?
 
 **Da etapa de administração geral e aparelhos**
 27. Administrador geral: quem será (uma pessoa ou mais)? Fica na organização da feira, no ITA, ou um de cada?
@@ -616,3 +664,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 06/11/2026: decisões 26, 29 e 30 tomadas; decisão 23 adiada para o final, com mais opções de nomes.
 - 06/11/2026: decisão 28 tomada (papel Patrocinador incluído).
 - 06/11/2026: decisão 23 tomada (ITex + ShowPulse, pendentes de INPI). Todas as 30 decisões tomadas; ideação encerrada.
+- 06/11/2026: benchmark do app oficial da Tecnoshow 2026 (seção 18-A), decisão 31.
