@@ -545,7 +545,7 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 22. Transporte: começar com transporte oficial e caravanas, e deixar a carona em grupos verificados para depois? Há interesse de prefeituras vizinhas em vans?
 
 **Da etapa de identidade**
-23. **(Volta ao final, com mais opções de nomes.)** Nome: escolher 2 ou 3 finalistas da seção 15 (ITA-e, iTA, ITAvents, Expolytics, ExpoIQ…) para a busca no INPI, USPTO e domínios. A sigla ITA precisa estar na marca ou basta a assinatura "by Observatório ITA"?
+23. ~~Nome~~ → **decidida** (ver seção 20). Texto original: escolher 2 ou 3 finalistas da seção 15 (ITA-e, iTA, ITAvents, Expolytics, ExpoIQ…) para a busca no INPI, USPTO e domínios. A sigla ITA precisa estar na marca ou basta a assinatura "by Observatório ITA"?
 
 **Da etapa de usabilidade**
 24. Saída da coleta pela equipe: gesto + código numérico serve? Quem define e guarda o código?
@@ -596,6 +596,7 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 | 29 | **Painel de estande no celular do expositor e dos atendentes, com exibição opcional numa TV ou tablet** do próprio expositor, habilitada pela equipe treinada | 06/11/2026 | O painel tem uma versão para celular e outra para tela grande, com o QR de interação |
 | 30 | **Treinamento pelo app (vídeos, passo a passo, teste) + uma sessão prática presencial;** o selo "treinado" é liberado pelo administrador geral ou pela organização depois das duas etapas | 06/11/2026 | Módulo de treinamento e controle do selo entram na Administração |
 | 28 | **Hierarquia com 10 papéis:** os 9 da seção 18.2 **+ Patrocinador** (vê só os resultados das próprias cotas) | 06/11/2026 | Painel do patrocinador entra junto com os relatórios de patrocínio |
+| 23 | **Nomes de trabalho: ITex** (marca-mãe: Inteligência Territorial + expo/eventos, ligada ao Observatório ITA) **e ShowPulse** (painel ao vivo). Pendentes de busca no INPI; se houver conflito, usar grafia distintiva (ITexpo, ShowPulso) | 06/11/2026 | Busca web preliminar: "ITEX" é usado por várias empresas no exterior (bolsa de permutas e uma feira de TI nos EUA, têxteis); "ShowPulse" é um software de palco para músicos (show-pulse.com). Nada encontrado no Brasil. A logo e a moldura (decisões 26 e 26-parcial) seguem esses nomes |
 
 ---
 
@@ -614,3 +615,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 06/11/2026: decisões 15 a 19, 21, 22 e 24 tomadas.
 - 06/11/2026: decisões 26, 29 e 30 tomadas; decisão 23 adiada para o final, com mais opções de nomes.
 - 06/11/2026: decisão 28 tomada (papel Patrocinador incluído).
+- 06/11/2026: decisão 23 tomada (ITex + ShowPulse, pendentes de INPI). Todas as 30 decisões tomadas; ideação encerrada.
