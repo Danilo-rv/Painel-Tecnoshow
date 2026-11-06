@@ -851,3 +851,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 06/11/2026: decisões 33a, 33b, 32-2 e 32-3 tomadas.
 - 06/11/2026: decisões 33b-c, 32-7, 32-10 e 31-r/32 tomadas; pauta para a reunião com a Comigo (seção 21). Todas as decisões em aberto foram respondidas.
 - 06/11/2026: princípio de tudo editável por feira, com propagação por identificador e dados semente de 2026 (seção 22).
+- 06/11/2026: Supabase em São Paulo instalado e testado; site publicado; plano de implantação atualizado para a versão 2 (decisões 31 a 33 e ideias das seções 18-A a 22 aplicadas).
