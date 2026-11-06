@@ -540,11 +540,10 @@ Análise feita em 06/11/2026 a partir de 18 capturas de tela enviadas pelo coord
 **Leitura estratégica**
 - O app oficial é um **guia informativo**: diz o que existe e onde está.
 - A plataforma ITex é a **camada de interação e inteligência**: o que o visitante fez, o que achou e de onde veio.
-- Ter dois apps disputando o celular do visitante seria o pior cenário. Por isso, a proposta à Comigo (decisão 8) deve oferecer **integração**, com três caminhos:
-  1. **Integrar ao app oficial:** o app existente abre as telas ITex (estande por QR, reações, desafios, caderno da feira) por link ou tela incorporada, e a plataforma recebe os cadastros de expositores, locais e agenda.
-  2. **Substituir na edição seguinte:** a ITex assume também as funções informativas (agenda, locais, estacionamento), aproveitando o que funciona hoje.
-  3. **Convivência no piloto:** no evento-piloto, a ITex roda sozinha; a decisão entre 1 e 2 sai da avaliação do piloto.
-- Os dados cadastrados no app oficial (expositores, categorias, locais, agenda) podem ser importados, o que poupa trabalho na fase 1.
+- **Posicionamento decidido (decisão 31):** a ITex **não é um aplicativo da feira e não compete com o app oficial**. Ela é uma camada de dados e inteligência que agrega valor ao app e à feira, para ser comercializada no futuro (a organizadores, expositores, patrocinadores, governo e outras feiras).
+- Para o visitante, a ITex aparece só em **pontos de contato leves**, sempre abertos por QR ou link e sem instalação: página do estande (check-in, reações, carinhas, contato), check-in em palestra, desafios, pesquisa do hóspede e do comércio, e o questionário. Agenda, locais, estacionamento e navegação continuam no app oficial.
+- O app oficial pode apontar para esses pontos de contato (link ou QR), se a Comigo quiser, mas a ITex não depende disso.
+- Do app oficial, a ITex aproveita **informação complementar**: o mapa (base da planta dos lotes, em `docs/mapa-2026/`), a agenda de eventos (base dos check-ins e desafios), as categorias e o cadastro de expositores e locais.
 
 **Ajustes que isso gera na plataforma**
 - Mapa com **duas escalas**: fora da feira, rota de carro ou transporte e link para o app de mapas do celular; dentro dela, a planta oficial com distâncias em metros.
@@ -552,6 +551,47 @@ Análise feita em 06/11/2026 a partir de 18 capturas de tela enviadas pelo coord
 - Revisão de cadastro (grafia, capitalização, categoria) antes de publicar, com o expositor confirmando os próprios dados.
 - **Número de dias configurável por edição.** A Tecnoshow 2026 teve 4 dias (6 a 9 de abril), mas o questionário atual oferece "Todos os 5 dias". A opção de dias precisa vir do cadastro da edição.
 - Manter "Onde estacionei" offline e o clima no início.
+
+## 18-B. Agenda como mecanismo de gamificação
+
+A agenda oficial vira a base de **trilhas**: combinações de check-ins que dão um brinde a quem completa.
+
+**Exemplo proposto pelo coordenador:** ler o QR de duas palestras específicas e visitar o estande da Prefeitura de Rio Verde (lote 51) → brinde da Prefeitura.
+
+**Como funciona**
+1. **Quem lança a trilha:** a organização, um estande, um patrocinador ou um parceiro (a Prefeitura, no exemplo). A trilha define as etapas, o prêmio, o estoque e o prazo, e a organização aprova.
+2. **Check-in em palestra:**
+   - um QR projetado no telão ou na entrada do auditório, válido só durante a sessão (do início até 15 minutos após o fim);
+   - um código que muda a cada poucos minutos, para não valer uma foto do QR enviada pelo WhatsApp;
+   - só conta uma vez por visitante.
+3. **Check-in no estande:** o QR do estande, que já existe na plataforma.
+4. **Progresso:** o visitante vê as etapas cumpridas na página da trilha e recebe aviso pelo WhatsApp ao completar.
+5. **Resgate do brinde:** um cupom de uso único, mostrado no celular. O atendente do estande doador lê o cupom e dá baixa, e o estoque é controlado pelo banco.
+
+**Tipos de trilha**
+
+| Tipo | Exemplo |
+|---|---|
+| Conteúdo + estande | 2 palestras de bioinsumos + estande da Embrapa → brinde |
+| Institucional | 2 palestras + estande da Prefeitura → brinde da Prefeitura |
+| Setorial | Visitar 5 estandes de máquinas → sorteio substituído por prêmio por ordem de chegada ou por pontos (decisão 3) |
+| Território | Palestra + jantar num restaurante parceiro → desconto no parceiro |
+| Família | Teatro Sementinhas do Agro + Praça das Flores → brinde infantil |
+
+**Dados que a trilha gera (e que têm valor comercial)**
+- Para o patrocinador da trilha:
+  - quantos começaram e quantos completaram;
+  - perfil e origem de quem completou;
+  - em que etapa as pessoas desistiram;
+  - custo por participante.
+- Para a organização: público por palestra (contado por check-in, não estimado), lotação por palco e horário, e quais temas atraem quais perfis.
+- Para o expositor do estande da trilha: o fluxo extra que a trilha trouxe.
+- Para o ITA: a relação entre conteúdo (palestra) e visita a estandes, uma evidência de difusão de inovações.
+
+**Cuidados**
+- Prêmio por mérito ou por ordem de chegada, sem sorteio, conforme a decisão 3, e regulamento público de cada trilha.
+- Brindes da Prefeitura e de outros órgãos públicos seguem as regras de doação do próprio órgão.
+- O check-in em palestra só funciona no local e no horário, para os dados de público serem confiáveis.
 
 ---
 
@@ -600,7 +640,7 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 26. Cartão de story: a logo do app já é obrigatória (seção 20). Falta decidir quem desenha a moldura, se cada estande pode ter a sua versão e se há espaço para patrocinador.
 
 **Do benchmark do app oficial**
-31. Relação com o app oficial da Tecnoshow: integrar (o app oficial abre as telas ITex), substituir na edição seguinte, ou decidir depois do piloto? Quem desenvolveu o app atual e há API para importar expositores, locais e agenda?
+31. ~~Relação com o app oficial~~ → **decidida** (ver seção 20). Fica em aberto só: há como receber da Comigo, em planilha ou API, o cadastro de expositores, locais e agenda?
 
 **Do mapa da feira (detalhe em `docs/mapa-2026/LEIAME.md`)**
 32. Dez dúvidas para a reconstrução do mapa: planta oficial em vetor para 2027, QR por expositor ou por lote, expositores em vários lotes, leituras incertas, categorias, palcos da agenda, georreferência, banheiros e acessibilidade, Portaria I, faixa de test drives.
@@ -648,6 +688,7 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 | 30 | **Treinamento pelo app (vídeos, passo a passo, teste) + uma sessão prática presencial;** o selo "treinado" é liberado pelo administrador geral ou pela organização depois das duas etapas | 06/11/2026 | Módulo de treinamento e controle do selo entram na Administração |
 | 28 | **Hierarquia com 10 papéis:** os 9 da seção 18.2 **+ Patrocinador** (vê só os resultados das próprias cotas) | 06/11/2026 | Painel do patrocinador entra junto com os relatórios de patrocínio |
 | 23 | **Nomes de trabalho: ITex** (marca-mãe: Inteligência Territorial + expo/eventos, ligada ao Observatório ITA) **e ShowPulse** (painel ao vivo). Pendentes de busca no INPI; se houver conflito, usar grafia distintiva (ITexpo, ShowPulso) | 06/11/2026 | Busca web preliminar: "ITEX" é usado por várias empresas no exterior (bolsa de permutas e uma feira de TI nos EUA, têxteis); "ShowPulse" é um software de palco para músicos (show-pulse.com). Nada encontrado no Brasil. A logo e a moldura (decisões 26 e 26-parcial) seguem esses nomes |
+| 31 | **A ITex não é um aplicativo da Tecnoshow e não compete com o app oficial.** É uma camada de dados e inteligência que agrega valor ao app e à feira, para ser comercializada no futuro. O visitante só a encontra em pontos de contato abertos por QR ou link, sem instalação | 06/11/2026 | Agenda, locais e navegação ficam no app oficial. Do app, a ITex aproveita o mapa, a agenda, as categorias e os cadastros. O plano de implantação precisa ser ajustado nas seções 1, 3, 6.1 e 9 |
 
 ---
 
@@ -669,3 +710,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 06/11/2026: decisão 23 tomada (ITex + ShowPulse, pendentes de INPI). Todas as 30 decisões tomadas; ideação encerrada.
 - 06/11/2026: benchmark do app oficial da Tecnoshow 2026 (seção 18-A), decisão 31.
 - 06/11/2026: mosaico do mapa 2026 guardado e transcrito (113 lotes em `docs/mapa-2026/`); decisão 32 com as dúvidas do mapa.
+- 06/11/2026: decisão 31 tomada (ITex é camada de dados, sem app próprio nem competição); agenda como mecanismo de gamificação (seção 18-B).
