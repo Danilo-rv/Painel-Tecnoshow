@@ -151,3 +151,33 @@ Os ataques ao banco foram recusados:
 - moderador definindo o código;
 - código com letras;
 - leitura direta do hash.
+
+## Presença em palestras e trilhas (sétima etapa)
+
+| Item | Como funciona | Proteção |
+|---|---|---|
+| Código da palestra | Os 10 primeiros caracteres do sha256 de "segredo:minuto"; vale no minuto atual e no anterior | O segredo fica numa tabela que a API não lê; só a equipe obtém o código (telão); fora do horário a presença é recusada |
+| Presença | `presenca_palestra` confere a credencial do visitante, a edição, o horário e o código | Uma por visitante por palestra; no máximo 20 por hora; o endereço perde o código depois da leitura, para a página não reenviar um código vencido |
+| Avaliação da palestra | Só para quem esteve presente; o comentário é sempre privado | Leitura só pela organização (`comentarios_palestra`) |
+| Trilhas | Etapas guardadas na própria trilha e validadas pelo banco (1 a 10, tipo e id) | Só a organização cria e altera; o visitante só vê trilhas aprovadas |
+| Cupom | Emitido pelo banco quando todas as etapas estão cumpridas, dentro do prazo e do estoque, com trava na trilha | Um por visitante por trilha; o estoque não estoura com acessos simultâneos |
+| Baixa do cupom | Só pelo estande doador ou pela organização | Código de outro doador aparece como "não encontrado" (não revela que existe); 30 tentativas a cada 10 minutos por conta; cada baixa é auditada |
+
+Testes:
+- **Funções no Postgres local:**
+  - etapas inválidas;
+  - usuário anônimo lendo o código ou as tabelas;
+  - código errado;
+  - palestra fora do horário;
+  - presença repetida;
+  - avaliação sem presença;
+  - estoque esgotado;
+  - baixa por estande que não é o doador;
+  - baixa repetida.
+- **Navegador contra o banco local**, do começo ao fim:
+  - a coordenação cria a trilha;
+  - o telão mostra o QR;
+  - o visitante sem perfil lê o QR, passa pela porta de entrada, registra presença e avalia a palestra;
+  - o check-in no estande completa a trilha e gera o cupom;
+  - o estande doador dá baixa, e a segunda baixa é recusada.
+- Os testes anteriores continuam passando.

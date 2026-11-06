@@ -856,3 +856,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 06/11/2026: porta de entrada do visitante e página do estande por QR construídas e em produção (migração 003); produtos e QR na Administração.
 - 06/11/2026: moderação de comentários públicos e área do expositor (painel do estande com convite por link) construídas e em produção (migração 004).
 - 06/11/2026: seta de voltar em todas as telas, saída protegida dos tablets (decisão 24, migração 005) e fila sem internet para as ações do visitante.
+- 06/11/2026: presença em palestras com QR que muda a cada minuto, avaliação de palestras só para a organização, trilhas com cupom de uso único e baixa pelo estande doador (seção 18-B, migração 006).

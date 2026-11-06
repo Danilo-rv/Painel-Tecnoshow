@@ -320,6 +320,33 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
 .kbar .brand{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
 .kbar .brand.segurando{color:var(--glow2);text-shadow:0 0 12px var(--glow)}
 .saida-cod{font-family:var(--f-mono);font-size:1.6rem;letter-spacing:.4em;text-align:center}
+.vis-trilha{display:grid;gap:6px;padding:12px;border:1px solid var(--line);border-radius:12px;color:var(--ink);text-decoration:none;background:rgba(11,31,74,.5)}
+.vis-trilha:hover{border-color:var(--glow)}
+.vis-prog{height:8px;border-radius:4px;background:rgba(29,59,122,.6);overflow:hidden}
+.vis-prog i{display:block;height:100%;background:var(--good);border-radius:0 4px 4px 0}
+.vis-etapas{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.vis-etapas li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px;align-items:start}
+.vis-etapas .mk{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--line);color:var(--muted);font-weight:700}
+.vis-etapas li.ok .mk{border-color:var(--good);color:var(--good)}
+.vis-cupom{border-color:var(--gold);text-align:center}
+.vis-cupom .cod{font-family:var(--f-mono);font-size:2.2rem;letter-spacing:.18em;color:var(--gold);font-weight:700}
+details.vis-card summary{cursor:pointer;font-weight:600}
+#v-telao{min-height:100%}
+.tl{min-height:100vh;display:grid;align-content:start;gap:24px;padding:24px max(24px,env(safe-area-inset-left,0px))}
+.tl-top{display:flex;align-items:center;gap:12px}
+.tl-top .brand{font-family:var(--f-display);font-weight:700;letter-spacing:.06em} .tl-top .brand i{font-style:normal;color:var(--glow)}
+.tl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:32px;align-items:center}
+.tl-info{display:grid;gap:14px}
+.tl-info .k{font-family:var(--f-mono);font-size:1rem;letter-spacing:.12em;text-transform:uppercase;color:var(--glow)}
+.tl-info h1{font-family:var(--f-display);font-weight:800;font-size:clamp(2rem,5vw,4.2rem);line-height:1.02;margin:0}
+.tl-sub{color:var(--muted);font-size:clamp(1rem,1.8vw,1.4rem);margin:0;line-height:1.4}
+.tl-cont{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.tl-cont b{font-family:var(--f-display);font-size:clamp(3rem,8vw,6rem);color:var(--glow2);line-height:1}
+.tl-cont span{color:var(--muted);font-size:1.2rem}
+.tl-qrbox{display:grid;justify-items:center;gap:12px;text-align:center}
+.tl-qrbox img{width:min(62vh,100%);max-width:560px;aspect-ratio:1;background:#fff;border-radius:16px;padding:14px;image-rendering:pixelated;transition:opacity .3s}
+.tl-qrbox p{margin:0;font-size:clamp(1rem,1.8vw,1.4rem)}
+.cupom-in{font-family:var(--f-mono);font-size:1.3rem;letter-spacing:.2em;text-transform:uppercase}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -431,7 +458,7 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
           <label class="fld" for="cd-busca">Buscar<input id="cd-busca" placeholder="Nome, número, lote…"></label>
           <label class="tg"><input type="checkbox" id="cd-pend"> Só a confirmar</label>
           <label class="tg"><input type="checkbox" id="cd-lixo"> Mostrar lixeira</label>
-          <div class="adm-acts"><button class="btn sm" id="cd-novo">Novo</button><button class="ghost sm" id="cd-modelo">Baixar modelo de planilha</button><label class="ghost sm" for="cd-imp" style="cursor:pointer">Importar planilha</label><input type="file" id="cd-imp" accept=".csv,text/csv" hidden></div>
+          <div class="adm-acts"><button class="btn sm" id="cd-novo">Novo</button><button class="ghost sm" id="cd-modelo">Baixar modelo de planilha</button><label class="ghost sm" for="cd-imp" id="cd-imp-lbl" style="cursor:pointer">Importar planilha</label><input type="file" id="cd-imp" accept=".csv,text/csv" hidden></div>
         </div>
         <div id="cd-form"></div>
         <div class="cad-cont" id="cd-cont"></div>
@@ -471,6 +498,8 @@ textarea.search{min-height:140px;resize:vertical;font-size:1.15rem}
 <div id="v-visitante" class="view" hidden><div class="vis" id="vis-corpo"></div></div>
 
 <div id="v-expositor" class="view" hidden><div class="loja" id="lj-corpo"></div></div>
+
+<div id="v-telao" class="view" hidden><div class="tl" id="tl-corpo"></div></div>
 
 <div id="v-convite" class="view" hidden>
   <div class="conv"><form class="login-box" id="c-form" autocomplete="on">
@@ -942,7 +971,19 @@ const Base = (() => {
     estande: id => rpc('estande_publico', {p_estande:id}),
     criar: (ed, perfil, whatsapp, lang) => rpc('criar_visitante', {p_ed:ed, p_perfil:perfil, p_whatsapp:whatsapp, p_lang:lang}),
     estado: (token, est) => rpc('estado_visitante', {p_token:token, p_estande:est}),
+    palestra: id => rpc('palestra_publica', {p_agenda:id}),
+    estadoPalestra: (token, id) => rpc('estado_palestra', {p_token:token, p_agenda:id}),
+    presenca: (token, id, cod) => rpc('presenca_palestra', {p_token:token, p_agenda:id, p_codigo:cod}),
+    avaliarPalestra: (token, id, car, txt) => rpc('avaliar_palestra', {p_token:token, p_agenda:id, p_carinha:car, p_texto:txt}),
+    trilhas: token => rpc('trilhas_visitante', {p_token:token}),
     agir: (token, est, acao, extra={}) => rpc('interagir', {p_token:token, p_estande:est, p_acao:acao, p_produto:extra.produto||null, p_valor:extra.valor||null, p_texto:extra.texto||null, p_publico:!!extra.publico})
+  };
+  /* Agenda: telão de presença e números por palestra; trilhas */
+  const agenda = {
+    telao: id => rpc('codigo_palestra', {p_agenda:id}),
+    presencas: ed => rpc('presencas_edicao', {p_ed:ed}),
+    comentarios: id => rpc('comentarios_palestra', {p_agenda:id}),
+    metricasTrilha: id => rpc('metricas_trilha', {p_trilha:id})
   };
   /* Moderação dos comentários públicos */
   const mod = {
@@ -957,6 +998,8 @@ const Base = (() => {
     convidar: (expo, papel) => rpc('criar_convite_expositor', {p_expositor:expo, p_papel:papel||'gestor'}),
     contas: expo => rpc('listar_contas_expositor', {p_expositor:expo}),
     remover: (u, expo) => rpc('remover_conta_expositor', {p_user:u, p_expositor:expo}),
+    trilhas: est => rpc('trilhas_do_estande', {p_estande:est}),
+    resgatar: cod => rpc('resgatar_cupom', {p_codigo:cod}),
     async entrar(){
       const serve = async () => { if (EDITORES.includes(await meuPapel())) return true; try{ return (await rpc('minhas_lojas')).length>0; }catch(e){ return false; } };
       if ((await temSessao().catch(()=>false)) && await serve()) return true;
@@ -967,7 +1010,7 @@ const Base = (() => {
   const rpcPublica = (nome, args) => kind==='supabase' ? rpc(nome, args) : Promise.reject(erro('sem_base'));
   const saida = { definir: (ed, cod) => rpc('definir_codigo_saida', {p_ed:ed, p_codigo:cod}), info: ed => rpc('info_codigo_saida', {p_ed:ed}) };
   return {kind, rpcPublica, saida, enviar, ler, acompanhar, precisaLogin, garantirAcesso, sair, entrar, cadastrar, temSessao, souCoordenador, meuPapel,
-          instrumentoAtual, publicarInstrumento, historico, equipe, cad, vis, mod, loja, EDITORES, MODERADORES};
+          instrumentoAtual, publicarInstrumento, historico, equipe, cad, vis, mod, loja, agenda, EDITORES, MODERADORES};
 })();
 
 /* Questionário em uso neste aparelho: a última versão publicada da edição, guardada para uso offline. */
@@ -1063,7 +1106,7 @@ const Saida = (() => {
 })();
 
 /* ================== ROTEAMENTO ================== */
-const VIEWS = ['inicio','coleta','painel','relatorio','admin','convite','visitante','expositor'];
+const VIEWS = ['inicio','coleta','painel','relatorio','admin','convite','visitante','expositor','telao'];
 let current = null;
 function route(){
   let h = (location.hash||'').replace('#','');
@@ -1073,6 +1116,8 @@ function route(){
   if (/^convite-/.test(base)) base='convite';
   if (/^e-[0-9a-f-]{36}$/.test(base)) base='visitante';
   if (/^expositor(-[0-9a-f-]{36})?$/.test(base)) base='expositor';
+  if (/^p-[0-9a-f-]{36}(-[0-9a-f]{10})?$/.test(base) || /^t-[0-9a-f-]{36}$/.test(base) || base==='trilhas') base='visitante';
+  if (/^telao-[0-9a-f-]{36}$/.test(base)) base='telao';
   let v = VIEWS.includes(base) ? base : 'inicio';
   if (v!=='coleta' && Saida.travado()){ history.replaceState(null,'',location.pathname+'#coleta'); v='coleta'; h='coleta'; }
   VIEWS.forEach(x => document.getElementById('v-'+x).hidden = x!==v);
@@ -1083,7 +1128,13 @@ function route(){
   if (v==='relatorio') Relatorio.start(demo);
   if (v==='admin') Admin.start();
   if (v==='convite') Convite.start(h.slice(8));
-  if (v==='visitante') Visit.estande(h.slice(2));
+  if (v==='visitante'){
+    if (h.startsWith('e-')) Visit.estande(h.slice(2));
+    else if (h.startsWith('p-')) Visit.palestra(h.slice(2,38), h.slice(39)||null);
+    else if (h.startsWith('t-')) Visit.trilha(h.slice(2));
+    else Visit.trilhas();
+  }
+  if (v==='telao') Telao.start(h.slice(6));
   if (v==='expositor') Loja.start(h.slice(10));
 }
 /* Seta de voltar: volta para a tela anterior do app; se a pessoa chegou direto (link ou QR), vai para o início. */
@@ -1928,7 +1979,8 @@ const Admin = (() => {
    aparece em todas as telas. Excluir leva à lixeira (excluido_em); o banco audita cada mudança. */
 const Cad = (() => {
   const $ = id => document.getElementById(id);
-  const ST = {a_confirmar:'A confirmar', confirmado:'Confirmado'};
+  const ST = {a_confirmar:'A confirmar', confirmado:'Confirmado', rascunho:'Rascunho', aprovada:'Aprovada', encerrada:'Encerrada'};
+  const TS = {rascunho:'Rascunho (não aparece para o visitante)', aprovada:'Aprovada (visível para o visitante)', encerrada:'Encerrada'};
   const TL = {expositores:'Expositores', auditorio:'Auditório', pavilhao:'Pavilhão', pecuaria:'Pecuária', alimentacao:'Alimentação', praca:'Praça', descanso:'Descanso', bosque:'Bosque', administracao:'Administração', imprensa:'Imprensa', servico:'Serviço', outro:'Outro'};
   const TC = {palco:'Palco', banheiro:'Banheiro', portaria:'Portaria', ambulatorio:'Ambulatório', estacionamento:'Estacionamento', alimentacao:'Alimentação', test_drive:'Test drive', heliponto:'Heliponto', acessibilidade:'Acessibilidade', servico:'Serviço', outro:'Outro'};
   const TA = {palestra:'Palestra', demonstracao:'Demonstração', lancamento:'Lançamento', dinamica:'Dinâmica', test_drive:'Test drive', cerimonia:'Cerimônia', outro:'Outro'};
@@ -1957,12 +2009,18 @@ const Cad = (() => {
       {k:'validade', l:'Condição válida até', t:'data'}, {k:'foto_url', l:'Endereço da foto (https://…)', t:'text', max:400},
       {k:'ordem', l:'Ordem na vitrine', t:'num'}, st, {k:'descricao', l:'Descrição', t:'area', max:1000},
       {k:'condicoes', l:'Pagamento e financiamento (formas, parcelas, juros, CET, banco)', t:'area', max:1000}]},
+    trilhas: {nome:'Trilhas', esc:'ed', chave:'titulo', semCSV:true, campos:[
+      {k:'titulo', l:'Nome da trilha', t:'text', req:1, max:120}, {k:'premio', l:'Prêmio', t:'text', req:1, max:200},
+      {k:'doador_estande', l:'Estande que entrega o prêmio (dá baixa no cupom)', t:'ref', ref:'estandes'}, {k:'estoque', l:'Quantidade de prêmios', t:'num'},
+      {k:'prazo', l:'Prazo (opcional)', t:'dt'}, {k:'status', l:'Situação', t:'sel', op:TS},
+      {k:'etapas', l:'Etapas', t:'etapas'}, {k:'descricao', l:'Descrição para o visitante', t:'area', max:1000},
+      {k:'regulamento', l:'Regulamento (prêmio por ordem de chegada, sem sorteio)', t:'area', max:3000}]},
     categorias: {nome:'Categorias', esc:'feira', chave:'nome', campos:[
       {k:'nome', l:'Nome', t:'text', req:1, max:80}, {k:'cor', l:'Cor no mapa', t:'cor'}, {k:'icone', l:'Ícone (nome curto)', t:'text', max:40},
       {k:'ordem', l:'Ordem', t:'num'}, st]}
   };
-  const ORDEM = ['expositores','produtos','lotes','locais','agenda','categorias'];
-  let ed=null, edi=null, d=null, ent='expositores', sel=null, papel=null, carregando=null;
+  const ORDEM = ['expositores','produtos','lotes','locais','agenda','trilhas','categorias'];
+  let ed=null, edi=null, d=null, ent='expositores', sel=null, papel=null, carregando=null, etapasEd=[];
   const ger = () => papel==='admin_geral' || papel==='coordenador';
   const num = v => { const n = parseInt(v,10); return isNaN(n) ? 1e9 : n; };
   const nomeCat = id => (d.categorias.find(c=>c.id===id)||{}).nome || '';
@@ -1980,12 +2038,13 @@ const Cad = (() => {
     edi = await B.edicao(ed);
     if (!edi) throw Object.assign(new Error('edicao'), {code:'edicao'});
     const f = edi.feira_id;
-    const [categorias, expositores, lotes, locais, agenda, estandes, plantas] = await Promise.all([
+    const [categorias, expositores, lotes, locais, agenda, estandes, plantas, trilhas, pres] = await Promise.all([
       B.listar('categorias','feira_id',f), B.listar('expositores','feira_id',f), B.listar('lotes','ed',ed),
-      B.listar('locais','ed',ed), B.listar('agenda','ed',ed), B.listar('estandes','ed',ed), B.listar('plantas','ed',ed)]);
+      B.listar('locais','ed',ed), B.listar('agenda','ed',ed), B.listar('estandes','ed',ed), B.listar('plantas','ed',ed),
+      B.listar('trilhas','ed',ed).catch(()=>[]), Base.agenda.presencas(ed).catch(()=>[])]);
     const vinc = await B.vinculos(estandes.map(s=>s.id));
     const produtos = await B.listarEm('produtos','expositor_id', expositores.map(x=>x.id));
-    d = {categorias, expositores, lotes, locais, agenda, estandes, plantas, vinc, produtos};
+    d = {categorias, expositores, lotes, locais, agenda, estandes, plantas, vinc, produtos, trilhas, pres:Object.fromEntries((pres||[]).map(x=>[x.agenda_id, x]))};
   }
   function garantir(){ if (!carregando) carregando = carregar().finally(()=>{ carregando=null; }); return carregando; }
 
@@ -2004,16 +2063,18 @@ const Cad = (() => {
     lotes: [['Nº', r=>`<span class="num">${esc(r.numero)}</span>`], ['Tipo', r=>esc(TL[r.tipo]||r.tipo)], ['Ocupantes', r=>esc(r.rotulo||'')], ['No mapa', r=>r.poligono?'sim':'–']],
     locais: [['Nome', r=>esc(r.nome)], ['Tipo', r=>esc(TC[r.tipo]||r.tipo)], ['Lote', r=>`<span class="num">${esc(numLote(r.lote_id)||'–')}</span>`], ['No mapa', r=>(r.ponto||r.lote_id)?'sim':'–']],
     produtos: [['Produto', r=>esc(r.nome)], ['Expositor', r=>esc((d.expositores.find(x=>x.id===r.expositor_id)||{}).nome||'–')], ['Preço ou condição', r=>esc(r.preco_texto||'–')]],
-    agenda: [['Início', r=>`<span class="num">${esc(r.inicio ? new Date(r.inicio).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}) : '–')}</span>`], ['Título', r=>esc(r.titulo)], ['Local', r=>esc(nomeLocal(r.local_id)||'–')], ['Palestrante', r=>esc(r.palestrante||'')]],
+    trilhas: [['Trilha', r=>esc(r.titulo)], ['Prêmio', r=>esc(r.premio)], ['Etapas', r=>`<span class="num">${(r.etapas||[]).length}</span>`], ['Estoque', r=>`<span class="num">${r.estoque}</span>`]],
+    agenda: [['Presentes', r=>`<span class="num">${(d.pres[r.id]||{}).presentes||0}</span>`], ['Início', r=>`<span class="num">${esc(r.inicio ? new Date(r.inicio).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}) : '–')}</span>`], ['Título', r=>esc(r.titulo)], ['Local', r=>esc(nomeLocal(r.local_id)||'–')], ['Palestrante', r=>esc(r.palestrante||'')]],
     categorias: [['Ordem', r=>`<span class="num">${r.ordem}</span>`], ['Nome', r=>esc(r.nome)], ['Cor', r=>r.cor?`<span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:${esc(r.cor)};vertical-align:middle"></span> <span class="num">${esc(r.cor)}</span>`:'–']]
   };
   function lista(){
     const L = linhas(), cols = COLS[ent];
     $('cd-thead').innerHTML = `<tr>${cols.map(c=>`<th>${c[0]}</th>`).join('')}<th>Situação</th></tr>`;
-    $('cd-tbody').innerHTML = L.map(r=>`<tr data-id="${esc(r.id)}" class="${r.id===sel?'sel':''} ${r.excluido_em?'lixo':''}">${cols.map(c=>`<td>${c[1](r)}</td>`).join('')}<td><span class="pill ${r.status==='confirmado'?'ok':'warn'}">${esc(ST[r.status]||'')}</span>${r.excluido_em?' <span class="pill mut">lixeira</span>':''}</td></tr>`).join('') || `<tr><td colspan="${cols.length+1}" class="nota">Nada encontrado.</td></tr>`;
+    $('cd-tbody').innerHTML = L.map(r=>`<tr data-id="${esc(r.id)}" class="${r.id===sel?'sel':''} ${r.excluido_em?'lixo':''}">${cols.map(c=>`<td>${c[1](r)}</td>`).join('')}<td><span class="pill ${r.status==='confirmado'||r.status==='aprovada'?'ok':r.status==='encerrada'?'mut':'warn'}">${esc(ST[r.status]||'')}</span>${r.excluido_em?' <span class="pill mut">lixeira</span>':''}</td></tr>`).join('') || `<tr><td colspan="${cols.length+1}" class="nota">Nada encontrado.</td></tr>`;
     const total = d[ent].filter(r=>!r.excluido_em).length, pend = d[ent].filter(r=>!r.excluido_em && r.status==='a_confirmar').length;
     $('cd-cont').textContent = `${L.length} na lista · ${total} no total · ${pend} a confirmar · edição ${edi.nome}`;
     document.querySelectorAll('#cd-ents .chip').forEach(b=>b.classList.toggle('on', b.dataset.ent===ent));
+    const semCSV = !!ENT[ent].semCSV; $('cd-modelo').hidden = semCSV; $('cd-imp-lbl').hidden = semCSV;
   }
 
   /* ---------- formulário ---------- */
@@ -2021,6 +2082,7 @@ const Cad = (() => {
   function opcoesRef(ref, atual){
     const base = ref==='categorias' ? d.categorias.filter(c=>!c.excluido_em).sort((a,b)=>a.ordem-b.ordem).map(c=>[c.id,c.nome])
       : ref==='expositores' ? d.expositores.filter(x=>!x.excluido_em).sort((a,b)=>a.nome.localeCompare(b.nome,'pt')).map(x=>[x.id,x.nome])
+      : ref==='estandes' ? d.estandes.filter(s=>!s.excluido_em).map(s=>[s.id, (d.expositores.find(x=>x.id===s.expositor_id)||{}).nome||'–']).sort((a,b)=>a[1].localeCompare(b[1],'pt'))
       : ref==='lotes' ? d.lotes.filter(l=>!l.excluido_em).sort((a,b)=>num(a.numero)-num(b.numero)).map(l=>[l.id,'Lote '+l.numero])
       : d.locais.filter(l=>!l.excluido_em).sort((a,b)=>a.nome.localeCompare(b.nome,'pt')).map(l=>[l.id, l.nome+' ('+(TC[l.tipo]||l.tipo)+')']);
     return '<option value="">—</option>' + base.map(([v,t])=>`<option value="${esc(v)}" ${v===atual?'selected':''}>${esc(t)}</option>`).join('');
@@ -2035,6 +2097,10 @@ const Cad = (() => {
     if (c.t==='dt') return `<label class="fld" for="${id}">${lbl}<input type="datetime-local" id="${id}" data-k="${c.k}" value="${esc(dtLocal(v))}"></label>`;
     if (c.t==='data') return `<label class="fld" for="${id}">${lbl}<input type="date" id="${id}" data-k="${c.k}" value="${esc(v||'')}"></label>`;
     if (c.t==='num') return `<label class="fld" for="${id}">${lbl}<input type="number" id="${id}" data-k="${c.k}" value="${esc(v??0)}"></label>`;
+    if (c.t==='etapas') return `<div class="fld larga"><span>${lbl} · o visitante cumpre todas, em qualquer ordem</span><div id="cf-etapas" class="adm-lista"></div>
+      <div class="adm-acts"><select id="cf-etapa-nova" aria-label="Nova etapa"><option value="">Escolha uma palestra ou um estande…</option>
+        <optgroup label="Palestras e atividades">${d.agenda.filter(a=>!a.excluido_em).sort((a,b)=>String(a.inicio||'').localeCompare(String(b.inicio||''))).map(a=>`<option value="palestra:${esc(a.id)}">${esc((a.inicio?new Date(a.inicio).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})+' · ':'')+a.titulo)}</option>`).join('')}</optgroup>
+        <optgroup label="Estandes">${opcoesRef('estandes').replace('<option value="">—</option>','').replace(/value="/g,'value="estande:')}</optgroup></select><button type="button" class="ghost sm" id="cf-etapa-add">Adicionar etapa</button></div></div>`;
     if (c.t==='cor') return `<label class="fld" for="${id}">${lbl}<input type="color" id="${id}" data-k="${c.k}" value="${esc(v||'#5fd0ff')}"></label>`;
     return `<label class="fld" for="${id}">${lbl}<input id="${id}" data-k="${c.k}" maxlength="${c.max||200}" value="${esc(v||'')}"></label>`;
   }
@@ -2052,12 +2118,36 @@ const Cad = (() => {
           <div class="adm-link" id="cf-loja-link" hidden><input readonly id="cf-loja-url" aria-label="Link de convite do estande"><button class="ghost sm" id="cf-loja-copiar">Copiar</button></div>
           <div id="cf-loja-contas" class="nota">Carregando as contas do estande…</div></div>`;
     } else if (ent==='expositores' && r) extra += '<p class="nota larga">Informe os lotes desta edição e salve para gerar o QR do estande.</p>';
+    if (ent==='agenda' && r){
+      const pr = d.pres[r.id] || {}, tel = location.origin + location.pathname + '#telao-' + r.id;
+      extra += `<div class="larga adm-sec" style="background:transparent"><b>Presença e avaliação</b>
+        <p class="nota">Abra o telão de presença no computador do auditório (com uma conta da equipe). O QR muda a cada minuto e só vale de 15 minutos antes do início até 15 minutos depois do fim.</p>
+        <div class="adm-acts"><a class="ghost sm" href="${esc(tel)}" target="_blank" rel="noopener">Abrir telão de presença</a></div>
+        <p class="adm-p"><b>${pr.presentes||0}</b> presenças · avaliações: 😀 ${pr.bom||0} · 😐 ${pr.neutro||0} · ☹️ ${pr.ruim||0} · ${pr.comentarios||0} comentários (só a organização vê)</p>
+        <div id="cf-pal-com" class="coments"></div></div>`;
+    }
+    if (ent==='trilhas' && r){
+      const link = location.origin + location.pathname + '#t-' + r.id;
+      extra += `<div class="larga qr-box"><img alt="QR da trilha ${esc(R.titulo)}" src="${qrDataURL(link)}"><div class="fld"><span>Link da trilha para divulgar (o visitante vê o progresso e o cupom)</span><input readonly value="${esc(link)}" aria-label="Link da trilha"><p class="nota">Só aparece para o visitante com a situação "Aprovada". O prêmio vai por ordem de chegada, até acabar a quantidade.</p></div></div>
+        <div class="larga adm-sec" style="background:transparent" id="cf-tri-num"><span class="nota">Carregando os números da trilha…</span></div>`;
+    }
     $('cd-form').innerHTML = `<div class="cad-form"><h3>${novo?'Novo registro':'Editar'} · ${esc(ENT[ent].nome)}</h3>${ENT[ent].campos.map(c=>campo(c,R)).join('')}${extra}
       <div class="acts">${!novo ? (R.excluido_em ? '<button class="ghost sm" id="cf-rest">Restaurar da lixeira</button>' : '<button class="ghost sm" id="cf-exc">Mover para a lixeira</button>') : ''}<button class="ghost sm" id="cf-cancel">Cancelar</button><button class="btn sm" id="cf-salvar">Salvar</button></div></div>`;
     $('cf-cancel').onclick = () => form(undefined);
     if ($('cf-copiar')) $('cf-copiar').onclick = () => { const t=$('cf-link'); navigator.clipboard.writeText(t.value).then(()=>msg('Link copiado.','ok')).catch(()=>{ t.select(); }); };
     if ($('cf-baixar-qr')) $('cf-baixar-qr').onclick = () => { const a=document.createElement('a'); a.href=qrDataURL($('cf-link').value, 12); a.download='qr_'+norm(R.nome).replace(/[^a-z0-9]+/g,'_')+'.gif'; document.body.appendChild(a); a.click(); a.remove(); };
     $('cf-salvar').onclick = () => salvar(R);
+    if (ent==='trilhas'){
+      etapasEd = clone((R.etapas)||[]); desenharEtapas();
+      $('cf-etapa-add').onclick = () => { const v = $('cf-etapa-nova').value; if (!v) return; const [tipo, id] = v.split(':');
+        if (etapasEd.some(e=>e.id===id)){ msg('Esta etapa já está na trilha.','aviso'); return; }
+        if (etapasEd.length>=10){ msg('Uma trilha tem no máximo 10 etapas.','aviso'); return; }
+        etapasEd.push({tipo, id}); desenharEtapas(); $('cf-etapa-nova').value=''; };
+      if (r) Base.agenda.metricasTrilha(r.id).then(m=>{ const box=$('cf-tri-num'); if (!box) return;
+        box.innerHTML = `<b>Números da trilha</b><p class="adm-p">${m.comecaram} começaram · ${m.cupons} completaram e receberam cupom · ${m.resgatados} retiraram o prêmio · ${Math.max(0, m.estoque-m.cupons)} prêmios restantes</p>
+          <div class="tw"><table class="adm-tab"><thead><tr><th>Etapa</th><th>Visitantes que cumpriram</th></tr></thead><tbody>${(m.etapas||[]).map(e=>`<tr><td>${esc((e.tipo==='palestra'?'Palestra: ':'Estande: ')+(e.nome||'–'))}</td><td class="tabnum">${e.n}</td></tr>`).join('')}</tbody></table></div>`; }).catch(()=>{ const box=$('cf-tri-num'); if (box) box.innerHTML='<span class="nota">Não foi possível carregar os números agora.</span>'; });
+    }
+    if (ent==='agenda' && r && $('cf-pal-com')) Base.agenda.comentarios(r.id).then(l=>{ const box=$('cf-pal-com'); if (box && l.length) box.innerHTML = l.map(c=>`<div class="coment"><div class="meta"><span>${esc(new Date(c.quando).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}))}</span></div><p>${esc(c.texto)}</p></div>`).join(''); }).catch(()=>{});
     if ($('cf-loja-conv')){
       const contas = async () => {
         const box=$('cf-loja-contas'); if (!box) return;
@@ -2078,9 +2168,16 @@ const Cad = (() => {
     if ($('cf-rest')) $('cf-rest').onclick = async () => { await lixeira(R, false); };
     lista(); $('cd-form').scrollIntoView({block:'nearest'});
   }
+  const nomeEtapa = e => e.tipo==='palestra' ? 'Palestra: '+((d.agenda.find(a=>a.id===e.id)||{}).titulo||'(removida)') : 'Estande: '+((d.expositores.find(x=>x.id===((d.estandes.find(s=>s.id===e.id)||{}).expositor_id))||{}).nome||'(removido)');
+  function desenharEtapas(){
+    const box = $('cf-etapas'); if (!box) return;
+    box.innerHTML = etapasEd.length ? etapasEd.map((e,i)=>`<div class="orow"><span>${i+1}. ${esc(nomeEtapa(e))}</span><button type="button" class="ib" data-rmet="${i}" aria-label="Remover etapa ${i+1}">✕</button></div>`).join('') : '<p class="nota">Nenhuma etapa ainda.</p>';
+    box.querySelectorAll('[data-rmet]').forEach(b=>b.onclick=()=>{ etapasEd.splice(+b.dataset.rmet,1); desenharEtapas(); });
+  }
   function valores(){
     const o = {};
     ENT[ent].campos.forEach(c=>{
+      if (c.t==='etapas'){ o.etapas = etapasEd.map(e=>({tipo:e.tipo, id:e.id})); return; }
       const el = $('cf-'+c.k); if (!el) return;
       let v = c.t==='bool' ? el.checked : el.value;
       if (c.t==='text' || c.t==='area') v = v.trim() || null;
@@ -2095,6 +2192,7 @@ const Cad = (() => {
   async function gravar(R, o){
     const E = ENT[ent];
     for (const c of E.campos) if (c.req && !o[c.k]) throw Object.assign(new Error('req'), {code:'req', campo:c.l});
+    if (ent==='trilhas' && !(o.etapas||[]).length) throw Object.assign(new Error('req'), {code:'req', campo:'Etapas'});
     if (o.cnpj && !/^[0-9]{14}$/.test(o.cnpj)) throw Object.assign(new Error('cnpj'), {code:'invalido'});
     const lotesTxt = o.lotes, juntar = o.juntar_lotes; delete o.lotes; delete o.juntar_lotes;
     if (o.foto_url && !/^https:\/\//.test(o.foto_url)) throw Object.assign(new Error('foto'), {code:'invalido'});
@@ -2352,7 +2450,8 @@ const Visit = (() => {
         contato:'Quero contato', contatoAj:'O estande recebe seu WhatsApp para falar com você.', contatoOk:'Pedido enviado. O estande vai falar com você.',
         compartilhar:'Compartilhar', copiado:'Link copiado.', obrigado:'Registrado!', erro:'Não foi possível registrar agora. Confira a internet e tente de novo.',
         naoAchado:'Estande não encontrado. Confira o QR code ou procure a equipe da feira.', indisponivel:'A interatividade ao vivo funciona no site oficial da plataforma.', carregando:'Carregando…',
-        semRede:'Sem internet agora. Abra este QR de novo quando o sinal voltar.', naFila:'Sem internet: guardamos aqui e enviamos sozinhos quando o sinal voltar.', pendentes:'ações esperando internet'},
+        semRede:'Sem internet agora. Abra este QR de novo quando o sinal voltar.', naFila:'Sem internet: guardamos aqui e enviamos sozinhos quando o sinal voltar.', pendentes:'ações esperando internet',
+        trilhas:'Trilhas', etapas:'etapas', premio:'Prêmio', oferecido:'Oferecido por', verTodas:'Ver todas as trilhas', ganhou:'Você completou a trilha!', mostreCupom:'Mostre este código no estande {x} para retirar o prêmio.', mostreCupomOrg:'Mostre este código à organização da feira para retirar o prêmio.', retirado:'Prêmio já retirado.', esgotada:'Os prêmios desta trilha acabaram.', encerrada:'Esta trilha já foi encerrada.', prazo:'Até', regulamento:'Regulamento', semTrilhas:'Nenhuma trilha aberta agora.', semTrilha:'Trilha não encontrada ou encerrada.', comecar:'Leia o QR de um estande ou de uma palestra para começar.', palestra:'Palestra', estande:'Estande', presencaOk:'Presença registrada ✓', presencaSem:'Para registrar presença, leia o QR do telão durante a palestra.', foraHorario:'A presença só pode ser registrada durante a palestra.', expirado:'Este QR já mudou. Leia de novo o QR do telão.', avalPal:'O que achou da palestra?', comentPal:'Comentário para a organização (não é publicado)'},
     en:{entrar:'Before you interact, tell us a little about yourself', entrarSub:'It takes about 40 seconds and covers the whole fair. We do not ask for your name or ID.',
         idioma:'Language', origem:'Where did you come from?', cidade:'Type your city', pais:'Type your country', perfil:'Which best describes you?', idade:'Age group',
         culturas:'Crops and activities of interest', prim:'Is this your first time at the fair?', dias:'How many days are you attending?', pern:'Are you staying overnight because of the fair?',
@@ -2365,7 +2464,8 @@ const Visit = (() => {
         contato:'Contact me', contatoAj:'The exhibitor receives your WhatsApp to contact you.', contatoOk:'Request sent. The exhibitor will contact you.',
         compartilhar:'Share', copiado:'Link copied.', obrigado:'Saved!', erro:'Could not save right now. Check your connection and try again.',
         naoAchado:'Exhibitor not found. Check the QR code or ask the fair staff.', indisponivel:'Live interaction works on the platform website.', carregando:'Loading…',
-        semRede:'No internet right now. Open this QR code again when you have signal.', naFila:'No internet: saved on this phone and sent automatically when the signal returns.', pendentes:'actions waiting for internet'},
+        semRede:'No internet right now. Open this QR code again when you have signal.', naFila:'No internet: saved on this phone and sent automatically when the signal returns.', pendentes:'actions waiting for internet',
+        trilhas:'Trails', etapas:'steps', premio:'Prize', oferecido:'Offered by', verTodas:'See all trails', ganhou:'You completed the trail!', mostreCupom:'Show this code at the {x} booth to collect your prize.', mostreCupomOrg:'Show this code to the fair staff to collect your prize.', retirado:'Prize already collected.', esgotada:'The prizes for this trail have run out.', encerrada:'This trail has ended.', prazo:'Until', regulamento:'Rules', semTrilhas:'No open trails right now.', semTrilha:'Trail not found or ended.', comecar:'Scan the QR code of a booth or a talk to start.', palestra:'Talk', estande:'Booth', presencaOk:'Attendance recorded ✓', presencaSem:'To record attendance, scan the QR code on the screen during the talk.', foraHorario:'Attendance can only be recorded during the talk.', expirado:'This QR code has changed. Scan the screen again.', avalPal:'How was the talk?', comentPal:'Comment for the organizers (not published)'},
     es:{entrar:'Antes de interactuar, cuéntenos un poco sobre usted', entrarSub:'Toma unos 40 segundos y vale para toda la feria. No pedimos nombre ni documento.',
         idioma:'Idioma', origem:'¿De dónde viene?', cidade:'Escriba su ciudad', pais:'Escriba su país', perfil:'¿Cuál es su perfil?', idade:'Rango de edad',
         culturas:'Cultivos y actividades de interés', prim:'¿Es su primera vez en la feria?', dias:'¿Cuántos días viene?', pern:'¿Va a pasar la noche fuera de casa por la feria?',
@@ -2378,7 +2478,8 @@ const Visit = (() => {
         contato:'Quiero contacto', contatoAj:'El expositor recibe su WhatsApp para contactarlo.', contatoOk:'Pedido enviado. El expositor lo contactará.',
         compartilhar:'Compartir', copiado:'Enlace copiado.', obrigado:'¡Registrado!', erro:'No fue posible registrar ahora. Revise su conexión e intente de nuevo.',
         naoAchado:'Expositor no encontrado. Revise el código QR o busque al personal de la feria.', indisponivel:'La interacción en vivo funciona en el sitio de la plataforma.', carregando:'Cargando…',
-        semRede:'Sin internet ahora. Abra este código QR de nuevo cuando vuelva la señal.', naFila:'Sin internet: lo guardamos aquí y lo enviamos solo cuando vuelva la señal.', pendentes:'acciones esperando internet'}
+        semRede:'Sin internet ahora. Abra este código QR de nuevo cuando vuelva la señal.', naFila:'Sin internet: lo guardamos aquí y lo enviamos solo cuando vuelva la señal.', pendentes:'acciones esperando internet',
+        trilhas:'Rutas', etapas:'etapas', premio:'Premio', oferecido:'Ofrecido por', verTodas:'Ver todas las rutas', ganhou:'¡Completó la ruta!', mostreCupom:'Muestre este código en el stand {x} para retirar el premio.', mostreCupomOrg:'Muestre este código a la organización de la feria para retirar el premio.', retirado:'Premio ya retirado.', esgotada:'Se agotaron los premios de esta ruta.', encerrada:'Esta ruta ya terminó.', prazo:'Hasta', regulamento:'Reglamento', semTrilhas:'No hay rutas abiertas ahora.', semTrilha:'Ruta no encontrada o terminada.', comecar:'Lea el código QR de un stand o de una charla para empezar.', palestra:'Charla', estande:'Stand', presencaOk:'Asistencia registrada ✓', presencaSem:'Para registrar asistencia, lea el código QR de la pantalla durante la charla.', foraHorario:'La asistencia solo se registra durante la charla.', expirado:'Este código QR ya cambió. Léalo de nuevo en la pantalla.', avalPal:'¿Qué le pareció la charla?', comentPal:'Comentario para la organización (no se publica)'}
   };
   const CULT = {soja:['Soja','Soybean','Soja'], milho:['Milho','Corn','Maíz'], algodao:['Algodão','Cotton','Algodón'], cana:['Cana','Sugarcane','Caña'], cafe:['Café','Coffee','Café'],
     feijao:['Feijão','Beans','Frijol'], sorgo:['Sorgo','Sorghum','Sorgo'], trigo:['Trigo','Wheat','Trigo'], pecuaria_corte:['Pecuária de corte','Beef cattle','Ganadería de carne'],
@@ -2436,7 +2537,9 @@ const Visit = (() => {
     if (!est){ atual = () => aviso(offline ? L().semRede : L().naoAchado); atual(); return; }
     const tok = tokenDe(est.ed);
     if (!tok){ atual = () => entrada(est.ed, () => estande(id)); atual(); return; }
-    try{ await descarregar(); estado = await Base.vis.estado(tok, est.id); LS.set(SK(est.id), estado); Base.vis.agir(tok, est.id, 'checkin').catch(e=>{ if (semRede(e)) enfileirar({tok, est:est.id, acao:'checkin'}); }); }
+    LS.set('tsa_vis_ed', est.ed);
+    try{ await descarregar(); estado = await Base.vis.estado(tok, est.id); LS.set(SK(est.id), estado);
+      Base.vis.agir(tok, est.id, 'checkin').then(()=>{ if (atual===pagina) trilhasAqui('estande', est.id, tok); }).catch(e=>{ if (semRede(e)) enfileirar({tok, est:est.id, acao:'checkin'}); }); }
     catch(e){
       if (e.code==='visitante_invalido'){ LS.set('tsa_vis_'+est.ed, null); atual = () => entrada(est.ed, () => estande(id)); atual(); return; }
       estado = LS.get(SK(est.id), null) || {produtos:{}};
@@ -2534,6 +2637,7 @@ const Visit = (() => {
         <button class="btn sec" id="vp-enviar">${esc(t.enviar)}</button>
       </div>
       ${s.menor ? '' : `<div class="vis-card"><button class="btn" id="vp-contato" ${s.contato?'disabled':''}>${esc(s.contato?t.contatoOk:t.contato)}</button><p class="sub" style="font-size:.85rem">${esc(t.contatoAj)}</p></div>`}
+      <div class="vis-card" id="vp-trilhas" hidden></div>
       <button class="ghost" id="vp-share">${esc(t.compartilhar)}</button>
       ${fila().length ? `<p class="vis-msg">⏳ ${fila().length} ${esc(t.pendentes)}</p>` : ''}
       <p class="vis-msg" id="vp-msg" hidden></p>`;
@@ -2564,8 +2668,148 @@ const Visit = (() => {
       navigator.clipboard.writeText(url).then(()=>msgv(L().copiado,'ok')).catch(()=>msgv(url));
     };
   }
-  return {estande, CULT};
+  /* ---------- trilhas ---------- */
+  const fmtHora = iso => { try{ return new Date(iso).toLocaleString(lang==='en'?'en-US':lang==='es'?'es':'pt-BR',{weekday:'short',hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } };
+  const progresso = tr => `<div class="vis-prog" role="progressbar" aria-valuemin="0" aria-valuemax="${tr.total}" aria-valuenow="${tr.feitas}"><i style="width:${tr.total?100*tr.feitas/tr.total:0}%"></i></div>`;
+  function resumoTrilha(tr){
+    const t = L(), fim = tr.cupom ? (tr.cupom.resgatado ? '✅ '+t.retirado : '🎁 '+t.ganhou) : tr.encerrada ? t.encerrada : tr.esgotada ? t.esgotada : '';
+    return `<a class="vis-trilha" href="#t-${esc(tr.id)}"><b>🏁 ${esc(tr.titulo)}</b><span class="sub">${tr.feitas}/${tr.total} ${esc(t.etapas)} · ${esc(t.premio)}: ${esc(tr.premio)}</span>${progresso(tr)}${fim?`<span class="sub">${esc(fim)}</span>`:''}</a>`;
+  }
+  /* Na página do estande ou da palestra: as trilhas que passam por aqui. Também emite o cupom de quem acabou de completar. */
+  async function trilhasAqui(tipo, id, tok){
+    const box = $('vp-trilhas'); if (!box) return;
+    let l; try{ l = await Base.vis.trilhas(tok); }catch(e){ return; }
+    const aqui = (l||[]).filter(tr=>(tr.etapas||[]).some(e=>e.tipo===tipo && e.id===id));
+    if (!aqui.length || !$('vp-trilhas')) return;
+    box.hidden = false; box.innerHTML = `<h2>${esc(L().trilhas)}</h2>${aqui.map(resumoTrilha).join('')}<a class="ghost" href="#trilhas" style="justify-self:start">${esc(L().verTodas)}</a>`;
+  }
+  async function trilhas(){
+    window.scrollTo(0,0); atual = trilhas;
+    const ed = LS.get('tsa_vis_ed', null), tok = ed && tokenDe(ed);
+    if (!Base.vis.disponivel()){ aviso(L().indisponivel); return; }
+    if (!tok){ aviso(L().comecar); return; }
+    corpo().innerHTML = topo() + `<p class="sub">${esc(L().carregando)}</p>`;
+    let l; try{ l = await Base.vis.trilhas(tok); }catch(e){ aviso(e.code==='rede' ? L().semRede : L().erro); return; }
+    corpo().innerHTML = topo() + `<h1>${esc(L().trilhas)}</h1>` + (l.length ? `<div class="vis-card">${l.map(resumoTrilha).join('')}</div>` : `<div class="vis-card"><p class="sub">${esc(L().semTrilhas)}</p></div>`);
+    ligarIdioma();
+  }
+  async function trilha(id){
+    window.scrollTo(0,0); atual = () => trilha(id);
+    const ed = LS.get('tsa_vis_ed', null), tok = ed && tokenDe(ed), t = L();
+    if (!Base.vis.disponivel()){ aviso(t.indisponivel); return; }
+    if (!tok){ aviso(t.comecar); return; }
+    corpo().innerHTML = topo() + `<p class="sub">${esc(t.carregando)}</p>`;
+    let l; try{ l = await Base.vis.trilhas(tok); }catch(e){ aviso(e.code==='rede' ? t.semRede : t.erro); return; }
+    const tr = (l||[]).find(x=>x.id===id);
+    if (!tr){ aviso(t.semTrilha); return; }
+    const etapa = e => `<li class="${e.feita?'ok':''}"><span class="mk">${e.feita?'✓':'○'}</span><span><b>${esc(e.nome||'–')}</b><br><span class="sub">${e.tipo==='palestra' ? esc(t.palestra)+(e.inicio?' · '+esc(fmtHora(e.inicio)):'')+(e.local?' · '+esc(e.local):'') : esc(t.estande)+(e.lotes&&e.lotes.length?' · '+esc(t.lote)+' '+esc(e.lotes.join(', ')):'')}</span></span></li>`;
+    const doador = tr.doador ? tr.doador.nome : null;
+    let cupom = '';
+    if (tr.cupom) cupom = `<div class="vis-card vis-cupom"><h2>🎁 ${esc(t.ganhou)}</h2><div class="cod">${esc(tr.cupom.codigo)}</div>
+        <p class="sub">${tr.cupom.resgatado ? esc(t.retirado) : esc(doador ? t.mostreCupom.replace('{x}', doador) : t.mostreCupomOrg)}</p></div>`;
+    else if (tr.feitas===tr.total) cupom = `<div class="vis-card"><p class="sub">${esc(tr.encerrada ? t.encerrada : t.esgotada)}</p></div>`;
+    else if (tr.encerrada || tr.esgotada) cupom = `<div class="vis-card"><p class="sub">${esc(tr.encerrada ? t.encerrada : t.esgotada)}</p></div>`;
+    corpo().innerHTML = topo() + `<h1>🏁 ${esc(tr.titulo)}</h1>${tr.descricao?`<p class="sub">${esc(tr.descricao)}</p>`:''}
+      ${cupom}
+      <div class="vis-card"><span class="vis-lbl">${esc(t.premio)}</span><b>${esc(tr.premio)}</b>${doador?`<span class="sub">${esc(t.oferecido)} ${esc(doador)}</span>`:''}${tr.prazo?`<span class="sub">${esc(t.prazo)} ${esc(fmtHora(tr.prazo))}</span>`:''}
+        <span class="vis-lbl">${tr.feitas}/${tr.total} ${esc(t.etapas)}</span>${progresso(tr)}<ol class="vis-etapas">${(tr.etapas||[]).map(etapa).join('')}</ol></div>
+      ${tr.regulamento?`<details class="vis-card"><summary>${esc(t.regulamento)}</summary><p class="sub" style="white-space:pre-line">${esc(tr.regulamento)}</p></details>`:''}
+      <a class="ghost" href="#trilhas" style="justify-self:start">${esc(t.verTodas)}</a>`;
+    ligarIdioma();
+  }
+
+  /* ---------- palestra (QR do telão) ---------- */
+  async function palestra(id, cod){
+    window.scrollTo(0,0);
+    const t = L();
+    if (!Base.vis.disponivel()){ aviso(t.indisponivel); return; }
+    corpo().innerHTML = topo() + `<p class="sub">${esc(t.carregando)}</p>`;
+    let p; try{ p = await Base.vis.palestra(id); }catch(e){ aviso(e.code==='rede' ? t.semRede : t.erro); return; }
+    if (!p){ aviso(t.naoAchado); return; }
+    const tok = tokenDe(p.ed);
+    if (!tok){ atual = () => entrada(p.ed, () => palestra(id, cod)); atual(); return; }
+    LS.set('tsa_vis_ed', p.ed);
+    let st = null, aviso1 = '';
+    try{
+      if (cod){
+        try{ st = await Base.vis.presenca(tok, id, cod); }
+        catch(e){ if (e.code==='visitante_invalido') throw e; aviso1 = e.code==='fora_do_horario' ? t.foraHorario : e.code==='codigo_expirado' ? t.expirado : e.code==='rede' ? t.semRede : t.erro; }
+        history.replaceState(null, '', location.pathname + '#p-' + id); current = 'p-' + id;     // o código expira: recarregar não deve reenviá-lo
+      }
+      if (!st) st = await Base.vis.estadoPalestra(tok, id);
+    }catch(e){
+      if (e.code==='visitante_invalido'){ LS.set('tsa_vis_'+p.ed, null); atual = () => entrada(p.ed, () => palestra(id, cod)); atual(); return; }
+      st = st || {presente:false};
+    }
+    const pag = () => {
+      const t = L(), car = st.carinha;
+      corpo().innerHTML = topo() + `<div><span class="vis-tag" style="color:var(--glow)">${esc(t.palestra)}</span></div>
+        <h1>${esc(p.titulo)}</h1>
+        <p class="sub">${[p.palestrante, p.local, p.inicio ? fmtHora(p.inicio) : ''].filter(Boolean).map(esc).join(' · ')}</p>
+        ${aviso1 ? `<p class="vis-msg erro">${esc(aviso1)}</p>` : ''}
+        <div class="vis-card">${st.presente ? `<p class="vis-msg ok">${esc(t.presencaOk)}</p>` : `<p class="sub">${esc(t.presencaSem)}</p>`}</div>
+        ${p.descricao ? `<div class="vis-card"><p class="sub" style="white-space:pre-line">${esc(p.descricao)}</p></div>` : ''}
+        ${st.presente ? `<div class="vis-card"><h2>${esc(t.avalPal)}</h2>
+          <div class="vis-acts"><button class="vis-bt ${car==='bom'?'on':''}" data-pc="bom"><b>😀</b>${esc(t.bom)}</button><button class="vis-bt ${car==='neutro'?'on':''}" data-pc="neutro"><b>😐</b>${esc(t.neutro)}</button><button class="vis-bt ${car==='ruim'?'on':''}" data-pc="ruim"><b>☹️</b>${esc(t.ruim)}</button></div>
+          <label class="vis-lbl" for="pp-coment">${esc(t.comentPal)}</label><textarea class="vis-in" id="pp-coment" rows="3" maxlength="400"></textarea>
+          <button class="btn sec" id="pp-enviar">${esc(t.enviar)}</button></div>` : ''}
+        <div class="vis-card" id="vp-trilhas" hidden></div>
+        <p class="vis-msg" id="vp-msg" hidden></p>`;
+      ligarIdioma();
+      const msgv = (x, tipo) => { const m=$('vp-msg'); m.hidden=!x; m.textContent=x||''; m.className='vis-msg'+(tipo?' '+tipo:''); };
+      corpo().querySelectorAll('[data-pc]').forEach(b=>b.onclick=async()=>{ try{ st = await Base.vis.avaliarPalestra(tok, id, b.dataset.pc, null); aviso1=''; pag(); msgv(L().obrigado,'ok'); }catch(e){ msgv(e.code==='rede'?L().semRede:L().erro,'erro'); } });
+      if ($('pp-enviar')) $('pp-enviar').onclick = async () => { const tx = $('pp-coment').value.trim(); if (!tx) return; try{ st = await Base.vis.avaliarPalestra(tok, id, null, tx); $('pp-coment').value=''; msgv(L().enviado,'ok'); }catch(e){ msgv(e.code==='rede'?L().semRede:L().erro,'erro'); } };
+      trilhasAqui('palestra', id, tok);
+    };
+    atual = pag; pag();
+  }
+  return {estande, palestra, trilha, trilhas, CULT};
 })();
+
+/* ================== TELÃO DE PRESENÇA (auditório) ==================
+   Computador do auditório, com uma conta da equipe. Mostra o QR da palestra com um código
+   que muda a cada minuto; o visitante lê e a presença fica registrada. */
+function qrURL(texto, celula=4){
+  if (typeof qrcode!=='function') return '';
+  const q = qrcode(0, 'M'); q.addData(texto); q.make(); return q.createDataURL(celula, 2);
+}
+const Telao = (() => {
+  const $ = id => document.getElementById(id);
+  let run = 0, timer = null, ultimo = '';
+  const hora = iso => iso ? new Date(iso).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) : '';
+  function tela(html){ $('tl-corpo').innerHTML = `<div class="tl-top"><button class="voltar" data-voltar aria-label="Voltar">←</button><span class="brand">TECNOSHOW <i>AO VIVO</i></span></div>` + html; }
+  async function start(id){
+    const meu = ++run; clearTimeout(timer); ultimo = '';
+    if (Base.kind!=='supabase'){ tela('<p class="tl-sub">O telão de presença funciona no site oficial da plataforma.</p>'); return; }
+    tela('<p class="tl-sub">Carregando…</p>');
+    const ok = await Base.garantirAcesso('equipe'); if (meu!==run) return;
+    if (!ok){ tela('<p class="tl-sub">O telão de presença precisa de uma conta da equipe.</p>'); return; }
+    manterTelaLigada();
+    const passo = async () => {
+      if (meu!==run || location.hash!=='#telao-'+id) return;
+      try{
+        const c = await Base.agenda.telao(id); if (meu!==run) return;
+        const url = location.origin + location.pathname + '#p-' + id + '-' + c.codigo;
+        if (!$('tl-qr') || c.codigo!==ultimo){
+          ultimo = c.codigo;
+          tela(`<div class="tl-grid"><div class="tl-info">
+              <div class="k">${esc(c.local||'Palestra')} · ${esc(hora(c.inicio))}${c.fim?' – '+esc(hora(c.fim)):''}</div>
+              <h1>${esc(c.titulo)}</h1>${c.palestrante?`<p class="tl-sub">${esc(c.palestrante)}</p>`:''}
+              <div class="tl-cont"><b id="tl-n" class="tabnum">${(c.presentes||0).toLocaleString('pt-BR')}</b><span>presenças registradas</span></div>
+              <p class="tl-sub" id="tl-st"></p></div>
+            <div class="tl-qrbox"><img id="tl-qr" alt="QR de presença da palestra" src="${qrURL(url, 10)}"><p>Aponte a câmera do celular para registrar presença</p></div></div>`);
+        }
+        $('tl-n').textContent = (c.presentes||0).toLocaleString('pt-BR');
+        $('tl-st').textContent = c.aberta ? 'O QR muda a cada minuto: só vale para quem está aqui.' : 'A presença abre 15 minutos antes do início e fecha 15 minutos depois do fim.';
+        $('tl-qr').style.opacity = c.aberta ? '1' : '.25';
+      }catch(e){ if ($('tl-st')) $('tl-st').textContent = 'Sem conexão: tentando de novo…'; else tela('<p class="tl-sub">'+(e.code==='agenda_invalida'?'Palestra não encontrada.':e.code==='sem_permissao'?'Sua conta não é da equipe.':'Sem conexão: tentando de novo…')+'</p>'); }
+      timer = setTimeout(passo, 15000);
+    };
+    passo();
+  }
+  return {start};
+})();
+
 
 /* ================== ÁREA DO EXPOSITOR (painel do estande) ==================
    A conta do estande vê só o próprio estande. Os números vêm prontos do banco (painel_expositor);
@@ -2573,7 +2817,7 @@ const Visit = (() => {
 const Loja = (() => {
   const $ = id => document.getElementById(id);
   const corpo = () => $('lj-corpo');
-  let run = 0, dados = null, lojas = [], estId = null, hora = null;
+  let run = 0, dados = null, lojas = [], estId = null, hora = null, trilhasLoja = [];
   const n = v => (v||0).toLocaleString('pt-BR');
   const pct = (a,b) => b ? Math.round(100*a/b) : 0;
   const quando = iso => { try{ return new Date(iso).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}); }catch(e){ return ''; } };
@@ -2614,7 +2858,7 @@ const Loja = (() => {
     ligarTopo(); corpo().querySelectorAll('[data-est]').forEach(b=>b.onclick=()=>go('expositor-'+b.dataset.est));
   }
   async function carregar(meu){
-    try{ dados = await Base.loja.painel(estId); }
+    try{ [dados, trilhasLoja] = await Promise.all([Base.loja.painel(estId), Base.loja.trilhas(estId).catch(()=>[])]); }
     catch(e){ if (meu!==run) return; aviso(e.code==='sem_permissao' ? 'Esta conta não tem acesso a este estande.' : e.code==='estande_invalido' ? 'Estande não encontrado.' : 'Não foi possível carregar o painel. Confira a internet e tente de novo.'); return; }
     if (meu!==run) return;
     hora = new Date(); render();
@@ -2673,6 +2917,11 @@ const Loja = (() => {
         ${acoes('<button class="btn sm" id="lj-atualizar">Atualizar</button>' + (lojas.length>1 ? '<button class="ghost sm" id="lj-trocar">Trocar de estande</button>' : ''))}</div>
       <p class="adm-msg">Estes dados são só do seu estande. Avaliações negativas e comentários "só para a loja" aparecem aqui e para a organização da feira, nunca em público.</p>
       <div class="loja-kpis">${kpi(t.visitantes,'visitantes leram o QR')}${kpi(t.curti,'curtidas')}${kpi(t.amei,'amei')}${kpi(t.seguidores,'seguidores')}${kpi(t.salvos,'produtos salvos')}${kpi(t.contatos,'pedidos de contato')}</div>
+      ${trilhasLoja.length ? `<section class="adm-sec"><h3>Prêmios de trilhas</h3>
+        <p class="adm-p">O visitante que completa a trilha mostra um código no celular. Digite o código para dar baixa e entregue o prêmio. Cada código vale uma vez.</p>
+        <form class="adm-acts" id="lj-cupom-f"><label class="fld" for="lj-cupom">Código do cupom<input id="lj-cupom" class="cupom-in" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false"></label><button class="btn sm" style="align-self:end">Dar baixa</button></form>
+        <p class="adm-msg" id="lj-cupom-msg" hidden></p>
+        <div class="tw"><table class="adm-tab"><thead><tr><th>Trilha</th><th>Prêmio</th><th>Começaram</th><th>Completaram</th><th>Retiraram</th><th>Restam</th></tr></thead><tbody>${trilhasLoja.map(m=>`<tr><td>${esc(m.titulo)}</td><td>${esc(m.premio)}</td><td class="tabnum">${n(m.comecaram)}</td><td class="tabnum">${n(m.cupons)}</td><td class="tabnum">${n(m.resgatados)}</td><td class="tabnum">${n(Math.max(0,m.estoque-m.cupons))}</td></tr>`).join('')}</tbody></table></div></section>` : ''}
       <div class="loja-duo">
         <section class="adm-sec"><h3>Atendimento</h3>${satisfacao(d.satisfacao)}</section>
         <section class="adm-sec"><h3>Visitantes por hora</h3><div class="hora" id="lj-hora"></div><p class="nota">Pessoas diferentes que leram o QR do estande, nas horas com movimento.</p>
@@ -2695,6 +2944,15 @@ const Loja = (() => {
     $('lj-atualizar').onclick = () => carregar(run);
     if ($('lj-trocar')) $('lj-trocar').onclick = () => { estId=null; escolher(); };
     if ($('lj-csv')) $('lj-csv').onclick = csvContatos;
+    if ($('lj-cupom-f')) $('lj-cupom-f').onsubmit = async ev => {
+      ev.preventDefault(); const m = $('lj-cupom-msg'), cod = $('lj-cupom').value.trim(); if (!cod) return;
+      const dizer = (t, tipo) => { m.hidden=false; m.textContent=t; m.className='adm-msg '+tipo; };
+      try{ const r = await Base.loja.resgatar(cod);
+        if (r.ok){ dizer(`Cupom válido: entregue "${r.premio}" (${r.trilha}).`, 'ok'); $('lj-cupom').value=''; }
+        else if (r.motivo==='ja_resgatado') dizer(`Este cupom já foi usado em ${quando(r.resgatado_em)}. Não entregue o prêmio de novo.`, 'erro');
+        else dizer('Código não encontrado. Confira as letras e os números (o código é do celular do visitante).', 'erro');
+      }catch(e){ dizer(e.code==='limite' ? 'Muitas tentativas seguidas. Aguarde alguns minutos.' : 'Não foi possível conferir agora. Confira a internet e tente de novo.', 'erro'); }
+    };
     graficoHora(d.por_hora||[]);
   }
   return {start};

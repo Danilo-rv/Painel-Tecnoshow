@@ -25,7 +25,7 @@ As respostas ficam num banco **Supabase** do próprio projeto. Uma versão alter
 ## 1. Configurar o Supabase (uma vez)
 
 1. Crie um projeto em <https://supabase.com> (região São Paulo, `sa-east-1`).
-2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`, `003_visitante_estande.sql`, `004_moderacao_painel_expositor.sql` e `005_saida_tablets.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
+2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`, `003_visitante_estande.sql`, `004_moderacao_painel_expositor.sql`, `005_saida_tablets.sql` e `006_presenca_trilhas.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
 3. Em **Authentication → Sign In / Providers**, deixe **ligado** "Allow new users to sign up" (a equipe se cadastra pelo link de convite; uma conta criada sem convite não acessa nada) e mantenha "Confirm email" ligado.
    Em **Authentication → URL Configuration**, coloque o endereço do site em **Site URL** e em **Redirect URLs** (ex.: `https://danilo-rv.github.io/Painel-Tecnoshow/**`), para o e-mail de confirmação voltar ao app.
 4. Gere a chave da coleta: no SQL Editor, rode `select replace(gen_random_uuid()::text, '-', '') as chave_da_coleta;` e guarde o resultado.
@@ -183,6 +183,35 @@ Cada estande tem um QR (em **Administração → Cadastros → Expositores**, ab
   - quando o sinal volta, tudo é enviado sozinho, e a página avisa quantas ações ainda esperam internet;
   - um estande já aberto antes continua aparecendo sem internet;
   - um estande nunca aberto mostra o aviso para tentar de novo quando o sinal voltar.
+
+## 10. Presença em palestras e trilhas
+
+### Presença em palestras
+
+- Cadastre a palestra em **Cadastros → Agenda**, com início, fim e local.
+- No formulário da palestra, toque em **Abrir telão de presença** e abra o link no computador do auditório, com uma conta da equipe.
+- O telão mostra:
+  - o QR de presença, cujo código muda a cada minuto (uma foto enviada por WhatsApp para quem não está na sala expira logo);
+  - o número de presenças registradas.
+- O QR só vale de 15 minutos antes do início até 15 minutos depois do fim.
+- O visitante lê o QR:
+  - se ainda não tem perfil, responde a porta de entrada;
+  - a presença fica registrada, e quem esteve presente pode avaliar a palestra (carinhas) e deixar um comentário.
+- A avaliação e os comentários da palestra só a organização vê: aparecem no formulário da palestra. A lista da agenda mostra o público de cada palestra.
+
+### Trilhas
+
+- Em **Cadastros → Trilhas**, cadastre:
+  - o nome e o prêmio;
+  - o estande que entrega o prêmio;
+  - a quantidade de prêmios e o prazo;
+  - as etapas (palestras e estandes, até 10), a descrição e o regulamento.
+- Só trilhas com a situação **Aprovada** aparecem para o visitante. O formulário traz o link e o QR da trilha para divulgar, e os números: quantos começaram, quantos completaram, quantos retiraram e quantos cumpriram cada etapa.
+- O visitante vê as trilhas que passam pelo estande ou pela palestra em que está, e acompanha o progresso em `…/#trilhas`.
+- Ao completar todas as etapas, recebe um cupom de uso único, por ordem de chegada, até acabar a quantidade de prêmios (decisão 3: sem sorteio).
+- O estande doador digita o código do cupom em **Área do expositor → Prêmios de trilhas** e entrega o prêmio. Um cupom já usado é recusado, com a data em que foi usado. A organização também pode dar baixa.
+
+**Pendente:** o aviso por WhatsApp ao completar a trilha (depende do provedor da API do WhatsApp Business) e a proposta de trilha feita pelo próprio estande para aprovação da organização.
 
 ## Proteção de dados (LGPD)
 
