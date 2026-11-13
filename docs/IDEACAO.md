@@ -855,6 +855,31 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - Dados usados na operação: planta, agenda, filas, estacionamento, hospedagem.
 - Rede multifeira com comparação nacional entre exposições.
 
+## 24. ShowPulse vivo (mapa 3D, reações, vídeos) e sustentabilidade o ano todo (ideias de 13/11/2026)
+
+**Mapa 3D da feira com reações ao vivo (ideia do coordenador):**
+- Miniatura da feira em perspectiva, com os lotes em relevo; de cima de cada estande sobem, em tempo real, curtidas, corações e carinhas felizes.
+- Só reações positivas sobem no telão. Carinha neutra e triste continuam privadas (decisão 25).
+- O estande com muitas reações "esquenta" (brilho e altura maiores); um pico de reações gera uma onda no mapa.
+- "Melhores momentos do dia": o mapa reproduz o dia inteiro em 30 segundos no fim da tarde.
+
+**Vídeos e momentos dos visitantes (ideia do coordenador):**
+- "Novidade da feira": vídeo curto (até 15 segundos) de um lançamento ou cena, enviado pelo visitante, exibido depois da moderação (decisão 4).
+- "Momento divertido": vídeo ou foto engraçada, com a mesma moderação; desafio do dia com tema.
+- Transmissão ao vivo sem moderação não: risco de imagem, de menores e de conteúdo impróprio. Alternativa: "quase ao vivo", com alguns minutos de atraso e aprovação, ou repórteres da feira (alunos) com celular.
+- "Momento do expositor": vídeo de 15 segundos do lançamento, enviado pelo estande (produto pago).
+- Outros: chuva de aplausos na palestra (toque para aplaudir), quiz ao vivo com ranking por cidade, mural de recados por cidade.
+- Vídeo exige armazenamento de arquivos (Storage), limite de tamanho e prazo de exclusão.
+
+**Sustentabilidade econômica o ano todo:**
+- Calendário multifeira: licença por evento para outras exposições (as grandes feiras do agro se distribuem de fevereiro a setembro).
+- Assinatura anual do expositor: painel, seguidores, vitrine permanente por QR em revendas e dias de campo, comparação entre feiras.
+- Plano leve para eventos menores: dias de campo, leilões, exposições municipais, congressos.
+- Observatório da cidade: contrato anual com prefeitura e entidades (turismo, comércio, rede hoteleira).
+- Painel do Produtor: pesquisas trimestrais por WhatsApp com quem aceitar participar; relatórios setoriais para bancos, cooperativas e fabricantes.
+- Fomento e pesquisa: editais (Finep, FAPEG, CNPq, Sebrae), emendas e convênios pela fundação de apoio (decisão 13).
+- Patrocínio de marca do ShowPulse e dos dados abertos; capacitação e certificação de atendimento para expositores; licença de marca branca para organizadoras.
+
 ## Histórico
 
 - 04/11/2026: módulos A a F, cuidados, faseamento, mecanismos de dependência, viés do Observatório ITA, decisões 1 a 10.
@@ -893,3 +918,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 06/11/2026: avaliação final em formato de conversa (decisão 33a, pronta para o link por WhatsApp), card para o story com marca provisória substituível e limpeza dos dados de teste antes do piloto (migração 011).
 - 06/11/2026: avaliação pelo WhatsApp sem a plataforma paga (esclarecimento da decisão 33a): cerca de 3 horas depois do cadastro, a equipe envia pelo próprio WhatsApp um link pessoal para o bot em tela cheia; o bot pergunta primeiro se a pessoa já respondeu no tablet (migração 012). A plataforma oficial do WhatsApp só seria necessária para envio 100% automático ou para confirmar o número por código.
 - 13/11/2026: ideias para o ShowPulse atrair o público, dados vendáveis aos estandes e caminhos para se tornar indispensável (seção 23).
+- 13/11/2026: mapa 3D com reações ao vivo, vídeos moderados no telão e fontes de receita para o ano todo (seção 24).
