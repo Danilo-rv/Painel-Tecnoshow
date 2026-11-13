@@ -826,6 +826,35 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 **Cuidado:** mudanças de planta ou de lote durante a feira mexem no que o visitante vê ao vivo. Na edição em curso, a Administração pede confirmação e registra o motivo.
 
 
+## 23. ShowPulse mais atraente, dados vendáveis e como se tornar indispensável (ideias de 13/11/2026)
+
+**No telão, para o público querer olhar** (sempre agregados e só o lado positivo; decisão 25):
+- Pulso da feira: um índice único de 0 a 100 (fluxo + satisfação + engajamento), animado como batimento.
+- Corrida das cidades e dos estados; "recorde de distância do dia"; conquistas ("Jataí chegou a 100 visitantes").
+- Metas coletivas com contagem regressiva ("faltam 37 para 10.000") e marcos em km ("2 voltas na Terra").
+- "Sua rota acendeu": o município de quem acabou de ler um QR aparece em destaque por alguns segundos.
+- Enquetes relâmpago votadas por QR, com resultado ao vivo.
+- "Subindo agora" (estandes que mais cresceram em 30 minutos) e "estande revelação" para os pequenos.
+- Produtos mais amados e salvos; lotação e contagem regressiva das palestras; previsão de pico.
+- Prêmio diário de melhor atendimento, anunciado no telão.
+
+**Dados para vender aos estandes** (grátis o básico; pago o avançado; decisões 7 e 14):
+- Funil do estande (leu o QR → reagiu → salvou → pediu contato) comparado ao segmento.
+- Lead com pontuação (porte, culturas, origem, produtos salvos, revisita) e alerta em tempo real.
+- Mapa de demanda por município e interesse por produto e condição comercial.
+- Participação na atenção do segmento e co-visitação, sempre em grupos de 5 ou mais.
+- Efeito de cada ação (trilha, palestra, oferta) antes e depois; alertas de atendimento.
+- Relatório pós-feira, comparação entre edições e audiência de seguidores para o ano todo.
+- Espaços patrocinados no ShowPulse, rotulados como patrocínio (decisão 3).
+
+**Para ser indispensável à Tecnoshow e a outras feiras:**
+- Índice de audiência auditado pela universidade, usado para precificar lotes e patrocínios.
+- Histórico acumulado edição a edição, que só existe na plataforma.
+- Selo e prêmio oficial de atendimento na cerimônia da feira.
+- Relatório anual de impacto econômico para prefeitura, governo, patrocinadores e imprensa.
+- Dados usados na operação: planta, agenda, filas, estacionamento, hospedagem.
+- Rede multifeira com comparação nacional entre exposições.
+
 ## Histórico
 
 - 04/11/2026: módulos A a F, cuidados, faseamento, mecanismos de dependência, viés do Observatório ITA, decisões 1 a 10.
@@ -863,3 +892,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 06/11/2026: tablets habilitados por código com credencial própria (seção 18.4), trilha proposta pelo estande com aprovação da organização e página pública de dados abertos (decisão 9; migração 010).
 - 06/11/2026: avaliação final em formato de conversa (decisão 33a, pronta para o link por WhatsApp), card para o story com marca provisória substituível e limpeza dos dados de teste antes do piloto (migração 011).
 - 06/11/2026: avaliação pelo WhatsApp sem a plataforma paga (esclarecimento da decisão 33a): cerca de 3 horas depois do cadastro, a equipe envia pelo próprio WhatsApp um link pessoal para o bot em tela cheia; o bot pergunta primeiro se a pessoa já respondeu no tablet (migração 012). A plataforma oficial do WhatsApp só seria necessária para envio 100% automático ou para confirmar o número por código.
+- 13/11/2026: ideias para o ShowPulse atrair o público, dados vendáveis aos estandes e caminhos para se tornar indispensável (seção 23).
