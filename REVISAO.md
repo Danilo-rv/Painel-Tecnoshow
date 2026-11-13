@@ -341,3 +341,35 @@ Testes:
   - um segundo visitante diz que respondeu no tablet;
   - a fila se atualiza.
 - Os testes anteriores continuam passando.
+
+## ShowPulse, central, vídeos e endurecimento (décima quarta etapa)
+
+| Item | Como funciona | Proteção |
+|---|---|---|
+| ShowPulse | `showpulse` devolve tudo o que o telão mostra numa consulta | Só a equipe; só contagens; só reações positivas e carinha "bom"; "acaba de chegar" mostra só o município ou o país |
+| Central | `status_edicao` resume a preparação | Só a equipe; cada papel vê só os seus itens |
+| Envio de vídeo | `reservar_video` confere visitante, edição, tipo, tamanho (12 MB), duração (20 s) e limite (2 por hora) e reserva um nome aleatório; o depósito só aceita o arquivo reservado nos últimos 15 minutos; `confirmar_video` confere que o arquivo chegou | Menor de idade recusado; arquivo que não é vídeo recusado pelo depósito; nome aleatório de 128 bits; não dá para sobrescrever depois de confirmado |
+| Leitura do vídeo | Depósito privado; endereço temporário de 10 minutos | Moderação vê todos; equipe (telões) só os aprovados; anônimo nada |
+| Configuração da IA | `definir_config_ia` só para o administrador geral; a chave vai para a tabela de segredos | A chave nunca volta ao navegador; endereço obrigatoriamente https; cada mudança é auditada |
+| Parecer da IA | `registrar_parecer_ia` sem permissão para o navegador (só o serviço do servidor) | No modo "sugerir", nada é aprovado sem uma pessoa |
+| Plantas | O depósito das plantas deixou de aceitar SVG | Uma imagem SVG pode carregar código |
+
+**Revisão automática do Supabase (13/11/2026), resultado:**
+- **17 tabelas com acesso fechado:** intencional; o acesso é só pelas funções, que conferem quem pede.
+- **31 funções abertas ao visitante anônimo:** são a API pública planejada, e todas conferem a credencial.
+- **Duas funções auxiliares do depósito** estavam publicadas pela API sem necessidade; foram movidas para o esquema `privado` (migração 015).
+- **Pendente no painel do Supabase:** ligar a proteção contra senhas vazadas (Authentication › Attack Protection), disponível a partir do plano Pro.
+
+**Testes:**
+- **Banco local:**
+  - menor de idade;
+  - tipo, tamanho e duração inválidos;
+  - limite por hora;
+  - confirmação por outro visitante;
+  - configuração por quem não é administrador;
+  - endereço sem https;
+  - chave ausente;
+  - leitura da chave.
+- **Servidor real (depósito):** envio fora do caminho reservado, envio de arquivo que não é vídeo, reenvio e download anônimo, todos recusados.
+- **Navegador:** central, ShowPulse em demonstração e com dados reais, configuração da IA, moderação com vídeo e parecer.
+- Os testes anteriores continuam passando.

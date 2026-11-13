@@ -25,7 +25,7 @@ As respostas ficam num banco **Supabase** do próprio projeto. Uma versão alter
 ## 1. Configurar o Supabase (uma vez)
 
 1. Crie um projeto em <https://supabase.com> (região São Paulo, `sa-east-1`).
-2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`, `003_visitante_estande.sql`, `004_moderacao_painel_expositor.sql`, `005_saida_tablets.sql`, `006_presenca_trilhas.sql`, `007_mural.sql`, `008_cidade.sql`, `009_passaporte_ao_vivo.sql`, `010_aparelhos_propostas_dados.sql`, `011_avaliacao_limpeza.sql` e `012_envio_avaliacao.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
+2. Abra **SQL Editor**, cole todo o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois rode, na ordem, os arquivos de `supabase/migracoes/` (hoje, `002_multifeira.sql`, `003_visitante_estande.sql`, `004_moderacao_painel_expositor.sql`, `005_saida_tablets.sql`, `006_presenca_trilhas.sql`, `007_mural.sql`, `008_cidade.sql`, `009_passaporte_ao_vivo.sql`, `010_aparelhos_propostas_dados.sql`, `011_avaliacao_limpeza.sql`, `012_envio_avaliacao.sql`, `013_showpulse_central.sql`, `014_videos_ia.sql` e `015_endurecimento.sql`). Para começar com os dados do mapa de 2026, rode também `supabase/sementes/tecnoshow-comigo-2027.sql` (gerado por `gerar_tecnoshow_2027.py`).
 3. Em **Authentication → Sign In / Providers**, deixe **ligado** "Allow new users to sign up" (a equipe se cadastra pelo link de convite; uma conta criada sem convite não acessa nada) e mantenha "Confirm email" ligado.
    Em **Authentication → URL Configuration**, coloque o endereço do site em **Site URL** e em **Redirect URLs** (ex.: `https://danilo-rv.github.io/Painel-Tecnoshow/**`), para o e-mail de confirmação voltar ao app.
 4. Gere a chave da coleta: no SQL Editor, rode `select replace(gen_random_uuid()::text, '-', '') as chave_da_coleta;` e guarde o resultado.
@@ -331,6 +331,37 @@ Cada estande tem um QR (em **Administração → Cadastros → Expositores**, ab
 - Primeiro mostra quantos registros seriam apagados. Para apagar, é preciso digitar o código da edição.
 - **Apaga:** respostas, visitantes e tudo o que eles geraram (visitas, avaliações, comentários, mural, presenças, cupons, cidade) e os tablets habilitados.
 - **Mantém:** cadastros, equipe, questionário e auditoria. A limpeza fica registrada na auditoria e não dá para desfazer.
+
+## 20. ShowPulse (telão principal)
+
+- Abra `…/#showpulse` na TV ou no projetor, com uma conta da equipe. Para mostrar a alguém sem dados reais, use `…/#showpulse-demo` (não precisa de login).
+- **O palco alterna sozinho entre três cenas:**
+  - **De onde vem a feira:** rotas douradas de cada cidade até a feira; quem acabou de chegar aparece em destaque ("Acaba de chegar: Mineiros, GO · 197 km");
+  - **A feira agora:** o mapa da feira em perspectiva, com os estandes mais curtidos "esquentando" e as reações (👍 ❤️ 😀) subindo em tempo real. Usa a planta e os lotes desenhados em Administração › Mapa;
+  - **Mural dos visitantes:** fotos, mensagens e vídeos aprovados.
+- **À direita:** o Pulso da feira (0 a 100: fluxo, satisfação e engajamento), a corrida das cidades e um destaque que alterna entre "em alta agora", "subindo agora", "mais amados" e "palestras agora".
+- **Embaixo:** visitantes, cidades, quilômetros percorridos, interações e a contagem para a próxima meta.
+- Só contagens e o lado positivo vão ao telão: carinha neutra ou ruim nunca aparece (decisão 25).
+
+## 21. Central do administrador
+
+- A Administração abre na aba **Central**:
+  - **Preparação da edição:** cada item com sinal verde (pronto), amarelo (em andamento) ou vermelho (falta) e um botão que leva direto ao lugar de resolver. Os itens são expositores, mapa, agenda, contas dos estandes, trilhas, parceiros da cidade, questionário, equipe, código de saída e tablets;
+  - **Durante a feira:** o que está esperando moderação, as avaliações a enviar pelo WhatsApp, visitantes e respostas, com atalhos para os telões;
+  - **Depois da feira:** relatório, resumo da cidade e dados abertos.
+- Cada pessoa vê só os itens do seu papel.
+- A tela inicial agrupa os atalhos em Gestão, Telões, Parceiros e Demonstração.
+
+## 22. Vídeos no mural e moderação com IA (CEIA Lumi)
+
+- **Envio:** no "Publicar no telão", o visitante adulto pode enviar um vídeo de até 20 segundos e 12 MB (MP4, WebM ou MOV), no máximo 2 por hora.
+- **Depósito:** o vídeo vai para um depósito privado. Só a moderação assiste antes da aprovação; depois de aprovado, os telões tocam o vídeo (sem som). Vídeo recusado é apagado do depósito.
+- **Configuração da IA:** em **Administração › Configurações**, o administrador geral informa o endereço e a chave da API do CEIA Lumi e escolhe o modo:
+  - desligada;
+  - a IA sugere e uma pessoa decide (recomendado);
+  - a IA decide sozinha, e o que ela não tiver certeza fica para uma pessoa.
+- **A chave** fica guardada só no servidor: depois de salva, ninguém consegue lê-la de volta.
+- **Pendente:** a ligação com a API do CEIA Lumi depende da documentação dela (formato do pedido e da resposta). Até lá, a moderação de vídeos é humana; a tela de moderação já mostra o parecer da IA quando ele existir.
 
 ## Proteção de dados (LGPD)
 

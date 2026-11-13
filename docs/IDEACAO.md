@@ -920,3 +920,4 @@ Perguntas que serão feitas todas de uma vez ao final da ideação.
 - 13/11/2026: ideias para o ShowPulse atrair o público, dados vendáveis aos estandes e caminhos para se tornar indispensável (seção 23).
 - 13/11/2026: mapa 3D com reações ao vivo, vídeos moderados no telão e fontes de receita para o ano todo (seção 24).
 - 13/11/2026: assinatura oficial da marca decidida: "ITex – Inteligência Territorial para Exposições e Eventos" (a logo e o vídeo precisam ser refeitos com esse texto). Moderação de vídeos do ShowPulse será feita pela IA CEIA Lumi (CEIA-UFG), com a API configurada pelo administrador.
+- 13/11/2026: ShowPulse vibrante (pulso da feira, rotas, "acaba de chegar", corrida das cidades, mapa da feira em perspectiva com reações subindo, mural), central do administrador, vídeos no mural com depósito privado, tela de configuração da IA CEIA Lumi e endurecimento de segurança (migrações 013 a 015).
